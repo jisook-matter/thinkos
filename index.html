@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ThinkOS — Unified Waste Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Matter brand palette — Brand Guide v1.0 (Light Green #43B02A · Dark Green #205C40 · Dark Grey #53565A · Orange #F19E21) */
+  --bg:#f6f8f6;--bg-warm:#eef3ee;--bg-card:#ffffff;
+  --peach:#F19E21;--peach-light:#cdeac2;--peach-pale:#e9f4e4;
+  --coral:#2e7d52;--coral-deep:#205C40;
+  --sage:#43B02A;--sage-light:#dcf1d5;--sage-dark:#2c8a1b;
+  --sand:#c9cdc9;--sand-light:#e7ebe7;
+  --blush:#f6c98a;--dusty-rose:#F19E21;--clay:#b97c10;
+  --ink:#2b2e30;--ink-light:#53565A;--ink-muted:#8a8f92;
+  --cream:#eff3ef;--border:rgba(32,92,64,0.16);
+  --shadow:rgba(43,46,48,0.06);--shadow-md:rgba(43,46,48,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;overflow-x:hidden}
+/* ===== Shell ===== */
+.topbar{position:fixed;top:0;left:0;right:0;height:58px;background:rgba(246,248,246,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1rem;padding:0 1.4rem;z-index:100}
+.brand{display:flex;align-items:center;gap:.75rem}
+.logo{display:flex;align-items:center}
+.logo svg.t-logo{height:21px;width:auto;display:block}
+.powered{display:flex;flex-direction:column;border-left:1px solid var(--border);padding-left:.75rem;line-height:1.15}
+.powered .lbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-muted)}
+.powered .m-logo{height:13px;width:auto;display:block;margin-top:3px}
+/* Lucide icons */
+svg.lic{width:16px;height:16px;vertical-align:-3px;flex-shrink:0}
+i.lic{display:inline-block;width:16px;height:16px}
+.nav-item .ic svg.lic{width:17px;height:17px;vertical-align:-3.5px}
+h3 svg.lic{width:17px;height:17px;color:var(--coral-deep);margin-right:.1rem}
+.ws-tag b svg.lic{width:14px;height:14px;color:var(--coral-deep)}
+.dropzone .big svg.lic{width:36px;height:36px;color:var(--coral-deep)}
+.wic svg.lic{width:20px;height:20px;color:var(--coral-deep)}
+.topbar .spacer{flex:1}
+.sel{display:flex;align-items:center;gap:.45rem;font-size:.8rem;color:var(--ink-light)}
+.sel select{font-family:'Poppins',sans-serif;font-size:.85rem;color:var(--ink);background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:.35rem .6rem;cursor:pointer}
+.live{display:flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:700;color:var(--sage-dark);background:var(--sage-light);padding:.25rem .7rem;border-radius:999px}
+.live::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--sage-dark);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.sidebar{position:fixed;top:58px;left:0;bottom:0;width:218px;background:var(--bg-card);border-right:1px solid var(--border);padding:1rem .7rem;overflow-y:auto;z-index:90}
+.nav-item{display:flex;align-items:center;gap:.6rem;padding:.55rem .8rem;border-radius:12px;font-size:.88rem;color:var(--ink-light);cursor:pointer;margin-bottom:.15rem;transition:background .15s}
+.nav-item:hover{background:var(--peach-pale)}
+.nav-item.active{background:var(--peach-pale);color:var(--coral-deep);font-weight:700}
+.nav-item .ic{width:20px;text-align:center}
+.ws-tag{margin:0 .8rem .8rem;padding:.75rem .8rem;background:var(--cream);border:1px solid var(--border);border-radius:14px;font-size:.7rem;color:var(--ink-muted)}
+.ws-head{display:flex;align-items:center;gap:.55rem;padding-bottom:.55rem;border-bottom:1px solid var(--border);margin-bottom:.55rem}
+.ws-ic{width:30px;height:30px;border-radius:9px;background:var(--peach-pale);display:flex;align-items:center;justify-content:center;color:var(--coral-deep);flex-shrink:0}
+.ws-ic svg.lic{width:16px;height:16px;vertical-align:0}
+.ws-lbl{display:block;font-size:.56rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-muted);line-height:1.2}
+.ws-head b{display:block;color:var(--ink);font-size:.79rem;line-height:1.25}
+.ws-row{display:flex;justify-content:space-between;align-items:baseline;gap:.6rem;margin-bottom:.28rem}
+.ws-row>span:first-child{flex-shrink:0}
+.ws-row b{color:var(--ink);font-weight:600;text-align:right;line-height:1.3}
+.ws-bar{height:5px;background:var(--sand-light);border-radius:999px;overflow:hidden;margin-top:.4rem}
+.ws-bar i{display:block;height:100%;background:var(--sage);border-radius:999px}
+.main{margin-left:218px;margin-top:58px;padding:2rem 2.2rem 4rem;min-height:calc(100vh - 58px)}
+@media(max-width:860px){.sidebar{display:none}.main{margin-left:0}}
+/* ===== Components ===== */
+.page-h{margin-bottom:1.6rem}
+.page-h h1{font-family:'Poppins',sans-serif;font-weight:600;font-size:2.1rem;line-height:1.2}
+.page-h p{color:var(--ink-muted);max-width:760px}
+.eyebrow{display:inline-block;background:var(--peach-pale);color:var(--coral-deep);font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:.25rem .8rem;border-radius:999px;margin-bottom:.5rem}
+.grid{display:grid;gap:1rem}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1100px){.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:1.3rem;box-shadow:0 2px 12px var(--shadow)}
+.card h3{font-family:'Poppins',sans-serif;font-weight:600;font-size:1.15rem;margin-bottom:.2rem}
+.card .sub{font-size:.78rem;color:var(--ink-muted);margin-bottom:.8rem}
+.stat{background:var(--bg-card);border:1px solid var(--border);border-radius:18px;padding:1rem 1.2rem;box-shadow:0 2px 12px var(--shadow)}
+.stat .v{font-family:'Poppins',sans-serif;font-weight:600;font-size:1.9rem;color:var(--coral-deep)}
+.stat .l{font-size:.76rem;color:var(--ink-muted);text-transform:uppercase;letter-spacing:.06em}
+.stat.sg .v{color:var(--sage-dark)}
+.row{display:flex;justify-content:space-between;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--border);font-size:.87rem;gap:.8rem}
+.row:last-child{border-bottom:none}
+.row .mut{color:var(--ink-muted);font-size:.78rem}
+.pill{font-size:.68rem;font-weight:700;padding:.18rem .6rem;border-radius:999px;white-space:nowrap}
+.p-ok{background:var(--sage-light);color:var(--sage-dark)}
+.p-warn{background:#fdf0dc;color:#b97c10}
+.p-crit{background:#fbe9e7;color:#c0453a}
+.p-info{background:var(--sand-light);color:var(--clay)}
+.bar{height:9px;background:var(--sand-light);border-radius:999px;overflow:hidden;flex:1}
+.bar i{display:block;height:100%;border-radius:999px}
+.btn{display:inline-block;font-family:'Poppins',sans-serif;font-size:.84rem;font-weight:700;background:var(--coral-deep);color:#fff;border:none;border-radius:12px;padding:.55rem 1.1rem;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--coral-deep);border:1px solid var(--coral)}
+.tabs{display:flex;gap:.4rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab{font-size:.8rem;font-weight:500;padding:.35rem .9rem;border-radius:999px;border:1px solid var(--border);background:var(--bg-card);cursor:pointer;color:var(--ink-light)}
+.tab.on{background:var(--coral-deep);color:#fff;border-color:var(--coral-deep);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+th{text-align:left;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);padding:.45rem .5rem;border-bottom:1px solid var(--border)}
+td{padding:.55rem .5rem;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+/* map */
+.mapbox{position:relative;background:linear-gradient(135deg,var(--cream),var(--bg-warm));border-radius:14px;height:420px;overflow:hidden;border:1px solid var(--border)}
+.mapbox svg{width:100%;height:100%}
+.bin-dot{cursor:pointer;transition:r .2s}
+.map-legend{position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,.92);border-radius:10px;padding:.5rem .8rem;font-size:.72rem;display:flex;gap:.9rem}
+.map-legend span{display:flex;align-items:center;gap:.35rem}
+.ld{width:10px;height:10px;border-radius:50%}
+.detail{position:absolute;top:12px;right:12px;width:230px;background:rgba(255,255,255,.97);border:1px solid var(--border);border-radius:14px;padding:.9rem 1rem;box-shadow:0 6px 20px var(--shadow-md);font-size:.8rem}
+.detail h4{font-family:'Poppins',sans-serif;font-weight:600;font-size:1rem;margin-bottom:.3rem}
+/* agents */
+.agent{border:1px solid var(--coral-deep)}
+.agent.sg{border-color:var(--sage)}
+.agent.rs{border-color:var(--dusty-rose)}
+.agent.cl{border-color:var(--clay)}
+.feed{max-height:200px;overflow-y:auto}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.5rem}
+.chip{background:var(--peach-pale);color:var(--clay);font-size:.72rem;padding:.18rem .6rem;border-radius:999px;border:1px solid var(--border)}
+/* charts */
+.hbar{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem;font-size:.8rem}
+.hbar .lab{width:110px;color:var(--ink-light);text-align:right;flex-shrink:0}
+.hbar .val{width:52px;font-weight:700;font-size:.78rem}
+.cols{display:flex;align-items:flex-end;gap:8%;height:130px;padding-top:.6rem}
+.col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:.3rem;height:100%}
+.col i{width:100%;max-width:34px;background:var(--sage);border-radius:6px 6px 0 0;display:block}
+.col span{font-size:.68rem;color:var(--ink-muted)}
+.empty{padding:3rem;text-align:center;color:var(--ink-muted)}
+footer{margin-top:3rem;padding-top:1.2rem;border-top:1px solid var(--border);font-size:.78rem;color:var(--ink-muted)}
+/* entitlements */
+.nav-item.locked{opacity:.38;cursor:not-allowed}
+.nav-item.locked:hover{background:transparent}
+select option:disabled{color:#c3c7c3}
+.client-badge{font-size:.7rem;font-weight:700;background:var(--sand-light);color:var(--clay);padding:.2rem .6rem;border-radius:999px}
+/* brokerage */
+.job{border:1px solid var(--border);border-radius:14px;padding:.9rem 1rem;margin-bottom:.7rem;background:var(--bg)}
+.job .top{display:flex;justify-content:space-between;align-items:flex-start;gap:.6rem}
+.job h4{font-size:.95rem}
+.job .pay{font-family:'Poppins',sans-serif;font-weight:600;font-size:1.3rem;color:var(--sage-dark);white-space:nowrap}
+.surge{background:#fbe9e7;color:#c0453a;font-size:.66rem;font-weight:700;padding:.12rem .5rem;border-radius:999px}
+.stages{display:flex;gap:.25rem;margin-top:.55rem}
+.stg{flex:1;height:7px;border-radius:999px;background:var(--sand-light)}
+.stg.done{background:var(--sage)}
+.stg.now{background:var(--peach);animation:pulse 1.4s infinite}
+.job .btns{display:flex;gap:.4rem;margin-top:.6rem}
+.btn.sm{padding:.35rem .8rem;font-size:.76rem}
+.btn.dec{background:transparent;color:var(--ink-muted);border:1px solid var(--border)}
+.keyrow{display:flex;gap:.5rem;margin-top:.8rem;align-items:center;flex-wrap:wrap}
+.keyrow input{flex:1;min-width:220px;font-family:'Poppins',sans-serif;font-size:.82rem;padding:.5rem .8rem;border:1px solid var(--border);border-radius:10px;background:var(--bg)}
+#gmap{position:absolute;inset:0}
+.gmap-note{position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,.94);border-radius:10px;padding:.45rem .8rem;font-size:.72rem;color:var(--ink-light);max-width:340px}
+/* AIVision */
+.cam{position:relative;border-radius:12px;overflow:hidden;background:#1c1a17;aspect-ratio:16/9}
+.cam svg{width:100%;height:100%;display:block}
+.cam .hud{position:absolute;top:8px;left:10px;right:10px;display:flex;justify-content:space-between;font-family:monospace;font-size:.68rem;color:#e8e2d8;text-shadow:0 1px 2px #000}
+.rec{display:flex;align-items:center;gap:.3rem}
+.rec::before{content:'';width:8px;height:8px;border-radius:50%;background:#e05a4a;animation:pulse 1.2s infinite}
+.scan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(67,176,42,.9),transparent);animation:scanmove 3.2s linear infinite}
+@keyframes scanmove{0%{top:4%}100%{top:96%}}
+.dbox{position:absolute;border:2px dashed;border-radius:4px;font-family:monospace;font-size:.6rem;font-weight:700;padding:1px 3px;color:#fff;text-shadow:0 1px 2px #000}
+.wipe{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/9;background:#1c1a17}
+.wipe .after{position:absolute;inset:0;overflow:hidden}
+.wipe .lbl{position:absolute;top:8px;font-family:monospace;font-size:.66rem;color:#fff;background:rgba(0,0,0,.5);padding:1px 7px;border-radius:6px}
+.wipebar{width:100%;margin-top:.6rem;accent-color:var(--coral-deep)}
+/* admin console */
+.frm{display:grid;grid-template-columns:repeat(2,1fr);gap:.8rem}
+.frm label{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);display:block;margin-bottom:.25rem}
+.frm input,.frm select,.frm textarea{width:100%;font-family:'Poppins',sans-serif;font-size:.86rem;padding:.5rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink)}
+.frm .full{grid-column:1/-1}
+.vx{border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;margin-bottom:.6rem;background:var(--bg)}
+.vx .vh{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:.88rem}
+.vx .mods{display:flex;flex-wrap:wrap;gap:.15rem .9rem;margin-top:.45rem}
+.vx .mods label{display:flex;align-items:center;gap:.3rem;font-size:.76rem;color:var(--ink-light);text-transform:none;letter-spacing:0}
+.vx input[type=checkbox]{accent-color:var(--coral-deep)}
+/* AIRS ingestion */
+.dropzone{border:2px dashed var(--coral);border-radius:16px;padding:2.2rem 1.4rem;text-align:center;color:var(--ink-light);background:var(--peach-pale);cursor:pointer;transition:background .2s,border-color .2s}
+.dropzone.over{background:var(--peach-light);border-color:var(--coral-deep)}
+.dropzone .big{font-size:2rem}
+.pipe{display:flex;flex-direction:column;gap:.3rem;margin-top:.6rem}
+.pstep{display:flex;align-items:center;gap:.55rem;font-size:.78rem;color:var(--ink-muted)}
+.pstep .pi{width:17px;height:17px;border-radius:50%;background:var(--sand-light);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.6rem;color:#fff}
+.pstep.done .pi{background:var(--sage)}
+.pstep.flag .pi{background:var(--dusty-rose)}
+.pstep.now .pi{background:var(--peach);animation:pulse 1s infinite}
+.pstep.done,.pstep.flag{color:var(--ink-light)}
+.mailrow{display:flex;justify-content:space-between;gap:.6rem;align-items:center;padding:.55rem 0;border-bottom:1px solid var(--border);font-size:.84rem}
+.mailrow:last-child{border-bottom:none}
+.inbox-addr{font-family:monospace;background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:.5rem .8rem;font-size:.82rem;color:var(--clay);word-break:break-all}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="logo"><svg class="t-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 721.03 177.21"><path fill="#000000" d="M90.68,15.59v20.47h-32.94v105.96h-24.79V36.05H0V15.59h90.68Z"/><path fill="#000000" d="M183.84,45.2c5.78,3.32,10.3,8.21,13.55,14.67,3.25,6.46,4.87,14.22,4.87,23.27v58.87h-24.8v-55.43c0-7.97-1.95-14.1-5.84-18.38-3.9-4.28-9.21-6.43-15.94-6.43s-12.25,2.15-16.21,6.43c-3.96,4.29-5.93,10.42-5.93,18.38v55.43h-24.79V7.98h24.79v46.19c3.19-4.35,7.44-7.76,12.75-10.23s11.22-3.71,17.71-3.71c7.44,0,14.05,1.66,19.84,4.98h0Z"/><path fill="#000000" d="M227.49,25.46c-2.89-2.84-4.34-6.37-4.34-10.6s1.44-7.76,4.34-10.6c2.89-2.84,6.52-4.26,10.89-4.26s8,1.42,10.89,4.26c2.89,2.84,4.34,6.37,4.34,10.6s-1.45,7.76-4.34,10.6-6.53,4.26-10.89,4.26-8-1.42-10.89-4.26ZM250.61,41.67v100.35h-24.79V41.67h24.79,0Z"/><path fill="#000000" d="M357.76,51.54c7.2,7.55,10.8,18.08,10.8,31.61v58.87h-24.8v-55.43c0-7.97-1.95-14.1-5.84-18.38-3.9-4.28-9.21-6.43-15.94-6.43s-12.25,2.15-16.21,6.43c-3.96,4.29-5.93,10.42-5.93,18.38v55.43h-24.79V41.67h24.79v12.5c3.3-4.35,7.53-7.76,12.66-10.23,5.14-2.47,10.77-3.71,16.91-3.71,11.69,0,21.13,3.78,28.34,11.32h0Z"/><path fill="#000000" d="M450.21,142.02l-33.3-42.75v42.75h-24.79V7.98h24.79v76.26l32.94-42.57h32.23l-43.21,50.35,43.57,49.99h-32.23Z"/><path fill="#000000" d="M521.05,134.95c-9.68-5.55-17.36-13.25-23.03-23.09s-8.5-20.98-8.5-33.42,2.83-23.39,8.5-33.24c5.67-9.84,13.34-17.54,23.03-23.09,9.68-5.55,20.3-8.33,31.88-8.33s22.34,2.78,31.97,8.33c9.62,5.56,17.24,13.25,22.85,23.09s8.41,20.92,8.41,33.24-2.8,23.58-8.41,33.42-13.26,17.54-22.94,23.09c-9.68,5.56-20.31,8.33-31.88,8.33s-22.2-2.78-31.88-8.33h0ZM572.59,115.48c5.67-3.44,10.1-8.36,13.28-14.76,3.19-6.4,4.78-13.83,4.78-22.28s-1.6-15.85-4.78-22.19c-3.19-6.34-7.62-11.2-13.28-14.58-5.67-3.38-12.22-5.07-19.66-5.07s-14.02,1.69-19.75,5.07-10.18,8.24-13.37,14.58c-3.19,6.34-4.78,13.74-4.78,22.19s1.6,15.88,4.78,22.28c3.19,6.4,7.64,11.32,13.37,14.76s12.31,5.16,19.75,5.16,13.99-1.72,19.66-5.16Z"/><path fill="#000000" d="M653.97,138.76c-6.91-3.02-12.37-7.36-16.38-13.04-4.02-5.67-6.08-12.38-6.2-20.11h26.57c.35,5.19,2.15,9.3,5.4,12.32s7.7,4.53,13.37,4.53,10.33-1.42,13.64-4.26c3.3-2.84,4.96-6.55,4.96-11.14,0-3.74-1.12-6.82-3.37-9.24-2.24-2.41-5.05-4.32-8.41-5.71-3.37-1.39-8-2.93-13.9-4.62-8.03-2.41-14.55-4.8-19.57-7.15s-9.33-5.92-12.93-10.69c-3.6-4.77-5.4-11.14-5.4-19.11,0-7.49,1.83-14.01,5.49-19.56,3.66-5.55,8.79-9.81,15.41-12.77,6.61-2.96,14.17-4.44,22.67-4.44,12.75,0,23.11,3.17,31.08,9.51,7.97,6.34,12.37,15.19,13.19,26.54h-27.27c-.24-4.35-2.04-7.94-5.4-10.78-3.37-2.84-7.82-4.26-13.37-4.26-4.84,0-8.71,1.27-11.6,3.8-2.89,2.54-4.34,6.22-4.34,11.05,0,3.38,1.09,6.19,3.28,8.42,2.18,2.24,4.9,4.05,8.15,5.43,3.25,1.39,7.82,2.99,13.73,4.8,8.03,2.42,14.58,4.83,19.66,7.25,5.08,2.42,9.45,6.04,13.11,10.87s5.49,11.17,5.49,19.02c0,6.76-1.71,13.04-5.14,18.84-3.43,5.8-8.44,10.42-15.05,13.86s-14.46,5.16-23.55,5.16c-8.62,0-16.38-1.51-23.29-4.53h-.03Z"/><rect fill="#43af49" x="489.43" y="163.89" width="127.02" height="13.32"/></svg></div>
+    <div class="powered"><span class="lbl">Powered by</span><svg class="m-logo" xmlns="http://www.w3.org/2000/svg" viewBox="43.51 51.74 671.05 137.20"><path fill="#205c40" d="M43.51,82.54h36.2v12.6c9.87-9.47,20.93-14.2,33.2-14.2,15.2,0,26.8,6.4,34.8,19.2,8.13-12.93,19.73-19.4,34.8-19.4,4.8,0,9.33.7,13.6,2.1,4.27,1.4,7.93,3.6,11,6.6,3.07,3,5.5,6.9,7.3,11.7s2.7,10.6,2.7,17.4v66.6h-36.2v-50.6c0-5.2-.37-9.47-1.1-12.8-.73-3.33-1.8-5.93-3.2-7.8-1.4-1.87-3.03-3.13-4.9-3.8-1.87-.67-3.87-1-6-1-11.6,0-17.4,8.47-17.4,25.4v50.6h-36.2v-50.6c0-5.2-.33-9.5-1-12.9-.67-3.4-1.63-6.1-2.9-8.1-1.27-2-2.9-3.37-4.9-4.1-2-.73-4.33-1.1-7-1.1-2.27,0-4.4.33-6.4,1-2,.67-3.77,1.97-5.3,3.9-1.53,1.93-2.73,4.6-3.6,8-.87,3.4-1.3,7.83-1.3,13.3v50.6h-36.2v-102.6Z"/><path fill="#205c40" d="M310.15,82.54h36.4v102.6h-36.4v-11.4c-7.73,9.73-18.2,14.6-31.4,14.6-7.47,0-14.34-1.37-20.6-4.1-6.27-2.73-11.73-6.57-16.4-11.5-4.67-4.93-8.3-10.73-10.9-17.4-2.6-6.67-3.9-13.93-3.9-21.8,0-7.33,1.27-14.3,3.8-20.9,2.53-6.6,6.06-12.37,10.6-17.3,4.53-4.93,9.93-8.83,16.2-11.7,6.27-2.87,13.2-4.3,20.8-4.3,12.8,0,23.4,4.47,31.8,13.4v-10.2ZM264.55,133.54c0,3.33.6,6.43,1.8,9.3,1.2,2.87,2.83,5.37,4.9,7.5,2.06,2.13,4.53,3.8,7.4,5,2.87,1.2,5.97,1.8,9.3,1.8s6.23-.6,9.1-1.8c2.87-1.2,5.33-2.87,7.4-5,2.07-2.13,3.73-4.6,5-7.4,1.27-2.8,1.9-5.8,1.9-9s-.63-6.23-1.9-9.1c-1.27-2.87-2.93-5.37-5-7.5-2.07-2.13-4.54-3.8-7.4-5-2.87-1.2-5.9-1.8-9.1-1.8s-6.43.6-9.3,1.8c-2.87,1.2-5.33,2.87-7.4,5-2.07,2.13-3.7,4.57-4.9,7.3-1.2,2.73-1.8,5.7-1.8,8.9Z"/><path fill="#205c40" d="M403.53,112.74v72.4h-36.2v-72.4h-12v-30.2h12v-30.8h36.2v30.8h20.6v30.2h-20.6Z"/><path fill="#205c40" d="M470.39,112.74v72.4h-36.2v-72.4h-12v-30.2h12v-30.8h36.2v30.8h20.6v30.2h-20.6Z"/><path fill="#205c40" d="M527.92,139.94c0,15.6,7.33,23.4,22,23.4,7.87,0,13.8-3.2,17.8-9.6h35c-7.07,23.47-24.73,35.2-53,35.2-8.67,0-16.6-1.3-23.8-3.9-7.2-2.6-13.37-6.3-18.5-11.1-5.13-4.8-9.1-10.53-11.9-17.2-2.8-6.67-4.2-14.13-4.2-22.4s1.33-16.23,4-23.1c2.66-6.87,6.46-12.7,11.4-17.5,4.93-4.8,10.9-8.5,17.9-11.1s14.9-3.9,23.7-3.9,16.46,1.3,23.4,3.9c6.93,2.6,12.8,6.37,17.6,11.3,4.8,4.93,8.46,10.97,11,18.1,2.53,7.13,3.8,15.17,3.8,24.1v3.8h-76.2ZM570.32,118.94c-1.2-5.07-3.67-9.13-7.4-12.2-3.73-3.07-8.27-4.6-13.6-4.6-5.6,0-10.17,1.47-13.7,4.4-3.53,2.93-5.77,7.07-6.7,12.4h41.4Z"/><path fill="#205c40" d="M614.9,82.54h36.2v16.8c3.87-6.13,8.6-10.83,14.2-14.1,5.6-3.27,12.13-4.9,19.6-4.9h3.1c1.13,0,2.43.13,3.9.4v34.6c-4.8-2.4-10-3.6-15.6-3.6-8.4,0-14.7,2.5-18.9,7.5-4.2,5-6.3,12.3-6.3,21.9v44h-36.2v-102.6Z"/><path fill="#43b02a" d="M679.47,170.74c0-2.4.45-4.67,1.35-6.83.9-2.15,2.15-4.02,3.75-5.62,1.6-1.6,3.47-2.85,5.62-3.75,2.15-.9,4.42-1.35,6.82-1.35s4.67.45,6.83,1.35c2.15.9,4.02,2.15,5.62,3.75,1.6,1.6,2.85,3.48,3.75,5.62.9,2.15,1.35,4.43,1.35,6.83s-.45,4.68-1.35,6.82c-.9,2.15-2.15,4.03-3.75,5.62-1.6,1.6-3.48,2.85-5.62,3.75-2.15.9-4.43,1.35-6.83,1.35s-4.68-.45-6.82-1.35c-2.15-.9-4.03-2.15-5.62-3.75-1.6-1.6-2.85-3.47-3.75-5.62-.9-2.15-1.35-4.42-1.35-6.82Z"/></svg></div>
+  </div>
+  <span class="live">Live</span>
+  <div class="spacer"></div>
+  <div class="sel">Client
+    <select id="selClient" onchange="setClient(this.value)"></select>
+  </div>
+  <div class="sel">Workspace
+    <select id="selVertical" onchange="setVertical(this.value)"></select>
+  </div>
+  <div class="sel">Region
+    <select id="selRegion" onchange="setRegion(this.value)"></select>
+  </div>
+</div>
+
+<nav class="sidebar" id="sidebar"></nav>
+<main class="main" id="main"></main>
+
+<script>
+/* ================================================================
+   ThinkOS Unified UI — region-agnostic, config-driven
+   Layers: REGIONS (locale packs) + VERTICALS (module entitlements)
+   + MODULES (render-once components). No feature is vertical-coded.
+   ================================================================ */
+
+/* ---------- REGION PACKS ----------
+   Adding a region = adding one object. Nothing else changes. */
+/* ---------- Icon set — Lucide (inlined, no CDN needed) ---------- */
+const LUCIDE={
+'layout-dashboard':'<rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" />',
+'zap':'<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />',
+'camera':'<path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z" /><circle cx="12" cy="13" r="3" />',
+'map':'<path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" /><path d="M15 5.764v15" /><path d="M9 3.236v15" />',
+'route':'<circle cx="6" cy="19" r="3" /><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15" /><circle cx="18" cy="5" r="3" />',
+'calendar-days':'<path d="M8 2v4" /><path d="M16 2v4" /><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M3 10h18" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" />',
+'bot':'<path d="M12 8V4H8" /><rect width="16" height="12" x="4" y="8" rx="2" /><path d="M2 14h2" /><path d="M20 14h2" /><path d="M15 13v2" /><path d="M9 13v2" />',
+'trophy':'<path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978" /><path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978" /><path d="M18 9h1.5a1 1 0 0 0 0-5H18" /><path d="M4 22h16" /><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z" /><path d="M6 9H4.5a1 1 0 0 1 0-5H6" />',
+'cloud-sun':'<path d="M12 2v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="M20 12h2" /><path d="m19.07 4.93-1.41 1.41" /><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z" />',
+'glasses':'<circle cx="6" cy="15" r="4" /><circle cx="18" cy="15" r="4" /><path d="M14 15a2 2 0 0 0-2-2 2 2 0 0 0-2 2" /><path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2" /><path d="M21.5 13 19 7c-.7-1.3-1.5-2-3-2" />',
+'shield-check':'<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /><path d="m9 12 2 2 4-4" />',
+'link-2':'<path d="M9 17H7A5 5 0 0 1 7 7h2" /><path d="M15 7h2a5 5 0 1 1 0 10h-2" /><line x1="8" x2="16" y1="12" y2="12" />',
+'wallet':'<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" /><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />',
+'leaf':'<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />',
+'graduation-cap':'<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z" /><path d="M22 10v6" /><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5" />',
+'chart-column':'<path d="M3 3v16a2 2 0 0 0 2 2h16" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" />',
+'lock':'<rect width="18" height="11" x="3" y="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" />',
+'settings':'<path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" />',
+'building-2':'<path d="M10 12h4" /><path d="M10 8h4" /><path d="M14 21v-3a2 2 0 0 0-4 0v3" /><path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" /><path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" />',
+'truck':'<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" /><path d="M15 18H9" /><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" /><circle cx="17" cy="18" r="2" /><circle cx="7" cy="18" r="2" />',
+'trees':'<path d="M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z" /><path d="M7 16v6" /><path d="M13 19v3" /><path d="M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5" />',
+'hospital':'<path d="M12 7v4" /><path d="M14 21v-3a2 2 0 0 0-4 0v3" /><path d="M14 9h-4" /><path d="M18 11h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2" /><path d="M18 21V5a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16" />',
+'hard-hat':'<path d="M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5" /><path d="M14 6a6 6 0 0 1 6 6v3" /><path d="M4 15v-3a6 6 0 0 1 6-6" /><rect x="2" y="15" width="20" height="4" rx="1" />',
+'video':'<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5" /><rect x="2" y="6" width="14" height="12" rx="2" />',
+'mail':'<path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" /><rect x="2" y="4" width="20" height="16" rx="2" />',
+'file-text':'<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M14 2v5a1 1 0 0 0 1 1h5" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" />',
+'inbox':'<polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />',
+'scan-search':'<path d="M3 7V5a2 2 0 0 1 2-2h2" /><path d="M17 3h2a2 2 0 0 1 2 2v2" /><path d="M21 17v2a2 2 0 0 1-2 2h-2" /><path d="M7 21H5a2 2 0 0 1-2-2v-2" /><circle cx="12" cy="12" r="3" /><path d="m16 16-1.9-1.9" />',
+'paperclip':'<path d="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551" />',
+'cloud-rain':'<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" /><path d="M16 14v6" /><path d="M8 14v6" /><path d="M12 16v6" />',
+'sun':'<circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" />',
+'wind':'<path d="M12.8 19.6A2 2 0 1 0 14 16H2" /><path d="M17.5 8a2.5 2.5 0 1 1 2 4H2" /><path d="M9.8 4.4A2 2 0 1 1 11 8H2" />',
+'droplets':'<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z" /><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97" />',
+'map-pin':'<path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" />',
+'navigation':'<polygon points="3 11 22 2 13 21 11 13 3 11" />',
+'clipboard-check':'<rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><path d="m9 14 2 2 4-4" />',
+'hand':'<path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2" /><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2" /><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8" /><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />'
+};
+const ic=n=>`<svg class="lic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${LUCIDE[n]||''}</svg>`;
+function refreshIcons(){}
+
+const REGIONS = {
+  AU: { name:'Australia', cur:'A$', temp:'°C', dist:'km', wt:'kg', co2:'t CO₂e',
+    localityTerm:'Council', postTerm:'Postcode',
+    areas:['Karrinyup','Balcatta','Innaloo','Osborne Park','Scarborough','Tuart Hill','Stirling','Churchlands'],
+    city:'Perth', ll:[-31.9523,115.8613],
+    accounting:['Xero','MYOB','QuickBooks'],
+    regulators:{ general:['State EPA','NGER Scheme','National Waste Policy'],
+      clinical:['State EPA Clinical Waste','TGA','AS/NZS 3816','AS 4031','Privacy Act (APPs)'],
+      esg:['NABERS','Climate Active','GRI'] },
+    manifest:'EPA Waste Tracking', vendors:['Cleanaway','Veolia ANZ','Daniels Health','Stericycle AU'] },
+  UK: { name:'United Kingdom', cur:'£', temp:'°C', dist:'mi', wt:'kg', co2:'t CO₂e',
+    localityTerm:'Council', postTerm:'Postcode',
+    areas:['Camden','Islington','Hackney','Southwark','Lambeth','Greenwich','Croydon','Ealing'],
+    city:'London', ll:[51.5074,-0.1278],
+    accounting:['Xero','Sage','QuickBooks'],
+    regulators:{ general:['Environment Agency','DEFRA Duty of Care','Simpler Recycling'],
+      clinical:['HTM 07-01','Environment Agency','UK GDPR','MHRA'],
+      esg:['SECR','BREEAM','GRI'] },
+    manifest:'Waste Transfer Notes', vendors:['Biffa','Veolia UK','SUEZ','Stericycle UK'] },
+  US: { name:'United States', cur:'$', temp:'°F', dist:'mi', wt:'lb', co2:'t CO₂e',
+    localityTerm:'Municipality', postTerm:'ZIP',
+    areas:['Queens','Newark','Camden NJ','Wilmington','Baltimore','Allentown','Scranton','Trenton'],
+    city:'Philadelphia', ll:[39.9526,-75.1652],
+    accounting:['QuickBooks','Sage Intacct','NetSuite'],
+    regulators:{ general:['US EPA RCRA','State DEP/DEC','OSHA'],
+      clinical:['State DOH Medical Waste','DOT 49 CFR','HIPAA','OSHA BBP'],
+      esg:['EPA WasteWise','LEED','GRI'] },
+    manifest:'EPA e-Manifest', vendors:['Stericycle','Waste Management','Republic Services','Daniels Health'] },
+  EU: { name:'European Union', cur:'€', temp:'°C', dist:'km', wt:'kg', co2:'t CO₂e',
+    localityTerm:'Municipality', postTerm:'Postal code',
+    areas:['Mitte','Kreuzberg','Pankow','Spandau','Neukölln','Charlottenburg','Lichtenberg','Steglitz'],
+    city:'Berlin', ll:[52.5200,13.4050],
+    accounting:['DATEV','Sage','Odoo'],
+    regulators:{ general:['EU Waste Framework Directive','National EPA','EPR Packaging'],
+      clinical:['EU 2017/746 IVDR context','National clinical waste code','GDPR'],
+      esg:['CSRD / ESRS','EU Taxonomy','ISO 14001'] },
+    manifest:'e-DPA Waste Records', vendors:['Remondis','Veolia','SUEZ','PreZero'] },
+  SG: { name:'Singapore / SEA', cur:'S$', temp:'°C', dist:'km', wt:'kg', co2:'t CO₂e',
+    localityTerm:'Town Council', postTerm:'Postal code',
+    areas:['Tampines','Jurong East','Woodlands','Bedok','Punggol','Toa Payoh','Clementi','Yishun'],
+    city:'Singapore', ll:[1.3521,103.8198],
+    accounting:['Xero','QuickBooks','SAP B1'],
+    regulators:{ general:['NEA','Resource Sustainability Act','Public Waste Collection Scheme'],
+      clinical:['NEA Biohazardous Waste','MOH Guidelines','PDPA'],
+      esg:['SGX Climate Reporting','Green Mark','GRI'] },
+    manifest:'NEA Tracking System', vendors:['SembWaste','800 Super','Veolia SEA','Alba W&H'] }
+};
+
+/* ---------- CLIENT PROFILING BACKEND ----------
+   Each client account carries sector entitlements resolved at render
+   time. verticals:'*' = full platform. Per-vertical value is '*' or a
+   module whitelist. Anything outside the profile renders greyed/locked.
+   Adding a client = adding one object; the UI recomposes itself. */
+const SEED_CLIENTS = {
+  admin: { name:'Matter (Platform Admin)', type:'Platform Owner', plan:'Internal', region:'AU',
+    verticals:'*', status:'active' },
+  cbre: { name:'CBRE', type:'Facilities Management', plan:'Enterprise — FM', region:'US', status:'active',
+    /* Global commercial real estate & facilities — FM workspace only */
+    verticals:{ facilities:'*' } },
+  stirling: { name:'City of Stirling', type:'Local Government', plan:'Council — Ops', region:'AU', status:'active',
+    verticals:{ commercial:'*', public:'*' } },
+  premier: { name:'Premier Waste (Australia)', type:'Multi-Sector Operator — VIC & QLD', plan:'Operator — Multi-Sector', region:'AU', status:'active',
+    /* Profiled from premierwaste.com.au ("Because Waste Matters", est. 2007,
+       Braeside VIC + Brisbane QLD). Services: General Waste · Comingled &
+       Paper/Cardboard Recycling · Organics & Green Waste · Medical Waste ·
+       Commercial & Industrial · Construction & Demolition · Secure Document
+       Destruction · Hard Rubbish & Skip Bins · liquid/hazardous.
+       Clients: hospitals, medical centres, schools, childcare, stadiums,
+       multi-site industrial (Chobani, Honda MPE). Rear lift 120–1100 lt,
+       front lift 1.5–4.5 m³, bulk 6–31 m³.
+       No council public-space contracts → Public Space workspace locked. */
+    geo:{ city:'Melbourne', ll:[-37.8136,144.9631], areas:['Braeside','Dandenong','Clayton','Moorabbin','Port Melbourne','Sunshine','Tullamarine','Brunswick'] },
+    verticals:{
+      commercial:'*',                                    /* multi-site commercial, retail, cafés, stadiums — incl. Exchange brokerage */
+      regulated:'*',                                     /* Commercial & Industrial, C&D waste, skips/bulk 6–31 m³, hazardous & liquid */
+      facilities:['dashboard','map','scheduling','agents','analytics','finance','coc','compliance','sustainability','training'], /* multi-site facilities (Honda, Chobani) + Secure Document Destruction (chain of custody) */
+      clinical:['dashboard','map','scheduling','agents','compliance','coc','training','analytics']  /* Medical Waste — hospitals & medical centres; no HL7/finance modules in plan */
+    },
+    sectors:['Commercial & Multi-Site','Industrial & Manufacturing','Construction & Demolition','Medical & Healthcare','Schools & Childcare','Secure Document Destruction'] }
+};
+
+/* ================================================================
+   ThinkOS BACKEND — full data layer
+   DataAPI is the single gateway the UI talks to. It delegates to a
+   pluggable adapter:
+     · LocalAdapter    — browser-persistent store (default, zero setup)
+     · SupabaseAdapter — PostgREST over fetch; activates the moment a
+       Supabase URL + anon key are saved in the Admin Console.
+   Both adapters expose the identical async contract, so connecting
+   Supabase later is a config change, not a code change.
+   Tables: clients · users · audit_log   (schema.sql downloadable)
+   ================================================================ */
+let CLIENTS={};           /* hydrated cache the sync UI reads */
+let USERS=[];             /* hydrated users cache */
+let INVOICES=[];          /* hydrated invoices cache */
+const DS={ mode:'local', url:null, key:null };
+try{ const c=JSON.parse(localStorage.getItem('thinkos_ds')||'null');
+     if(c&&c.url&&c.key){ DS.mode='supabase'; DS.url=c.url; DS.key=c.key; } }catch(e){}
+
+const LocalAdapter={
+  _load(){ try{ return JSON.parse(localStorage.getItem('thinkos_db_v1')||'null'); }catch(e){ return null; } },
+  _save(db){ try{ localStorage.setItem('thinkos_db_v1',JSON.stringify(db)); }catch(e){} this._mem=db; },
+  _db(){ if(this._mem)return this._mem;
+    let db=this._load();
+    if(!db){ db={ clients:Object.entries(SEED_CLIENTS).map(([id,c])=>Object.assign({id},c)),
+      users:[
+        {id:'u1',client_id:'admin',name:'Len Luxford',email:'len@matter.city',role:'owner'},
+        {id:'u2',client_id:'premier',name:'Ops Manager',email:'ops@premierwaste.com.au',role:'admin'},
+        {id:'u3',client_id:'cbre',name:'FM Lead',email:'fm@cbre.com',role:'admin'}],
+      audit:[], invoices:[] }; this._save(db); }
+    if(!db.invoices)db.invoices=[];
+    this._mem=db; return db; },
+  async listClients(){ return this._db().clients.slice(); },
+  async createClient(c){ const db=this._db();
+    if(db.clients.find(x=>x.id===c.id)) throw new Error('Client id already exists: '+c.id);
+    c.created=new Date().toISOString(); db.clients.push(c); this._save(db); return c; },
+  async updateClient(id,patch){ const db=this._db();
+    const i=db.clients.findIndex(x=>x.id===id); if(i<0)throw new Error('No such client: '+id);
+    db.clients[i]=Object.assign({},db.clients[i],patch); this._save(db); return db.clients[i]; },
+  async deleteClient(id){ const db=this._db();
+    db.clients=db.clients.filter(x=>x.id!==id);
+    db.users=db.users.filter(u=>u.client_id!==id); this._save(db); },
+  async listUsers(){ return this._db().users.slice(); },
+  async createUser(u){ const db=this._db(); u.id='u'+Date.now(); db.users.push(u); this._save(db); return u; },
+  async deleteUser(id){ const db=this._db(); db.users=db.users.filter(u=>u.id!==id); this._save(db); },
+  async logAudit(e){ const db=this._db(); db.audit.unshift(e); db.audit=db.audit.slice(0,500); this._save(db); },
+  async listAudit(){ return this._db().audit.slice(); },
+  async listInvoices(){ return this._db().invoices.slice(); },
+  async createInvoice(inv){ const db=this._db(); inv.created=new Date().toISOString(); db.invoices.unshift(inv); this._save(db); return inv; },
+  async updateInvoice(id,patch){ const db=this._db();
+    const i=db.invoices.findIndex(x=>x.id===id); if(i<0)throw new Error('No such invoice');
+    db.invoices[i]=Object.assign({},db.invoices[i],patch); this._save(db); return db.invoices[i]; }
+};
+
+const SupabaseAdapter={
+  async _req(path,opts={}){
+    const res=await fetch(DS.url.replace(/\/$/,'')+'/rest/v1/'+path,Object.assign({
+      headers:{ apikey:DS.key, Authorization:'Bearer '+DS.key,
+        'Content-Type':'application/json', Prefer:'return=representation' } },opts));
+    if(!res.ok) throw new Error('Supabase '+res.status+': '+await res.text());
+    const t=await res.text(); return t?JSON.parse(t):null; },
+  async listClients(){ return await this._req('clients?select=*&order=created.asc'); },
+  async createClient(c){ c.created=new Date().toISOString();
+    const r=await this._req('clients',{method:'POST',body:JSON.stringify(c)}); return r[0]; },
+  async updateClient(id,patch){
+    const r=await this._req('clients?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(patch)}); return r[0]; },
+  async deleteClient(id){
+    await this._req('users?client_id=eq.'+encodeURIComponent(id),{method:'DELETE'});
+    await this._req('clients?id=eq.'+encodeURIComponent(id),{method:'DELETE'}); },
+  async listUsers(){ return await this._req('users?select=*'); },
+  async createUser(u){ const r=await this._req('users',{method:'POST',body:JSON.stringify(u)}); return r[0]; },
+  async deleteUser(id){ await this._req('users?id=eq.'+encodeURIComponent(id),{method:'DELETE'}); },
+  async logAudit(e){ try{ await this._req('audit_log',{method:'POST',body:JSON.stringify(e)}); }catch(err){} },
+  async listAudit(){ return await this._req('audit_log?select=*&order=ts.desc&limit=200'); },
+  async listInvoices(){ return await this._req('invoices?select=*&order=created.desc&limit=200'); },
+  async createInvoice(inv){ inv.created=new Date().toISOString();
+    const r=await this._req('invoices',{method:'POST',body:JSON.stringify(inv)}); return r[0]; },
+  async updateInvoice(id,patch){
+    const r=await this._req('invoices?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(patch)}); return r[0]; }
+};
+
+const DataAPI={
+  get adapter(){ return DS.mode==='supabase'?SupabaseAdapter:LocalAdapter; },
+  async hydrate(){
+    const rows=await this.adapter.listClients();
+    CLIENTS={}; rows.forEach(c=>{ CLIENTS[c.id]=c; });
+    USERS=await this.adapter.listUsers();
+    INVOICES=await this.adapter.listInvoices();
+    if(!Object.keys(CLIENTS).length){ /* fresh Supabase project: push seeds */
+      for(const [id,c] of Object.entries(SEED_CLIENTS))
+        CLIENTS[id]=await this.adapter.createClient(Object.assign({id},c));
+    } },
+  async createClient(c){ const row=await this.adapter.createClient(c); CLIENTS[row.id]=row; return row; },
+  async updateClient(id,patch){ const row=await this.adapter.updateClient(id,patch); CLIENTS[id]=row; return row; },
+  async deleteClient(id){ await this.adapter.deleteClient(id); delete CLIENTS[id];
+    USERS=USERS.filter(u=>u.client_id!==id); },
+  async createUser(u){ const row=await this.adapter.createUser(u); USERS.push(row); return row; },
+  async deleteUser(id){ await this.adapter.deleteUser(id); USERS=USERS.filter(u=>u.id!==id); },
+  async logAudit(e){ this.adapter.logAudit(e); },
+  async listAudit(){ return await this.adapter.listAudit(); },
+  async createInvoice(inv){ const row=await this.adapter.createInvoice(inv); INVOICES.unshift(row); return row; },
+  async updateInvoice(id,patch){ const row=await this.adapter.updateInvoice(id,patch);
+    const i=INVOICES.findIndex(x=>x.id===id); if(i>=0)INVOICES[i]=row; return row; }
+};
+
+const SCHEMA_SQL=`-- ThinkOS schema (Supabase / Postgres)
+create table if not exists clients (
+  id text primary key,
+  name text not null,
+  type text, plan text, region text default 'AU',
+  status text default 'active',
+  geo jsonb,           -- { city, areas[], ll[lat,lng] }
+  verticals jsonb not null default '{}'::jsonb,  -- '*' (as "\"*\"") or {vertical: '*'|[modules]}
+  sectors jsonb,
+  created timestamptz default now()
+);
+create table if not exists users (
+  id text primary key default gen_random_uuid()::text,
+  client_id text references clients(id) on delete cascade,
+  name text, email text unique, role text default 'member',
+  created timestamptz default now()
+);
+create table if not exists invoices (
+  id text primary key,
+  client_id text references clients(id) on delete cascade,
+  source text,          -- 'email' | 'upload'
+  filename text, vendor text, number text, inv_date text,
+  amount numeric, currency text,
+  status text default 'processing',   -- valid | questionable | invalid | approved | disputed | needs-ocr
+  confidence int, issues jsonb,
+  created timestamptz default now()
+);
+create table if not exists audit_log (
+  id bigint generated always as identity primary key,
+  ts timestamptz default now(),
+  client_id text, vertical text, module text, ok boolean
+);
+-- RLS (enable then scope by auth.jwt() ->> 'client_id' when auth is wired)
+alter table clients enable row level security;
+alter table users enable row level security;
+alter table audit_log enable row level security;
+alter table invoices enable row level security;
+create policy "service full access invoices" on invoices for all using (true);
+create policy "service full access clients" on clients for all using (true);
+create policy "service full access users" on users for all using (true);
+create policy "service full access audit" on audit_log for all using (true);`;
+
+async function initBackend(){ await DataAPI.hydrate(); }
+
+const AUDIT=[];
+const BACKEND={
+  profile(){ return CLIENTS[S.client]; },
+  allowedVertical(v){ const e=this.profile().verticals; return e==='*'||!!e[v]; },
+  allowedModule(v,m){ const e=this.profile().verticals; if(e==='*')return true;
+    const mv=e[v]; if(!mv)return false; return mv==='*'||mv.includes(m); },
+  firstVertical(){ const e=this.profile().verticals;
+    return e==='*'?'facilities':Object.keys(e)[0]; },
+  authorize(v,m){ const ok=this.allowedModule(v,m);
+    const e={t:new Date().toLocaleTimeString(),client:S.client,vertical:v,module:m,ok};
+    AUDIT.push(e);
+    DataAPI.logAudit({ts:new Date().toISOString(),client_id:S.client,vertical:v,module:m,ok});
+    return e.ok; }
+};
+
+/* ---------- VERTICAL PACKS ----------
+   modules: sidebar order. variant flags tune shared components. */
+const VERTICALS = {
+  facilities: { name:'Facilities Management', icon:'building-2', unitTerm:'Bin', siteTerm:'Floor', mapMode:'floorplan',
+    persona:'internal', agents:['efficiency','engagement','compliance'],
+    modules:['dashboard','map','scheduling','agents','engagement','analytics','finance','coc','compliance','sustainability','training'] },
+  commercial: { name:'Commercial Collections', icon:'truck', unitTerm:'Bin', siteTerm:'Zone', mapMode:'geo',
+    persona:'operator', agents:['route','billing','engagement'],
+    modules:['dashboard','brokerage','map','routes','scheduling','agents','engagement','weather','finance','compliance','sustainability','analytics'] },
+  public: { name:'Public Space', icon:'trees', unitTerm:'Bin', siteTerm:'Precinct', mapMode:'geo',
+    persona:'public', agents:['route','public','weather','ar'],
+    modules:['dashboard','map','routes','scheduling','agents','engagement','weather','ar','sustainability','training','analytics'] },
+  clinical: { name:'Clinical & Healthcare', icon:'hospital', unitTerm:'Container', siteTerm:'Ward / Zone', mapMode:'zones',
+    persona:'clinical', agents:['compliance','risk','efficiency'],
+    modules:['dashboard','map','routes','scheduling','agents','compliance','coc','finance','sustainability','ar','training','analytics'] },
+  regulated: { name:'Regulated Industrial', icon:'hard-hat', unitTerm:'Roll-off', siteTerm:'Site', mapMode:'geo',
+    persona:'regulator', agents:['route','compliance','weather','ar'],
+    modules:['dashboard','brokerage','aivision','map','routes','scheduling','agents','engagement','weather','ar','compliance','coc','finance','sustainability','analytics'] }
+};
+
+const MODULE_META = {
+  dashboard:{l:'Dashboard',i:'layout-dashboard'}, brokerage:{l:'Exchange',i:'zap'}, aivision:{l:'AIVision',i:'camera'}, map:{l:'Map View',i:'map'}, routes:{l:'Routes & Fleet',i:'route'},
+  scheduling:{l:'Scheduling',i:'calendar-days'}, agents:{l:'AI Agents',i:'bot'}, engagement:{l:'Engagement',i:'trophy'},
+  weather:{l:'Weather',i:'cloud-sun'}, ar:{l:'AR Mode',i:'glasses'}, compliance:{l:'Compliance',i:'shield-check'},
+  coc:{l:'Chain of Custody',i:'link-2'}, finance:{l:'Finance & AIRS',i:'wallet'},
+  sustainability:{l:'Sustainability',i:'leaf'}, training:{l:'Training',i:'graduation-cap'}, analytics:{l:'Analytics',i:'chart-column'}
+};
+
+/* waste streams per persona (colour semantics stay region-neutral;
+   labels can be re-mapped per region pack if a jurisdiction differs) */
+const STREAMS = {
+  internal:[['General','#8a8f92'],['Recycling','#43B02A'],['Organics','#205C40'],['Paper (Secure)','#b97c10']],
+  operator:[['General','#8a8f92'],['Recycling','#43B02A'],['Organics','#205C40']],
+  public:[['General','#8a8f92'],['Recycling','#43B02A'],['Organics','#205C40']],
+  clinical:[['General','#43B02A'],['Clinical / Infectious','#d9a441'],['Cytotoxic / Pharma','#9a5a8a'],['Anatomical','#c96f4a'],['Sharps','#c0453a']],
+  regulator:[['MSW','#8a8f92'],['C&D Debris','#b97c10'],['Recyclables','#43B02A'],['Hazardous','#c0453a'],['E-Waste','#5a6f96']]
+};
+
+/* ---------- state + seeded data ---------- */
+let S = { client:'admin', vertical:'facilities', region:'AU', view:'dashboard', tab:0, sel:null };
+/* effective region = region pack + optional client geo override
+   (a client's profile can localise city/areas without a new region pack) */
+function REG(){ const R=REGIONS[S.region], g=CLIENTS[S.client].geo;
+  return g? Object.assign({},R,{city:g.city,areas:g.areas,ll:g.ll||R.ll}) : R; }
+function rng(seed){ let s=seed; return ()=>{ s=(s*9301+49297)%233280; return s/233280; }; }
+function seedFor(){ return [...(S.vertical+S.region)].reduce((a,c)=>a+c.charCodeAt(0),7); }
+
+function genBins(){
+  const R=REG(), V=VERTICALS[S.vertical], r=rng(seedFor());
+  const streams=STREAMS[V.persona];
+  const n=14;
+  return Array.from({length:n},(_,i)=>{
+    const fill=Math.round(r()*100);
+    const st=streams[Math.floor(r()*streams.length)];
+    const area = V.mapMode==='floorplan' ? 'Level '+(1+Math.floor(r()*5))
+      : V.mapMode==='zones' ? ['ED Bay','Theatre','Ward '+(2+Math.floor(r()*4))+String.fromCharCode(65+Math.floor(r()*3)),'ICU','Pathology','Pharmacy'][Math.floor(r()*6)]
+      : R.areas[Math.floor(r()*R.areas.length)];
+    const ll=REG().ll||[0,0];
+    return { id:'TL-'+(1000+i), fill, stream:st[0], color:st[1], area,
+      x:8+r()*84, y:10+r()*78,
+      lat:ll[0]+(r()-.5)*0.11, lng:ll[1]+(r()-.5)*0.16,
+      status: fill>85?'Critical':fill>65?'Warning':'Good',
+      size: r()>.5?'240 lt':'120 lt' };
+  });
+}
+function fmtMoney(v){ return REG().cur+v.toLocaleString(); }
+function statusPill(s){ return `<span class="pill ${s==='Critical'?'p-crit':s==='Warning'?'p-warn':'p-ok'}">${s}</span>`; }
+
+/* ---------- shell ---------- */
+async function boot(){
+  await initBackend();
+  refreshClientSelect();
+  const sr=document.getElementById('selRegion');
+  sr.innerHTML=Object.entries(REGIONS).map(([k,v])=>`<option value="${k}">${v.name}</option>`).join('');
+  render();
+}
+function refreshClientSelect(){
+  const sc=document.getElementById('selClient');
+  sc.innerHTML=Object.entries(CLIENTS).map(([k,c])=>`<option value="${k}">${c.name}${c.status==='suspended'?' (suspended)':''}</option>`).join('');
+}
+function isPlatform(){ return CLIENTS[S.client]&&CLIENTS[S.client].verticals==='*'; }
+function setClient(c){
+  if(CLIENTS[c].status==='suspended'&&CLIENTS[c].verticals!=='*'){
+    alert(CLIENTS[c].name+' is suspended. Reactivate the account in the Admin Console.');
+    document.getElementById('selClient').value=S.client; return;
+  }
+  S.client=c; S.region=CLIENTS[c].region;
+  S.vertical=BACKEND.firstVertical(); S.view='dashboard'; S.tab=0; S.sel=null;
+  AUDIT.push({t:new Date().toLocaleTimeString(),client:c,vertical:'-',module:'login',ok:true});
+  brokerReset(); render();
+}
+function setVertical(v){
+  if(!BACKEND.allowedVertical(v)){
+    AUDIT.push({t:new Date().toLocaleTimeString(),client:S.client,vertical:v,module:'-',ok:false});
+    alert(`${CLIENTS[S.client].name} is not licensed for the ${VERTICALS[v].name} workspace.\n\nContact Matter to add this sector to the ${CLIENTS[S.client].plan} plan.`);
+    render(); return;
+  }
+  S.vertical=v; S.view='dashboard'; S.tab=0; S.sel=null; brokerReset(); render();
+}
+function setRegion(v){ S.region=v; S.sel=null; brokerReset(); render(); }
+function brokerReset(){ if(BROKER.timer){clearInterval(BROKER.timer);BROKER.timer=null;} BROKER.jobs=[]; avReset(); }
+function setView(v){
+  if(v==='admin'){ if(isPlatform()){ S.view='admin'; S.tab=0; S.sel=null; render(); }
+    else alert('Admin Console is restricted to the platform owner.'); return; }
+  if(!BACKEND.authorize(S.vertical,v)){
+    alert(`"${MODULE_META[v].l}" is not included in ${CLIENTS[S.client].name}'s ${CLIENTS[S.client].plan} plan for this workspace.\n\nIt appears greyed out — contact Matter to enable it.`);
+    return;
+  }
+  S.view=v; S.tab=0; S.sel=null; render();
+}
+function setTab(i){ S.tab=i; render(); }
+
+function render(){
+  const V=VERTICALS[S.vertical], R=REG(), C=CLIENTS[S.client];
+  /* workspace selector: all verticals visible, non-entitled greyed out */
+  const sv=document.getElementById('selVertical');
+  sv.innerHTML=Object.entries(VERTICALS).map(([k,v])=>{
+    const ok=BACKEND.allowedVertical(k);
+    return `<option value="${k}" ${ok?'':'disabled'}>${v.name}${ok?'':' — locked'}</option>`;
+  }).join('');
+  sv.value=S.vertical;
+  document.getElementById('selClient').value=S.client;
+  document.getElementById('selRegion').value=S.region;
+  const enabled=V.modules.filter(m=>BACKEND.allowedModule(S.vertical,m));
+  document.getElementById('sidebar').innerHTML =
+    `<div class="ws-tag">
+     <div class="ws-head"><span class="ws-ic">${ic(V.icon)}</span><div><span class="ws-lbl">Workspace</span><b>${V.name}</b></div></div>
+     <div class="ws-row"><span>Client</span><b>${C.name}</b></div>
+     <div class="ws-row"><span>Region</span><b>${R.city}, ${R.name}</b></div>
+     <div class="ws-row"><span>Plan</span><span class="client-badge">${C.plan}</span></div>
+     <div class="ws-row" style="margin-top:.45rem"><span>Modules enabled</span><b style="color:var(--sage-dark)">${enabled.length} of ${V.modules.length}</b></div>
+     <div class="ws-bar"><i style="width:${Math.round(100*enabled.length/V.modules.length)}%"></i></div>
+     </div>` +
+    V.modules.map(m=>{
+      const ok=BACKEND.allowedModule(S.vertical,m);
+      return `<div class="nav-item ${S.view===m?'active':''} ${ok?'':'locked'}" onclick="setView('${m}')">
+        <span class="ic">${ic(ok?MODULE_META[m].i:'lock')}</span>${MODULE_META[m].l}</div>`;
+    }).join('') +
+    (isPlatform()?`<div style="margin:.8rem .8rem .3rem;font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted)">Platform</div>
+     <div class="nav-item ${S.view==='admin'?'active':''}" onclick="setView('admin')"><span class="ic">${ic('settings')}</span>Admin Console</div>`:'');
+  document.getElementById('main').innerHTML =
+    (RENDER[S.view]||RENDER.dashboard)() +
+    `<footer>ThinkOS · ${C.name} (${C.type}) · ${V.name} workspace · ${R.name} region pack · entitlement checks: ${AUDIT.length} logged · powered by Matter · Matter design language</footer>`;
+  refreshIcons();
+  /* mount Google Map after DOM update for geo map views */
+  if(S.view==='map'&&VERTICALS[S.vertical].mapMode==='geo'&&GMAP.key&&window.google&&window.google.maps) initGmap();
+}
+
+/* ---------- Google Maps engine (geo map modes) ----------
+   Facilities floorplans & clinical zones stay on the native SVG
+   projection; commercial / public / regulated geo views render on
+   Google Maps. Paste a Maps JavaScript API key once (kept in browser
+   storage); until then a keyless Google embed of the city is shown. */
+const GMAP={ key:null, loading:false };
+try{ GMAP.key=localStorage.getItem('thinkos_gmaps_key')||null; }catch(e){}
+const GSTYLE=[ /* Matter-toned map skin */
+  {elementType:'geometry',stylers:[{color:'#eff3ef'}]},
+  {elementType:'labels.text.fill',stylers:[{color:'#53565A'}]},
+  {elementType:'labels.text.stroke',stylers:[{color:'#f6f8f6'}]},
+  {featureType:'water',elementType:'geometry',stylers:[{color:'#cfe6cf'}]},
+  {featureType:'road',elementType:'geometry',stylers:[{color:'#ffffff'}]},
+  {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#dff0d8'}]},
+  {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#F19E21'}]},
+  {featureType:'poi',elementType:'geometry',stylers:[{color:'#e7ebe7'}]},
+  {featureType:'poi.park',elementType:'geometry',stylers:[{color:'#cfe6cf'}]},
+  {featureType:'transit',stylers:[{visibility:'off'}]} ];
+function saveGKey(){
+  const el=document.getElementById('gkey'); const v=el&&el.value.trim(); if(!v)return;
+  GMAP.key=v; try{localStorage.setItem('thinkos_gmaps_key',v);}catch(e){}
+  loadGmaps();
+}
+function clearGKey(){ GMAP.key=null; try{localStorage.removeItem('thinkos_gmaps_key');}catch(e){} render(); }
+function loadGmaps(){
+  if(window.google&&window.google.maps){ render(); return; }
+  if(GMAP.loading)return; GMAP.loading=true;
+  const s=document.createElement('script');
+  s.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(GMAP.key)+'&callback=gmapsReady';
+  s.onerror=()=>{ GMAP.loading=false; GMAP.key=null;
+    alert('Google Maps failed to load — check the API key and referrer settings.'); render(); };
+  document.head.appendChild(s);
+}
+function gmapsReady(){ GMAP.loading=false; render(); }
+window.gmapsReady=gmapsReady;
+function initGmap(){
+  const el=document.getElementById('gmap'); if(!el||!window.google||!window.google.maps)return;
+  const R=REG(), bins=genBins();
+  const focus=S.sel!==null?bins[S.sel]:null;
+  const map=new google.maps.Map(el,{
+    center: focus?{lat:focus.lat,lng:focus.lng}:{lat:R.ll[0],lng:R.ll[1]},
+    zoom: focus?14:12, styles:GSTYLE,
+    mapTypeControl:false, streetViewControl:false, fullscreenControl:false });
+  bins.forEach((b,i)=>{
+    const col=b.fill>85?'#E0604F':b.fill>65?'#F19E21':'#43B02A';
+    const mk=new google.maps.Marker({ position:{lat:b.lat,lng:b.lng}, map,
+      title:b.id+' — '+b.area+' — '+b.fill+'%',
+      icon:{ path:google.maps.SymbolPath.CIRCLE, scale:S.sel===i?12:9,
+        fillColor:col, fillOpacity:1, strokeColor:'#ffffff', strokeWeight:2.5 } });
+    mk.addListener('click',()=>{ S.sel=i; render(); });
+  });
+}
+
+/* ---------- AIVision engine — camera AI over ThinkLid sites ----------
+   Simulated RTSP feeds: each frame is procedurally drawn; the detection
+   model output (overfill / contamination / manifest / PPE) refreshes on
+   a live tick. Swappable for real camera streams via the same schema. */
+const AIV={ timer:null, frame:0, log:[] };
+const AV_CLASSES=[
+  ['OVERFILL','#e05a4a'],['CONTAM: TIRES','#e08a3a'],['CONTAM: E-WASTE','#e08a3a'],
+  ['HAZ LIQUID','#c94a8a'],['MANIFEST OK','#43B02A'],['CLEAN C&D','#43B02A'],
+  ['PPE: OK','#43B02A'],['LID OPEN','#e0b23a']];
+function avCams(){
+  const R=REG(), r=rng(seedFor()+40+Math.floor(AIV.frame/4));
+  return R.areas.slice(0,4).map((a,i)=>{
+    const n=1+Math.floor(r()*2);
+    const dets=Array.from({length:n},()=>{ const c=AV_CLASSES[Math.floor(r()*AV_CLASSES.length)];
+      return { l:c[0], col:c[1], x:8+r()*55, y:14+r()*46, w:16+r()*22, h:12+r()*18, conf:Math.round(82+r()*17) }; });
+    return { id:'CAM-'+(201+i), site:a, unit:(r()>.5?'31m³':'23m³')+' roll-off', dets,
+      status: dets.some(d=>d.col==='#e05a4a')?'Alert':dets.some(d=>d.col==='#e08a3a')?'Review':'Clear' };
+  });
+}
+function avScene(seed,cleared){
+  const r=rng(seed); let blobs='';
+  const n=cleared?3:14;
+  for(let i=0;i<n;i++){
+    const cols=cleared?['#3a362f','#423d34']:['#6b5d43','#7a6a4a','#586b4a','#8a7550','#4a5d6b'];
+    const c=cols[Math.floor(r()*cols.length)];
+    blobs+='<ellipse cx="'+(25+r()*110)+'" cy="'+(28+r()*40)+'" rx="'+(4+r()*11)+'" ry="'+(3+r()*7)+'" fill="'+c+'" opacity=".9"/>';
+  }
+  return '<svg viewBox="0 0 160 90" preserveAspectRatio="xMidYMid slice">'+
+    '<rect width="160" height="90" fill="#26221d"/>'+
+    '<rect x="14" y="18" width="132" height="58" rx="4" fill="#332e27" stroke="#57503f" stroke-width="2"/>'+
+    '<line x1="14" y1="47" x2="146" y2="47" stroke="#443e33" stroke-width="1"/>'+
+    blobs+
+    '<rect x="14" y="18" width="132" height="58" rx="4" fill="none" stroke="#57503f" stroke-width="2"/></svg>';
+}
+function avStart(){ if(AIV.timer)clearInterval(AIV.timer);
+  AIV.timer=setInterval(()=>{ AIV.frame++;
+    if(AIV.frame%2===0){ const cams=avCams(); const c=cams[Math.floor(Math.random()*cams.length)];
+      const d=c.dets[0];
+      AIV.log.unshift({t:new Date().toLocaleTimeString(),cam:c.id,site:c.site,l:d.l,conf:d.conf});
+      AIV.log=AIV.log.slice(0,8); }
+    if(S.view==='aivision')render(); },2500); }
+function avReset(){ if(AIV.timer){clearInterval(AIV.timer);AIV.timer=null;} AIV.log=[]; AIV.frame=0; }
+function avWipe(v){ const el=document.getElementById('wipeAfter'); if(el)el.style.width=v+'%';
+  const lb=document.getElementById('wipePct'); if(lb)lb.textContent=v+'%'; }
+
+/* ---------- ThinkOS Exchange — Uber-style brokerage engine ----------
+   Requests are generated by sensors or customers, priced dynamically
+   (base rate × demand surge), broadcast to nearby licensed operators,
+   and matched on accept. Accepted jobs advance through a live
+   lifecycle: Matched → En route → On site → Lifted (RFID) → Paid. */
+const BROKER={ jobs:[], done:0, earned:0, rating:4.9, accepts:0, offers:0, seq:2280, timer:null };
+const JOB_STAGES=['Matched','En route','On site','Lifted (RFID)','Paid'];
+function surgeNow(){ const h=new Date().getHours();
+  const demand=BROKER.jobs.filter(j=>j.status==='open').length;
+  let s=1; if(h>=11&&h<=14)s+=.3; if(demand>4)s+=.2; if(demand>6)s+=.3;
+  return Math.round(s*10)/10; }
+function newJob(){
+  const R=REG(), V=VERTICALS[S.vertical], r=Math.random;
+  const streams=STREAMS[V.persona];
+  const st=streams[Math.floor(r()*streams.length)];
+  const org=['Restaurant','Retail precinct','Office building','Hotel','Warehouse','Construction site','Clinic','Market'][Math.floor(r()*8)];
+  const base= S.vertical==='regulated'? 180+r()*220 : 38+r()*55;
+  const surge=surgeNow();
+  return { id:'XJ-'+(++BROKER.seq), area:R.areas[Math.floor(r()*R.areas.length)], org,
+    unit: S.vertical==='regulated'? (r()>.5?'20yd roll-off':'12yd roll-off') : (r()>.5?'240 lt':'120 lt'),
+    stream:st[0], km:(r()*9+1).toFixed(1),
+    pay:Math.round(base*surge), surge, window:['ASAP','Today 2–4pm','Today 4–6pm','Tomorrow AM'][Math.floor(r()*4)],
+    status:'open', stage:0, trigger: r()>.5?'Sensor 85%+':'Customer request' };
+}
+function brokerSeed(){
+  BROKER.jobs=Array.from({length:5},newJob); BROKER.offers+=5;
+  if(BROKER.timer)clearInterval(BROKER.timer);
+  BROKER.timer=setInterval(brokerTick,3500);
+}
+function brokerTick(){
+  BROKER.jobs.forEach(j=>{
+    if(j.status==='active'){ j.stage++;
+      if(j.stage>=JOB_STAGES.length){ j.status='done'; BROKER.done++; BROKER.earned+=j.pay; }
+    }});
+  BROKER.jobs=BROKER.jobs.filter(j=>j.status!=='done'||Math.random()>.5);
+  if(BROKER.jobs.filter(j=>j.status==='open').length<6&&Math.random()>.45){ BROKER.jobs.push(newJob()); BROKER.offers++; }
+  if(S.view==='brokerage')render();
+}
+function acceptJob(id){ const j=BROKER.jobs.find(x=>x.id===id); if(!j)return;
+  j.status='active'; j.stage=0; BROKER.accepts++; render(); }
+function declineJob(id){ BROKER.jobs=BROKER.jobs.filter(x=>x.id!==id); render(); }
+
+
+
+/* ---------- AIRS Invoice Ingestion ----------
+   Two inbound lanes, one pipeline:
+   · Email lane — every client gets invoices+<id>@in.thinkos.app. In
+     production an inbound-mail webhook (SES / SendGrid / Postmark →
+     Supabase Edge Function) posts attachments here; the demo inbox
+     simulates arrivals with one click.
+   · Upload lane — drag & drop (or browse) real PDFs; text is extracted
+     in-browser via pdf.js and field-parsed. Scanned PDFs with no text
+     layer are routed to the OCR queue.
+   Both lanes feed runAirs(): the 10-step validation pipeline that
+   scores the invoice against RFID lift + sensor data and lands it in
+   the reconciliation queue (persisted via DataAPI → invoices table). */
+const INGEST={ runs:[], timer:null, pdfjs:null, tess:null, utif:null, ocring:[], mail:[] };
+const AIRS_STEPS=['Format & integrity check','Duplicate detection','Vendor identity match','Rate-card comparison',
+  'RFID lift-event match','Weight variance vs sensors','Site & date correlation','Tax / GST validation',
+  'GL code assignment','Verdict & confidence score'];
+
+function parseInvoiceText(text,filename){
+  const t=text.replace(/\s+/g,' ');
+  const num=(t.match(/(?:invoice|inv|tax invoice|bill)[\s#:no.]{0,6}([A-Z0-9][A-Z0-9\/-]{3,15})/i)||[])[1];
+  const amounts=[...t.matchAll(/(?:\$|£|€|A\$|S\$|AUD|USD|GBP|EUR)\s?([\d,]+\.?\d{0,2})/gi)]
+    .map(m=>parseFloat(m[1].replace(/,/g,''))).filter(n=>n>0&&n<1e7);
+  const amount=amounts.length?Math.max(...amounts):null;
+  const date=(t.match(/\b(\d{1,2}[\/\-.]\d{1,2}[\/\-.]\d{2,4}|\d{4}-\d{2}-\d{2}|\d{1,2} (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{4})\b/i)||[])[1];
+  const R=REG();
+  let vendor=R.vendors.find(v=>t.toLowerCase().includes(v.toLowerCase().split(' ')[0].toLowerCase()));
+  if(!vendor){ const m=t.match(/^([A-Z][A-Za-z&' ]{3,30})(?: Pty| Ltd| PLC| Inc| LLC|,)/);
+    vendor=m?m[1].trim():(filename||'Unknown vendor').replace(/\.pdf$/i,'').slice(0,28); }
+  return { vendor, number:num||('AUTO-'+Math.floor(Math.random()*9e4+1e4)), inv_date:date||new Date().toLocaleDateString(), amount, currency:REG().cur };
+}
+
+function runAirs(meta){
+  const run={ id:'INV-'+Date.now().toString(36).toUpperCase()+Math.floor(Math.random()*90+10),
+    meta, step:0, flags:[], done:false, verdict:null, conf:null };
+  /* deterministic-ish risk seeding */
+  if(!meta.amount){ run.flags.push([0,'No monetary amount extracted']); }
+  if(Math.random()<.22) run.flags.push([4,'No matching RFID lift event in window']);
+  if(Math.random()<.15) run.flags.push([5,'Weight variance '+(8+Math.floor(Math.random()*14))+'% above sensor estimate']);
+  if(meta.amount&&meta.amount>4000&&Math.random()<.5) run.flags.push([3,'Line rate exceeds contracted rate card']);
+  INGEST.runs.unshift(run); INGEST.runs=INGEST.runs.slice(0,4);
+  if(!INGEST.timer) INGEST.timer=setInterval(ingestTick,650);
+  return run;
+}
+async function ingestTick(){
+  let busy=false;
+  for(const run of INGEST.runs){
+    if(run.done)continue; busy=true;
+    run.step++;
+    if(run.step>=AIRS_STEPS.length){
+      run.done=true;
+      const flagged=run.flags.length;
+      run.verdict = run.meta.noText?'needs-ocr' : flagged===0?'valid' : flagged===1?'questionable':'invalid';
+      run.conf = run.meta.noText?null : Math.max(52,Math.round(97-flagged*16-Math.random()*5));
+      await DataAPI.createInvoice({ id:run.id, client_id:S.client, source:run.meta.source,
+        filename:run.meta.filename||null, vendor:run.meta.vendor, number:run.meta.number,
+        inv_date:run.meta.inv_date, amount:run.meta.amount, currency:run.meta.currency,
+        status:run.verdict, confidence:run.conf,
+        issues:run.flags.map(f=>AIRS_STEPS[f[0]]+': '+f[1]) });
+    }
+  }
+  if(!busy&&INGEST.runs.every(r=>r.done)){ clearInterval(INGEST.timer); INGEST.timer=null; }
+  if(S.view==='finance')render();
+}
+
+/* upload lane */
+function tosBrowse(){ const el=document.getElementById('fpick'); if(el)el.click(); }
+function tosDrop(ev){ ev.preventDefault();
+  const dz=document.getElementById('dz'); if(dz)dz.classList.remove('over');
+  handleFiles(ev.dataTransfer?ev.dataTransfer.files:[]); }
+function tosPicked(ev){ handleFiles(ev.target.files); }
+async function handleFiles(files){
+  for(const f of files){
+    const ext=(f.name.split('.').pop()||'').toLowerCase();
+    const isPdf= ext==='pdf'||f.type==='application/pdf';
+    const isTiff= ext==='tif'||ext==='tiff'||f.type==='image/tiff';
+    const isImg= isTiff||['jpg','jpeg','png'].includes(ext)||/^image\/(jpeg|png)$/.test(f.type);
+    if(!isPdf&&!isImg){ alert(f.name+' skipped — PDF, JPEG, TIFF or PNG only.'); continue; }
+    if(isPdf){
+      let meta={ source:'upload', filename:f.name, vendor:f.name.replace(/\.pdf$/i,''),
+        number:'—', inv_date:new Date().toLocaleDateString(), amount:null, currency:REG().cur };
+      try{
+        const lib=await loadPdfjs();
+        const buf=await f.arrayBuffer();
+        const doc=await lib.getDocument({data:buf}).promise;
+        let text='';
+        for(let p=1;p<=Math.min(doc.numPages,4);p++){
+          const pg=await doc.getPage(p); const tc=await pg.getTextContent();
+          text+=tc.items.map(i=>i.str).join(' ')+' ';
+        }
+        if(text.trim().length<30){ /* scanned PDF: OCR page 1 render */ 
+          try{ const dataUrl=await pdfPageToDataURL(doc);
+               const t=await ocrText(dataUrl);
+               if(t.trim().length<30) meta.noText=true; else Object.assign(meta,parseInvoiceText(t,f.name));
+          }catch(e){ meta.noText=true; } }
+        else Object.assign(meta,parseInvoiceText(text,f.name));
+      }catch(e){ meta.noText=true; }
+      runAirs(meta);
+    } else {
+      ocrImageFile(f,isTiff); /* async — progress shown in Ingest tab */
+    }
+  }
+  render();
+}
+async function ocrImageFile(f,isTiff){
+  const tag={name:f.name}; INGEST.ocring.push(tag); if(S.view==='finance')render();
+  let meta={ source:'upload', filename:f.name, vendor:f.name.replace(/\.(jpe?g|tiff?|png)$/i,''),
+    number:'—', inv_date:new Date().toLocaleDateString(), amount:null, currency:REG().cur };
+  try{
+    const dataUrl= isTiff? await tiffToDataURL(f) : await fileToDataURL(f);
+    const text=await ocrText(dataUrl);
+    if(text.trim().length<30) meta.noText=true;
+    else Object.assign(meta,parseInvoiceText(text,f.name));
+  }catch(e){ meta.noText=true; }
+  INGEST.ocring=INGEST.ocring.filter(x=>x!==tag);
+  runAirs(meta); if(S.view==='finance')render();
+}
+async function ocrText(dataUrl){
+  const T=await loadTesseract();
+  const res=await T.recognize(dataUrl,'eng');
+  return (res&&res.data&&res.data.text)||'';
+}
+function fileToDataURL(f){ return new Promise((res,rej)=>{
+  const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(f); }); }
+async function tiffToDataURL(f){
+  const U=await loadUtif();
+  const buf=await f.arrayBuffer();
+  const ifds=U.decode(buf); U.decodeImage(buf,ifds[0]);
+  const rgba=U.toRGBA8(ifds[0]);
+  const cv=document.createElement('canvas'); cv.width=ifds[0].width; cv.height=ifds[0].height;
+  const ctx=cv.getContext('2d'); const img=ctx.createImageData(cv.width,cv.height);
+  img.data.set(rgba); ctx.putImageData(img,0,0);
+  return cv.toDataURL('image/png');
+}
+async function pdfPageToDataURL(doc){
+  const pg=await doc.getPage(1);
+  const vp=pg.getViewport({scale:2});
+  const cv=document.createElement('canvas'); cv.width=vp.width; cv.height=vp.height;
+  await pg.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;
+  return cv.toDataURL('image/png');
+}
+function loadTesseract(){
+  if(INGEST.tess)return Promise.resolve(INGEST.tess);
+  return new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.0/tesseract.min.js';
+    s.onload=()=>{ INGEST.tess=window.Tesseract; res(INGEST.tess); };
+    s.onerror=()=>rej(new Error('tesseract.js failed to load'));
+    document.head.appendChild(s); });
+}
+function loadUtif(){
+  if(INGEST.utif)return Promise.resolve(INGEST.utif);
+  return new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/utif/3.1.0/UTIF.min.js';
+    s.onload=()=>{ INGEST.utif=window.UTIF; res(INGEST.utif); };
+    s.onerror=()=>rej(new Error('UTIF failed to load'));
+    document.head.appendChild(s); });
+}
+function loadPdfjs(){
+  if(INGEST.pdfjs)return Promise.resolve(INGEST.pdfjs);
+  return new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    s.onload=()=>{ const lib=window.pdfjsLib;
+      lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      INGEST.pdfjs=lib; res(lib); };
+    s.onerror=()=>rej(new Error('pdf.js failed to load'));
+    document.head.appendChild(s);
+  });
+}
+
+/* email lane (simulated inbound webhook) */
+function inboxAddress(){ return 'invoices+'+S.client+'@in.thinkos.app'; }
+function simulateEmail(){
+  const R=REG(), r=Math.random;
+  const vendor=R.vendors[Math.floor(r()*R.vendors.length)];
+  const amount=Math.round((r()*3800+240)*100)/100;
+  const num=['INV','TX','WM'][Math.floor(r()*3)]+'-'+Math.floor(r()*9e4+1e4);
+  const mail={ t:new Date().toLocaleTimeString(), from:vendor.toLowerCase().replace(/[^a-z]+/g,'')+'@billing.com',
+    subject:'Tax Invoice '+num+' — '+R.city+' services', att:num+'.pdf' };
+  INGEST.mail.unshift(mail); INGEST.mail=INGEST.mail.slice(0,5);
+  runAirs({ source:'email', filename:mail.att, vendor, number:num,
+    inv_date:new Date().toLocaleDateString(), amount, currency:R.cur });
+  render();
+}
+async function invSetStatus(id,status){ await DataAPI.updateInvoice(id,{status}); render(); }
+
+/* ---------- Admin Console actions ---------- */
+let ADMIN={ edit:null };
+function _v(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
+function adminCollectVerticals(){
+  const out={};
+  Object.keys(VERTICALS).forEach(v=>{
+    const on=document.getElementById('vx_'+v); if(!on||!on.checked)return;
+    const mods=VERTICALS[v].modules.filter(m=>{ const cb=document.getElementById('vx_'+v+'_'+m); return cb&&cb.checked; });
+    out[v]= mods.length===VERTICALS[v].modules.length ? '*' : mods;
+  });
+  return out;
+}
+async function adminSaveClient(){
+  try{
+    const id=ADMIN.edit||_v('f_id').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    if(!id){ alert('Client ID / name required.'); return; }
+    const verticals=adminCollectVerticals();
+    if(!Object.keys(verticals).length){ alert('Enable at least one workspace.'); return; }
+    const areas=_v('f_areas')?_v('f_areas').split(',').map(s=>s.trim()).filter(Boolean):null;
+    const llraw=_v('f_ll'); let ll=null;
+    if(llraw){ const p=llraw.split(',').map(Number); if(p.length===2&&p.every(n=>!isNaN(n)))ll=p; }
+    const geo=(_v('f_city')||areas||ll)?{city:_v('f_city')||REGIONS[_v('f_region')].city,areas:areas||REGIONS[_v('f_region')].areas,ll:ll||undefined}:null;
+    const profile={ id, name:_v('f_name')||id, type:_v('f_type')||'Client', plan:_v('f_plan')||'Standard',
+      region:_v('f_region')||'AU', status:'active', verticals,
+      sectors:_v('f_sectors')?_v('f_sectors').split(',').map(s=>s.trim()).filter(Boolean):null };
+    if(geo)profile.geo=geo;
+    if(ADMIN.edit){ await DataAPI.updateClient(id,profile); }
+    else{ await DataAPI.createClient(profile); }
+    ADMIN.edit=null; refreshClientSelect(); S.tab=0; render();
+  }catch(e){ alert('Save failed: '+e.message); }
+}
+function adminEditClient(id){ ADMIN.edit=id; S.tab=1; render(); }
+function adminNewClient(){ ADMIN.edit=null; S.tab=1; render(); }
+async function adminToggleSuspend(id){
+  const c=CLIENTS[id];
+  await DataAPI.updateClient(id,{status:c.status==='suspended'?'active':'suspended'});
+  refreshClientSelect(); render();
+}
+async function adminDeleteClient(id){
+  if(CLIENTS[id].verticals==='*'){ alert('The platform owner account cannot be deleted.'); return; }
+  if(!confirm('Delete client "'+CLIENTS[id].name+'" and its users? This cannot be undone.'))return;
+  await DataAPI.deleteClient(id);
+  if(S.client===id)S.client='admin';
+  refreshClientSelect(); render();
+}
+async function adminAddUser(){
+  const cid=_v('u_client'), name=_v('u_name'), email=_v('u_email');
+  if(!cid||!name||!email){ alert('Client, name and email are required.'); return; }
+  await DataAPI.createUser({client_id:cid,name,email,role:_v('u_role')||'member'});
+  render();
+}
+async function adminDelUser(id){ await DataAPI.deleteUser(id); render(); }
+async function dsConnect(){
+  const url=_v('ds_url'), key=_v('ds_key');
+  if(!url||!key){ alert('Supabase URL and anon key required.'); return; }
+  const prev={mode:DS.mode,url:DS.url,key:DS.key};
+  DS.mode='supabase'; DS.url=url; DS.key=key;
+  try{
+    await DataAPI.hydrate();
+    try{ localStorage.setItem('thinkos_ds',JSON.stringify({url,key})); }catch(e){}
+    refreshClientSelect();
+    alert('Connected to Supabase — '+Object.keys(CLIENTS).length+' clients loaded.'); render();
+  }catch(e){
+    DS.mode=prev.mode; DS.url=prev.url; DS.key=prev.key;
+    alert('Supabase connection failed:\n'+e.message+'\n\nCheck the URL, anon key, and that schema.sql has been run.');
+  }
+}
+async function dsUseLocal(){
+  DS.mode='local'; DS.url=null; DS.key=null;
+  try{ localStorage.removeItem('thinkos_ds'); }catch(e){}
+  await DataAPI.hydrate(); refreshClientSelect(); render();
+}
+async function dsPushLocal(){
+  if(DS.mode!=='supabase'){ alert('Connect Supabase first.'); return; }
+  const local=await LocalAdapter.listClients(); let n=0;
+  for(const c of local){ try{ await SupabaseAdapter.createClient(Object.assign({},c)); n++; }catch(e){} }
+  await DataAPI.hydrate(); refreshClientSelect(); render();
+  alert(n+' local clients pushed to Supabase.');
+}
+function downloadSchema(){
+  const b=new Blob([SCHEMA_SQL],{type:'text/plain'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='thinkos_schema.sql'; a.click();
+}
+
+/* ---------- module renderers (shared across all verticals) ---------- */
+const RENDER={
+
+admin(){
+  const tabs=['Clients','New / Edit Client','Users','Audit Log','Data Source'];
+  const C=ADMIN.edit?CLIENTS[ADMIN.edit]:null;
+  let body='';
+  if(S.tab===0){ /* client registry */
+    body=`<div class="card"><h3>Client Registry</h3><div class="sub">${Object.keys(CLIENTS).length} accounts · source: ${DS.mode==='supabase'?'Supabase':'Local store'}</div>
+    <table><thead><tr><th>Client</th><th>Type / Plan</th><th>Region</th><th>Workspaces</th><th>Status</th><th></th></tr></thead><tbody>
+    ${Object.values(CLIENTS).map(c=>{
+      const vs=c.verticals==='*'?'All (platform)':Object.keys(c.verticals).map(v=>VERTICALS[v]?ic(VERTICALS[v].icon):v).join(' ');
+      return `<tr><td><b>${c.name}</b><div style="font-size:.72rem;color:var(--ink-muted)">${c.id}</div></td>
+      <td>${c.type||''}<div style="font-size:.72rem;color:var(--ink-muted)">${c.plan||''}</div></td>
+      <td>${c.region}${c.geo&&c.geo.city?' · '+c.geo.city:''}</td><td>${vs}</td>
+      <td><span class="pill ${c.status==='suspended'?'p-crit':'p-ok'}">${c.status||'active'}</span></td>
+      <td style="white-space:nowrap">
+        <button class="btn ghost sm" onclick="adminEditClient('${c.id}')" style="padding:.3rem .7rem;font-size:.72rem">Edit</button>
+        ${c.verticals==='*'?'':`<button class="btn ghost sm" onclick="adminToggleSuspend('${c.id}')" style="padding:.3rem .7rem;font-size:.72rem">${c.status==='suspended'?'Activate':'Suspend'}</button>
+        <button class="btn dec sm" onclick="adminDeleteClient('${c.id}')" style="padding:.3rem .7rem;font-size:.72rem">Delete</button>`}
+      </td></tr>`;}).join('')}
+    </tbody></table>
+    <div style="margin-top:1rem"><button class="btn" onclick="adminNewClient()">+ Provision New Client</button></div></div>`;
+  }
+  else if(S.tab===1){ /* provisioning form */
+    const ev=C?C.verticals:null;
+    const vOn=v=>ev? (ev==='*'||!!ev[v]) : false;
+    const mOn=(v,m)=>{ if(!ev)return true; if(ev==='*')return true; const x=ev[v]; if(!x)return true; return x==='*'||x.includes(m); };
+    body=`<div class="card"><h3>${C?'Edit Client — '+C.name:'Provision New Client'}</h3>
+    <div class="sub">${C?'Changes apply immediately across the platform.':'The new client appears in the sign-in selector the moment you save.'}</div>
+    <div class="frm">
+      <div><label>Client name</label><input id="f_name" value="${C?C.name:''}" placeholder="e.g. Veolia ANZ"></div>
+      <div><label>Client ID ${C?'(locked)':''}</label><input id="f_id" value="${C?C.id:''}" ${C?'disabled':''} placeholder="auto from name if blank"></div>
+      <div><label>Type</label><input id="f_type" value="${C?(C.type||''):''}" placeholder="e.g. National Operator"></div>
+      <div><label>Plan</label><input id="f_plan" value="${C?(C.plan||''):''}" placeholder="e.g. Operator — Multi-Sector"></div>
+      <div><label>Region pack</label><select id="f_region">${Object.entries(REGIONS).map(([k,r])=>`<option value="${k}" ${C&&C.region===k?'selected':''}>${r.name}</option>`).join('')}</select></div>
+      <div><label>Sectors (comma separated)</label><input id="f_sectors" value="${C&&C.sectors?C.sectors.join(', '):''}" placeholder="e.g. Retail, Healthcare"></div>
+      <div><label>Geo override — city (optional)</label><input id="f_city" value="${C&&C.geo?C.geo.city:''}" placeholder="e.g. Melbourne"></div>
+      <div><label>Geo — lat,lng (optional)</label><input id="f_ll" value="${C&&C.geo&&C.geo.ll?C.geo.ll.join(','):''}" placeholder="-37.8136,144.9631"></div>
+      <div class="full"><label>Geo — service areas (comma separated, optional)</label><input id="f_areas" value="${C&&C.geo&&C.geo.areas?C.geo.areas.join(', '):''}" placeholder="Suburb 1, Suburb 2, …"></div>
+    </div>
+    <div style="margin:1.1rem 0 .5rem;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-muted)">Workspace &amp; module entitlements</div>
+    ${Object.entries(VERTICALS).map(([v,vv])=>`
+      <div class="vx"><div class="vh"><input type="checkbox" id="vx_${v}" ${vOn(v)?'checked':''}> ${ic(vv.icon)} ${vv.name}</div>
+      <div class="mods">${vv.modules.map(m=>`<label><input type="checkbox" id="vx_${v}_${m}" ${mOn(v,m)?'checked':''}>${MODULE_META[m].l}</label>`).join('')}</div></div>`).join('')}
+    <div style="margin-top:1rem;display:flex;gap:.6rem">
+      <button class="btn" onclick="adminSaveClient()">${C?'Save Changes':'Provision Client'}</button>
+      <button class="btn dec" onclick="ADMIN.edit=null;S.tab=0;render()">Cancel</button></div></div>`;
+  }
+  else if(S.tab===2){ /* users */
+    body=`<div class="card"><h3>Users</h3><div class="sub">${USERS.length} users across ${Object.keys(CLIENTS).length} clients</div>
+    <table><thead><tr><th>Name</th><th>Email</th><th>Client</th><th>Role</th><th></th></tr></thead><tbody>
+    ${USERS.map(u=>`<tr><td><b>${u.name}</b></td><td>${u.email}</td><td>${CLIENTS[u.client_id]?CLIENTS[u.client_id].name:u.client_id}</td><td><span class="pill p-info">${u.role}</span></td>
+    <td><button class="btn dec sm" onclick="adminDelUser('${u.id}')" style="padding:.25rem .6rem;font-size:.7rem">Remove</button></td></tr>`).join('')}
+    </tbody></table>
+    <div class="frm" style="margin-top:1rem">
+      <div><label>Name</label><input id="u_name" placeholder="Full name"></div>
+      <div><label>Email</label><input id="u_email" placeholder="user@company.com"></div>
+      <div><label>Client</label><select id="u_client">${Object.values(CLIENTS).map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select></div>
+      <div><label>Role</label><select id="u_role"><option>member</option><option>admin</option><option>viewer</option></select></div>
+    </div>
+    <div style="margin-top:.8rem"><button class="btn" onclick="adminAddUser()">+ Add User</button></div></div>`;
+  }
+  else if(S.tab===3){ /* audit */
+    body=`<div class="card"><h3>Entitlement Audit Log</h3><div class="sub">Session log (persisted via DataAPI.logAudit → audit_log table)</div>
+    ${AUDIT.length?`<table><thead><tr><th>Time</th><th>Client</th><th>Workspace</th><th>Module</th><th>Result</th></tr></thead><tbody>
+    ${AUDIT.slice(-40).reverse().map(e=>`<tr><td>${e.t}</td><td>${e.client}</td><td>${e.vertical}</td><td>${e.module}</td>
+    <td><span class="pill ${e.ok?'p-ok':'p-crit'}">${e.ok?'Allowed':'Denied'}</span></td></tr>`).join('')}</tbody></table>`
+    :'<div class="empty">No entitlement checks logged yet this session.</div>'}</div>`;
+  }
+  else{ /* data source */
+    body=`<div class="grid g2"><div class="card"><h3>Active Data Source</h3>
+    <div class="sub">All reads/writes flow through DataAPI → active adapter</div>
+    <div class="row"><span>Mode</span><span class="pill ${DS.mode==='supabase'?'p-ok':'p-info'}">${DS.mode==='supabase'?'Supabase (PostgREST)':'Local browser store'}</span></div>
+    ${DS.mode==='supabase'?`<div class="row"><span>Project URL</span><b style="font-size:.78rem">${DS.url}</b></div>
+    <div class="row"><span>Fallback</span><button class="btn dec sm" onclick="dsUseLocal()" style="padding:.3rem .7rem;font-size:.72rem">Switch back to Local</button></div>`
+    :`<div class="row"><span>Persistence</span><b>localStorage · thinkos_db_v1</b></div>
+    <div class="row"><span>Seeded accounts</span><b>${Object.keys(SEED_CLIENTS).length}</b></div>`}
+    <div class="row"><span>Schema</span><button class="btn ghost sm" onclick="downloadSchema()" style="padding:.3rem .7rem;font-size:.72rem">Download schema.sql</button></div>
+    </div>
+    <div class="card"><h3>Connect Supabase</h3><div class="sub">Run schema.sql in the SQL editor first, then paste project credentials</div>
+    <div class="frm">
+      <div class="full"><label>Project URL</label><input id="ds_url" placeholder="https://xxxx.supabase.co" value="${DS.url||''}"></div>
+      <div class="full"><label>Anon / service key</label><input id="ds_key" type="password" placeholder="eyJhbGciOi…"></div>
+    </div>
+    <div style="margin-top:.9rem;display:flex;gap:.6rem;flex-wrap:wrap">
+      <button class="btn" onclick="dsConnect()">Connect &amp; Test</button>
+      <button class="btn ghost" onclick="dsPushLocal()">Push Local Data → Supabase</button></div>
+    <div style="margin-top:.8rem;font-size:.76rem;color:var(--ink-muted)">The adapter uses Supabase's REST interface (PostgREST) — identical async contract to the local store, so no UI code changes on switch. Wire Supabase Auth + RLS policies per client_id for production.</div>
+    </div></div>`;
+  }
+  return `<div class="page-h"><span class="eyebrow">Platform owner · backend</span><h1>Admin Console</h1>
+    <p>Provision clients, shape entitlements, manage users, review the audit trail, and switch the data source.</p></div>
+  <div class="tabs">${tabs.map((t,i)=>`<span class="tab ${S.tab===i?'on':''}" onclick="setTab(${i})">${t}</span>`).join('')}</div>
+  ${body}`;
+},
+
+brokerage(){
+  if(!BROKER.timer)brokerSeed();
+  const R=REG(), V=VERTICALS[S.vertical];
+  const open=BROKER.jobs.filter(j=>j.status==='open');
+  const active=BROKER.jobs.filter(j=>j.status==='active');
+  const recent=BROKER.jobs.filter(j=>j.status==='done');
+  const surge=surgeNow();
+  const acc=BROKER.offers?Math.round(100*BROKER.accepts/BROKER.offers):100;
+  return `<div class="page-h"><span class="eyebrow">ThinkOS Exchange · live marketplace</span><h1>Collection Exchange</h1>
+    <p>Sensor- and customer-triggered jobs broadcast to licensed operators in ${R.city} — dynamic pricing, instant matching, RFID-verified completion, automatic payout.</p></div>
+  <div class="grid g4" style="margin-bottom:1rem">
+    <div class="stat"><div class="v">${open.length}</div><div class="l">Open Requests</div></div>
+    <div class="stat"><div class="v">${active.length}</div><div class="l">Jobs In Progress</div></div>
+    <div class="stat ${surge>1.2?'':'sg'}"><div class="v">${surge}×</div><div class="l">Demand Surge</div></div>
+    <div class="stat sg"><div class="v">${fmtMoney(BROKER.earned)}</div><div class="l">Earned This Session</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>${ic('zap')} Open Requests</h3><div class="sub">Broadcast to operators within 15 ${R.dist} · auto-refreshing</div>
+      ${open.length?open.map(j=>`
+        <div class="job"><div class="top"><div>
+          <h4>${j.org} — ${j.area}</h4>
+          <div class="mut" style="font-size:.76rem;color:var(--ink-muted)">${j.id} · ${j.unit} · ${j.stream} · ${j.km} ${R.dist} away · ${j.window}</div>
+          <div style="margin-top:.3rem"><span class="pill p-info">${j.trigger}</span> ${j.surge>1.2?`<span class="surge">${j.surge}× surge</span>`:''}</div>
+        </div><div class="pay">${fmtMoney(j.pay)}</div></div>
+        <div class="btns"><button class="btn sm" onclick="acceptJob('${j.id}')">Accept Job</button>
+        <button class="btn sm dec" onclick="declineJob('${j.id}')">Pass</button></div></div>`).join('')
+      :'<div class="empty">No open requests — new demand appears automatically.</div>'}
+    </div>
+    <div class="card"><h3>${ic('truck')} My Jobs — Live Tracking</h3><div class="sub">Accepted jobs advance in real time (RFID confirms the lift)</div>
+      ${active.length?active.map(j=>`
+        <div class="job"><div class="top"><div>
+          <h4>${j.org} — ${j.area}</h4>
+          <div class="mut" style="font-size:.76rem;color:var(--ink-muted)">${j.id} · ${j.unit} · ${j.stream}</div></div>
+          <div class="pay">${fmtMoney(j.pay)}</div></div>
+        <div class="stages">${JOB_STAGES.map((s,i)=>`<div class="stg ${i<j.stage?'done':i===j.stage?'now':''}"></div>`).join('')}</div>
+        <div style="font-size:.75rem;color:var(--ink-light);margin-top:.3rem"><b>${JOB_STAGES[Math.min(j.stage,JOB_STAGES.length-1)]}</b>${j.stage<2?' · driver dispatched, turn-by-turn active':j.stage<3?' · at pickup point':' · payout processing'}</div></div>`).join('')
+      :'<div class="empty">Accept a request to start tracking.</div>'}
+      ${recent.length?`<div style="margin-top:.6rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted)">Just completed</div>`+recent.map(j=>`<div class="row"><span>${j.id} · ${j.area}</span><span class="pill p-ok">Paid ${fmtMoney(j.pay)}</span></div>`).join(''):''}
+    </div>
+    <div class="card"><h3>Operator Profile</h3><div class="sub">Marketplace standing drives job priority</div>
+      <div class="row"><span>Rating</span><b>★ ${BROKER.rating} / 5</b></div>
+      <div class="row"><span>Acceptance rate</span><b>${acc}%</b></div>
+      <div class="row"><span>Jobs completed (session)</span><b>${BROKER.done}</b></div>
+      <div class="row"><span>RFID lift verification</span><span class="pill p-ok">100%</span></div>
+      <div class="row"><span>Payout method</span><b>${R.accounting[0]} · instant</b></div>
+      <div class="chips"><span class="chip">Priority dispatch at ★4.8+</span><span class="chip">Surge bonus eligible</span></div>
+    </div>
+    <div class="card"><h3>How Matching Works</h3><div class="sub">Exchange mechanics</div>
+      ${[['1 · Trigger','ThinkLid sensor crosses threshold or customer books via app/API'],
+         ['2 · Price','Base rate × live surge (time of day, open demand, weather)'],
+         ['3 · Broadcast','Offered to licensed operators by proximity, rating & capacity'],
+         ['4 · Verify','RFID confirms the correct '+V.unitTerm.toLowerCase()+' was lifted — no disputes'],
+         ['5 · Settle','Instant payout + AIRS-validated invoice to the customer']]
+      .map(x=>`<div class="row"><div><b>${x[0]}</b><div class="mut">${x[1]}</div></div></div>`).join('')}
+    </div>
+  </div>`;
+},
+
+aivision(){
+  if(!AIV.timer)avStart();
+  const R=REG(), cams=avCams();
+  const alerts=cams.filter(c=>c.status==='Alert').length;
+  const dets=cams.reduce((a,c)=>a+c.dets.length,0);
+  const conf=Math.round(cams.reduce((a,c)=>a+c.dets.reduce((x,d)=>x+d.conf,0)/c.dets.length,0)/cams.length);
+  const feat=cams[AIV.frame%cams.length]; /* LiveVision rotates the featured feed */
+  const camHtml=(c,big)=>`
+    <div class="cam" style="${big?'aspect-ratio:21/9':''}">
+      ${avScene(seedFor()+c.id.charCodeAt(4)*7,false)}
+      <div class="scan"></div>
+      ${c.dets.map(d=>`<div class="dbox" style="left:${d.x}%;top:${d.y}%;width:${d.w}%;height:${d.h}%;border-color:${d.col};color:${d.col}"><span style="background:rgba(0,0,0,.55);border-radius:3px;padding:0 3px">${d.l} ${d.conf}%</span></div>`).join('')}
+      <div class="hud"><span class="rec">REC · ${c.id}</span><span>${c.site} · ${c.unit} · ${new Date().toLocaleTimeString()} · f${String(AIV.frame).padStart(4,'0')}</span></div>
+    </div>`;
+  return `<div class="page-h"><span class="eyebrow">Camera AI · ${R.city} sites</span><h1>AIVision Portal</h1>
+    <p>Live detection over roll-off sites — overfill, contamination, hazardous liquids, manifest and PPE checks run on every frame. Feeds refresh automatically.</p></div>
+  <div class="grid g4" style="margin-bottom:1rem">
+    <div class="stat sg"><div class="v">${cams.length}/${cams.length}</div><div class="l">Cameras Online</div></div>
+    <div class="stat"><div class="v">${dets}</div><div class="l">Live Detections</div></div>
+    <div class="stat ${alerts?'':'sg'}"><div class="v">${alerts}</div><div class="l">Active Alerts</div></div>
+    <div class="stat sg"><div class="v">${conf}%</div><div class="l">Avg Model Confidence</div></div>
+  </div>
+  <div class="card" style="margin-bottom:1rem"><h3>${ic('video')} LiveVision — ${feat.site}</h3>
+    <div class="sub">Featured stream auto-rotates · detections rendered in real time · <span class="pill ${feat.status==='Alert'?'p-crit':feat.status==='Review'?'p-warn':'p-ok'}">${feat.status}</span></div>
+    ${camHtml(feat,true)}
+  </div>
+  <div class="grid g2" style="margin-bottom:1rem">
+    ${cams.filter(c=>c.id!==feat.id).slice(0,2).map(c=>`<div class="card"><h3>${c.id} — ${c.site}</h3>
+      <div class="sub">${c.unit} · <span class="pill ${c.status==='Alert'?'p-crit':c.status==='Review'?'p-warn':'p-ok'}">${c.status}</span></div>
+      ${camHtml(c,false)}</div>`).join('')}
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Before / After Reporting</h3>
+      <div class="sub">Site clearance verification — drag to compare · AI signs off the clearance certificate</div>
+      <div class="wipe">
+        ${avScene(seedFor()+99,false)}
+        <div class="after" id="wipeAfter" style="width:50%">${avScene(seedFor()+99,true)}</div>
+        <span class="lbl" style="left:10px">AFTER · cleared</span>
+        <span class="lbl" style="right:10px">BEFORE · reported</span>
+        <span class="lbl" id="wipePct" style="left:50%;transform:translateX(-50%)">50%</span>
+      </div>
+      <input type="range" class="wipebar" min="0" max="100" value="50" oninput="avWipe(this.value)">
+      ${[['BA-'+(3300+AIV.frame%7),R.areas[0],'Overfill + tires reported → cleared & manifest lodged','Verified'],
+         ['BA-'+(3290),R.areas[2],'Hazardous liquid flag → spill contained, site washed','Verified'],
+         ['BA-'+(3287),R.areas[3],'Illegal dumping beside unit → removed, invoice to '+R.vendors[1],'Billed']]
+      .map(x=>`<div class="row"><div><b>${x[0]}</b> · ${x[1]}<div class="mut">${x[2]}</div></div><span class="pill p-ok">${x[3]}</span></div>`).join('')}
+    </div>
+    <div class="card"><h3>Detection Log</h3><div class="sub">Streaming from all cameras · auto-classified</div>
+      ${AIV.log.length?AIV.log.map(e=>`<div class="row"><div><b>${e.l}</b> · ${e.cam}<div class="mut">${e.site} · confidence ${e.conf}%</div></div><span class="mut">${e.t}</span></div>`).join(''):'<div class="empty">Watching feeds — detections stream in live.</div>'}
+      <div class="chips" style="margin-top:.6rem"><span class="chip">Overfill</span><span class="chip">Contamination</span><span class="chip">Hazardous liquids</span><span class="chip">Manifest match</span><span class="chip">PPE compliance</span><span class="chip">Thermal / fire</span></div>
+    </div>
+  </div>`;
+},
+
+dashboard(){
+  const V=VERTICALS[S.vertical], R=REG(), bins=genBins(), r=rng(seedFor()+1);
+  const crit=bins.filter(b=>b.status==='Critical').length;
+  const avg=Math.round(bins.reduce((a,b)=>a+b.fill,0)/bins.length);
+  const streams=STREAMS[V.persona];
+  return `<div class="page-h"><span class="eyebrow">${R.name} · ${R.city}</span>
+    <h1>${V.name} Dashboard</h1>
+    <p>Live overview of your ThinkLid network — composed for the ${V.name.toLowerCase()} use case under the ${R.name} regulatory pack.</p></div>
+  <div class="grid g4" style="margin-bottom:1rem">
+    <div class="stat"><div class="v">${bins.length*12}</div><div class="l">Active ${V.unitTerm}s</div></div>
+    <div class="stat"><div class="v">${avg}%</div><div class="l">Avg Fill Level</div></div>
+    <div class="stat ${crit?'':'sg'}"><div class="v">${crit}</div><div class="l">Critical Alerts</div></div>
+    <div class="stat sg"><div class="v">${fmtMoney(4200+Math.round(r()*3000))}</div><div class="l">Savings This Month</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>${V.unitTerm}s Needing Attention</h3><div class="sub">Sorted by urgency · ${R.city}</div>
+      ${bins.filter(b=>b.fill>60).sort((a,b)=>b.fill-a.fill).slice(0,5).map(b=>`
+        <div class="row"><div><b>${b.id}</b> · ${b.area}<div class="mut">${b.stream} · ${b.size}</div></div>
+        <div style="display:flex;align-items:center;gap:.6rem;flex:1;max-width:180px"><div class="bar"><i style="width:${b.fill}%;background:${b.fill>85?'#E0604F':b.fill>65?'var(--peach)':'var(--sage)'}"></i></div><b style="font-size:.8rem">${b.fill}%</b></div>
+        ${statusPill(b.status)}</div>`).join('')}
+    </div>
+    <div class="card"><h3>Waste Streams</h3><div class="sub">Weekly volume by stream (${R.wt})</div>
+      ${streams.map(([n,c])=>{const v=Math.round(r()*900+150);return `<div class="hbar"><div class="lab">${n}</div><div class="bar"><i style="width:${Math.min(100,v/10)}%;background:${c}"></i></div><div class="val">${v} ${R.wt}</div></div>`}).join('')}
+      <div class="chips">${R.regulators.general.map(x=>`<span class="chip">${x}</span>`).join('')}</div>
+    </div>
+    <div class="card"><h3>Live Activity</h3><div class="sub">From your AI agents</div><div class="feed">
+      ${[`Route re-optimised — ${Math.round(r()*20+5)} min saved`,
+         `${V.unitTerm} ${bins[0].id} predicted full by ${Math.floor(r()*4+1)}pm — collection auto-booked`,
+         `Invoice line variance flagged for review (${fmtMoney(Math.round(r()*400+80))})`,
+         `${R.localityTerm} compliance report generated`,
+         `Sensor health check: ${bins.length*12-1}/${bins.length*12} reporting`].map((t,i)=>`<div class="row"><span>${t}</span><span class="mut">${(i+1)*7} min ago</span></div>`).join('')}
+    </div></div>
+    <div class="card"><h3>Today's Collections</h3><div class="sub">Scheduled &amp; predictive</div>
+      ${bins.slice(0,5).map((b,i)=>`<div class="row"><div><b>${9+i*2}:00</b> · ${b.area}<div class="mut">${b.stream}</div></div><span class="pill ${i<2?'p-ok':'p-info'}">${i<2?'Completed':'Scheduled'}</span></div>`).join('')}
+    </div>
+    ${V.modules.includes('aivision')&&BACKEND.allowedModule(S.vertical,'aivision')?`
+    <div class="card" style="grid-column:1/-1"><h3>${ic('camera')} AIVision — Live Site Monitoring</h3><div class="sub">Camera AI watching your roll-off sites right now</div>
+      <div class="row"><div><b>${R.areas[0]}</b><div class="mut">CAM-201 · scanning</div></div><span class="pill p-warn">Overfill watch</span></div>
+      <div class="row"><div><b>${R.areas[1]}</b><div class="mut">CAM-202 · scanning</div></div><span class="pill p-ok">Clear</span></div>
+      <div style="margin-top:.6rem"><button class="btn ghost" onclick="setView('aivision')">Open AIVision Portal →</button></div>
+    </div>`:''}
+  </div>`;
+},
+
+map(){
+  const V=VERTICALS[S.vertical], R=REG(), bins=genBins();
+  const sel=S.sel!==null?bins[S.sel]:null;
+  const geo=V.mapMode==='geo';
+  const modeLabel=V.mapMode==='floorplan'?'Building floorplan':V.mapMode==='zones'?'Facility zones':R.city+' — Google Maps';
+  const detail = sel?`<div class="detail"><h4>${sel.id}</h4>
+      ${sel.area} · ${sel.size}<br>Stream: <b>${sel.stream}</b><br>
+      <div style="display:flex;align-items:center;gap:.5rem;margin:.45rem 0"><div class="bar"><i style="width:${sel.fill}%;background:${sel.fill>85?'#E0604F':sel.fill>65?'var(--peach)':'var(--sage)'}"></i></div><b>${sel.fill}%</b></div>
+      ${statusPill(sel.status)} <span class="pill p-info">Lid OK</span><br>
+      <button class="btn" style="margin-top:.6rem;width:100%" onclick="alert('Collection request queued for ${sel.id} — the Route Agent will slot it into the nearest run.')">Request Collection</button></div>`:'';
+  const legend=`<div class="map-legend">
+      <span><span class="ld" style="background:#43B02A"></span>Normal</span>
+      <span><span class="ld" style="background:#F19E21"></span>Filling</span>
+      <span><span class="ld" style="background:#E0604F"></span>Critical</span></div>`;
+  let mapInner;
+  if(geo){
+    if(GMAP.key){
+      mapInner=`<div id="gmap"></div>${legend}${detail}`;
+    } else {
+      /* keyless fallback: live Google embed of the effective city */
+      mapInner=`<iframe src="https://maps.google.com/maps?q=${encodeURIComponent(R.city)}&z=12&output=embed"
+        style="position:absolute;inset:0;width:100%;height:100%;border:0" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade" title="Google Map — ${R.city}"></iframe>
+        <div class="gmap-note"><b>Google Maps (embed mode)</b> — paste a Maps JavaScript API key below to unlock live ${V.unitTerm.toLowerCase()} markers, click-to-detail and auto-focus.</div>`;
+    }
+  } else {
+    mapInner=`<svg viewBox="0 0 100 90" preserveAspectRatio="none">
+      ${V.mapMode==='floorplan'
+        ? '<rect x="6" y="8" width="88" height="74" fill="none" stroke="#c9cdc9" stroke-width=".5" rx="2"/><line x1="6" y1="45" x2="94" y2="45" stroke="#c9cdc9" stroke-width=".35"/><line x1="50" y1="8" x2="50" y2="82" stroke="#c9cdc9" stroke-width=".35"/>'
+        : '<path d="M0 30 Q 30 22 55 32 T 100 28" fill="none" stroke="#cfe6cf" stroke-width="2.2" opacity=".8"/><path d="M20 0 Q 26 40 18 90" fill="none" stroke="#e7ebe7" stroke-width="3"/><path d="M0 62 Q 50 55 100 66" fill="none" stroke="#e7ebe7" stroke-width="2.4"/>'}
+      ${bins.map((b,i)=>`<circle class="bin-dot" cx="${b.x}" cy="${b.y}" r="${S.sel===i?3.4:2.4}"
+        fill="${b.fill>85?'#E0604F':b.fill>65?'#F19E21':'#43B02A'}" stroke="#fff" stroke-width=".6"
+        onclick="S.sel=${i};render()"><title>${b.id} — ${b.fill}%</title></circle>`).join('')}
+    </svg>${legend}${detail}`;
+  }
+  return `<div class="page-h"><span class="eyebrow">${modeLabel}</span><h1>Map View</h1>
+    <p>One map component, three projections. ${geo?'Geo workspaces render on Google Maps; markers are live ThinkLid units.':'Indoor projections use the native floorplan/zone renderer.'} Click any ${V.unitTerm.toLowerCase()} for live detail.</p></div>
+  <div class="card"><div class="mapbox" style="${geo?'height:480px':''}">${mapInner}</div>
+  ${geo?`<div class="keyrow">
+    ${GMAP.key
+      ?`<span class="pill p-ok">Google Maps JS API active</span><button class="btn ghost sm" onclick="clearGKey()" style="font-size:.76rem;padding:.35rem .8rem">Remove key</button>`
+      :`<input id="gkey" type="text" placeholder="Paste Google Maps JavaScript API key (stored in this browser only)">
+        <button class="btn sm" onclick="saveGKey()">Enable Live Markers</button>`}
+    <span style="font-size:.72rem;color:var(--ink-muted)">Key scope: Maps JavaScript API · billing on your Google Cloud project</span>
+  </div>`:''}</div>
+  ${geo&&!GMAP.key?`<div class="card" style="margin-top:1rem"><h3>${V.unitTerm} Status — ${R.city}</h3><div class="sub">Live list (markers appear on the map once the API key is enabled)</div>
+    ${bins.sort((a,b)=>b.fill-a.fill).slice(0,8).map((b,i)=>`<div class="row"><div><b>${b.id}</b> · ${b.area}<div class="mut">${b.stream} · ${b.size} · ${b.lat.toFixed(4)}, ${b.lng.toFixed(4)}</div></div>
+      <div style="display:flex;align-items:center;gap:.6rem;flex:1;max-width:170px"><div class="bar"><i style="width:${b.fill}%;background:${b.fill>85?'#E0604F':b.fill>65?'var(--peach)':'var(--sage)'}"></i></div><b style="font-size:.8rem">${b.fill}%</b></div>${statusPill(b.status)}</div>`).join('')}</div>`:''}
+  <div class="grid g3" style="margin-top:1rem">
+    <div class="stat"><div class="v">${bins.filter(b=>b.status==='Good').length}</div><div class="l">Normal</div></div>
+    <div class="stat"><div class="v">${bins.filter(b=>b.status==='Warning').length}</div><div class="l">Filling</div></div>
+    <div class="stat"><div class="v">${bins.filter(b=>b.status==='Critical').length}</div><div class="l">Critical</div></div>
+  </div>`;
+},
+
+routes(){
+  const V=VERTICALS[S.vertical], R=REG(), r=rng(seedFor()+2), bins=genBins();
+  const routes=['Alpha','Beta','Gamma'].map((n,i)=>({
+    n, status:i===0?'In Progress':i===1?'Optimised':'Scheduled',
+    stops:bins.slice(i*4,i*4+4), dist:(r()*10+4).toFixed(1), time:Math.round(r()*30+22),
+    driver:['M. Hayes','A. Patel','J. Chu'][i], veh:'V0'+(i+1), cap:Math.round(r()*60+25)
+  }));
+  return `<div class="page-h"><span class="eyebrow">Weather &amp; traffic aware</span><h1>Routes &amp; Fleet</h1>
+    <p>AI-optimised runs across ${R.city}. On-demand requests are slotted into live routes; missed services auto-recover.</p></div>
+  <div class="grid g3">
+    ${routes.map((rt,i)=>`<div class="card agent ${i===1?'sg':i===2?'cl':''}"><h3>Route ${rt.n}</h3>
+      <div class="sub">${rt.veh} · ${rt.driver} · <span class="pill ${i===0?'p-warn':i===1?'p-ok':'p-info'}">${rt.status}</span></div>
+      ${rt.stops.map(s=>`<div class="row"><div>${s.area}<div class="mut">${s.id} · ${s.size}</div></div><b>${s.fill}%</b></div>`).join('')}
+      <div class="row" style="border:none;margin-top:.4rem"><span class="mut">${rt.dist} ${R.dist} · ${rt.time} min · vehicle ${rt.cap}% full</span></div>
+    </div>`).join('')}
+  </div>
+  <div class="grid g2" style="margin-top:1rem">
+    <div class="card"><h3>ML Prediction Engine</h3><div class="sub">Next predicted critical ${V.unitTerm.toLowerCase()}s (2 hr window)</div>
+      ${bins.sort((a,b)=>b.fill-a.fill).slice(0,3).map(b=>`<div class="row"><div><b>${b.area}</b><div class="mut">${b.id}</div></div><span>→ ${Math.min(99,b.fill+9)}% by ${2+Math.floor(Math.random()*3)}:30pm</span></div>`).join('')}
+      <div class="row"><span class="mut">Model confidence 94.2% · retrained 2 h ago</span></div></div>
+    <div class="card"><h3>Missed Service Recovery</h3><div class="sub">SLA-tracked exceptions</div>
+      <div class="row"><div><b>BS-2233</b> · ${R.areas[3]}<div class="mut">Recovery assigned — ETA tomorrow 08:00</div></div><span class="pill p-crit">Recover</span></div>
+      <div class="row"><div><b>Capacity alert</b> · Vehicle V03<div class="mut">88% full — disposal run before next booking</div></div><span class="pill p-warn">Action</span></div>
+    </div>
+  </div>`;
+},
+
+scheduling(){
+  const V=VERTICALS[S.vertical], R=REG(), bins=genBins(), r=rng(seedFor()+3);
+  const tabs=['Upcoming','Predictive','Maintenance'];
+  const rows= S.tab===0? bins.slice(0,6).map((b,i)=>[`${8+i}:30`,b.area,b.stream,b.size,i<2?'High':'Normal',i===0?'In progress':'Scheduled'])
+    : S.tab===1? bins.slice(6,11).map((b,i)=>[`+${i+1} day${i?'s':''}`,b.area,b.stream,b.size,'Auto','Sensor-predicted'])
+    : bins.slice(3,7).map((b,i)=>['Wk '+(i+1),b.area,'Sensor / lid service',b.size,'Low','Planned']);
+  return `<div class="page-h"><span class="eyebrow">Portal · App · API · Sensor-triggered</span><h1>Scheduling &amp; Booking</h1>
+    <p>On-demand, recurring and predictive bookings with SLA timers${S.vertical==='clinical'?' — sharps containers auto-book at 75% threshold':''}.</p></div>
+  <div class="grid g4" style="margin-bottom:1rem">
+    <div class="stat sg"><div class="v">37%</div><div class="l">Fewer Collections</div></div>
+    <div class="stat sg"><div class="v">${fmtMoney(3800+Math.round(r()*900))}</div><div class="l">Monthly Savings</div></div>
+    <div class="stat"><div class="v">98%</div><div class="l">On-Time Rate</div></div>
+    <div class="stat"><div class="v">${(r()*3+4).toFixed(1)}d</div><div class="l">Avg Cycle (KPI ≤ 10d)</div></div>
+  </div>
+  <div class="tabs">${tabs.map((t,i)=>`<span class="tab ${S.tab===i?'on':''}" onclick="setTab(${i})">${t}</span>`).join('')}</div>
+  <div class="card"><table><thead><tr><th>Time</th><th>Location</th><th>Type</th><th>Unit</th><th>Priority</th><th>Status</th></tr></thead>
+  <tbody>${rows.map(rw=>`<tr>${rw.map((c,i)=>i===5?`<td><span class="pill ${c==='In progress'?'p-warn':c==='Sensor-predicted'?'p-info':'p-ok'}">${c}</span></td>`:`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>
+  <div style="margin-top:1rem"><button class="btn" onclick="alert('New booking form — submits via ThinkOS portal, app or API. RFID confirms the lift; billing is usage-based.')">+ New Booking</button>
+  <button class="btn ghost" onclick="alert('API endpoint: POST /v1/bookings — same contract in every region.')" style="margin-left:.5rem">API Docs</button></div></div>`;
+},
+
+agents(){
+  const V=VERTICALS[S.vertical], R=REG();
+  const DEFS={
+    efficiency:{n:'Efficiency Agent',c:'',d:'Centralised scheduling, predictive maintenance, resource optimisation.',f:['IoT smart tracking','AI reduction insights','Energy-efficient planning'],ints:['BMS','IoT Sensors',R.accounting[0]]},
+    engagement:{n:'Engagement Agent',c:'sg',d:'Gamified challenges, education, sustainability culture.',f:['Leaderboards & XP','Education modules','Rewards'],ints:['Slack / Teams','HR Platforms','Intranet']},
+    route:{n:'Route Agent',c:'cl',d:'ML fill prediction and minimum-cost routing across the fleet.',f:['94.2% fill prediction','Traffic-aware ETAs','On-demand insertion'],ints:['Traffic System','WeatherNext2','Driver App']},
+    public:{n:'Public Engagement Agent',c:'sg',d:'Monitors citizen channels, triages reports, drafts responses.',f:['Multi-channel intake','Sentiment tracking','18 min avg response'],ints:['Mobile App','Social Media',R.localityTerm+' Portal']},
+    weather:{n:'Weather Agent',c:'rs',d:'Forecast-driven collection impact analysis.',f:['Fill surge alerts','Litter-scatter risk','Pre-emptive capacity'],ints:['WeatherNext2 Feed']},
+    ar:{n:'AR Field Agent',c:'cl',d:'Overlays, guided navigation and damage documentation for crews.',f:['Live overlays','Damage → work order','Training mode'],ints:['AR Headsets','Work Orders']},
+    compliance:{n:'Compliance Agent',c:'rs',d:'Continuous checks against the active regulatory pack.',f:R.regulators[S.vertical==='clinical'?'clinical':'general'].slice(0,3),ints:[R.manifest,'Audit Log']},
+    risk:{n:'Risk Agent',c:'rs',d:'Contamination, security and safety anomaly detection.',f:['Threshold alerts','Breach detection','Escalation paths'],ints:['Security Ops','Legal / Privacy']},
+    billing:{n:'Billing Agent',c:'',d:'Usage-based invoicing validated against RFID lift data (AIRS).',f:['10-step validation','Fraud detection','Auto reconciliation'],ints:R.accounting}
+  };
+  return `<div class="page-h"><span class="eyebrow">One agent chassis · vertical skills</span><h1>AI Agents</h1>
+    <p>${V.agents.length} agents active in this workspace. Same chassis everywhere; skills and rulesets load from the ${R.name} pack.</p></div>
+  <div class="grid g2">
+    ${V.agents.map(k=>{const a=DEFS[k];return `<div class="card agent ${a.c}"><h3>${a.n}</h3>
+      <div class="sub"><span class="pill p-ok">Active</span> · real-time</div>
+      <p style="font-size:.88rem;color:var(--ink-light)">${a.d}</p>
+      <div style="margin-top:.6rem;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted)">Capabilities</div>
+      ${a.f.map(f=>`<div class="row" style="padding:.3rem 0"><span>· ${f}</span></div>`).join('')}
+      <div class="chips">${a.ints.map(x=>`<span class="chip">${x}</span>`).join('')}</div></div>`}).join('')}
+  </div>`;
+},
+
+engagement(){
+  const V=VERTICALS[S.vertical], R=REG(), r=rng(seedFor()+4);
+  if(V.persona==='public') return `<div class="page-h"><span class="eyebrow">Citizen channels</span><h1>Public Engagement</h1>
+    <p>Reports and sentiment from residents of ${R.city}, triaged by the Public Engagement Agent.</p></div>
+    <div class="grid g4" style="margin-bottom:1rem">
+      <div class="stat"><div class="v">12</div><div class="l">Open Reports</div></div>
+      <div class="stat sg"><div class="v">28</div><div class="l">Resolved Today</div></div>
+      <div class="stat sg"><div class="v">18m</div><div class="l">Avg Response</div></div>
+      <div class="stat sg"><div class="v">+72%</div><div class="l">Sentiment</div></div></div>
+    <div class="grid g2"><div class="card"><h3>Incoming Reports</h3><div class="sub">All channels</div>
+      ${[['Damage Report','Lid mechanism jammed on TL-1004 at '+R.areas[0],'Mobile App','p-crit'],
+         ['Overflow','Units overflowing near market stalls, '+R.areas[1],'Social Media','p-warn'],
+         ['New Bin Request','Recycling unit requested near playground, '+R.areas[2],R.localityTerm+' Portal','p-info'],
+         ['Positive Feedback','"Collection frequency much better at '+R.areas[4]+' — thank you!"','Mobile App','p-ok']]
+        .map(x=>`<div class="row"><div><b>${x[0]}</b><div class="mut">${x[1]}</div></div><div style="text-align:right"><span class="pill ${x[3]}">${x[2]}</span></div></div>`).join('')}</div>
+      <div class="card"><h3>Channels &amp; Education</h3><div class="sub">Engagement mix</div>
+      ${[['Mobile App',65],['Social Media',20],[R.localityTerm+' Portal',10],['Info Displays',5]].map(([n,v])=>`<div class="hbar"><div class="lab">${n}</div><div class="bar"><i style="width:${v}%;background:var(--sage)"></i></div><div class="val">${v}%</div></div>`).join('')}
+      <div class="row"><span>QR scans at units</span><b>${Math.round(r()*300+150)} today</b></div>
+      <div class="row"><span>Sorting guide views</span><b>${Math.round(r()*900+400)} this week</b></div></div></div>`;
+  if(V.persona==='regulator'||V.persona==='operator') return `<div class="page-h"><span class="eyebrow">Multi-role portals</span><h1>Engagement &amp; Portals</h1>
+    <p>Separate views for operators, ${R.localityTerm.toLowerCase()}s and regulators — same data, role-scoped.</p></div>
+    <div class="grid g3">${[['Operator Portal','Bin-level bookings, billing detail, fleet ops','p-ok'],[R.localityTerm+' Portal','Aggregated service data & compliance reports','p-info'],['Regulator View','Read-only manifests, violations, audit trail','p-warn']]
+      .map(x=>`<div class="card"><h3>${x[0]}</h3><p style="font-size:.87rem;color:var(--ink-light)">${x[1]}</p><div style="margin-top:.6rem"><span class="pill ${x[2]}">Enabled</span></div></div>`).join('')}</div>
+    <div class="card" style="margin-top:1rem"><h3>Operator Scorecard</h3><div class="sub">Compliance & responsiveness</div>
+    ${R.vendors.map((v,i)=>{const sc=Math.round(98-i*4-r()*3);return `<div class="hbar"><div class="lab">${v}</div><div class="bar"><i style="width:${sc}%;background:${sc>90?'var(--sage)':sc>80?'var(--peach)':'#E0604F'}"></i></div><div class="val">${sc}%</div></div>`}).join('')}</div>`;
+  /* internal / clinical → gamified workplace */
+  const teams= S.vertical==='clinical' ? ['Ward 2A','Ward 3B','ICU','Theatres','ED'] : ['Level 1','Level 2','Level 3','Level 4','Ground'];
+  return `<div class="page-h"><span class="eyebrow">Gamified culture</span><h1>Workplace Engagement</h1>
+    <p>Team-vs-team challenges driving waste reduction — leaderboards, streaks, XP and rewards.</p></div>
+  <div class="grid g4" style="margin-bottom:1rem">
+    <div class="stat sg"><div class="v">78%</div><div class="l">Participation</div></div>
+    <div class="stat sg"><div class="v">12%</div><div class="l">Waste Reduction</div></div>
+    <div class="stat"><div class="v">156</div><div class="l">Participants</div></div>
+    <div class="stat"><div class="v">4.6</div><div class="l">Avg Rating / 5</div></div></div>
+  <div class="grid g2"><div class="card"><h3>Leaderboard</h3><div class="sub">This month</div>
+    ${teams.map((t,i)=>{const pts=Math.round(980-i*120-r()*60);return `<div class="hbar"><div class="lab">${i+1}. ${t}</div><div class="bar"><i style="width:${pts/10}%;background:${i===0?'var(--sage-dark)':'var(--sage)'}"></i></div><div class="val">${pts} XP</div></div>`}).join('')}</div>
+  <div class="card"><h3>Active Challenges</h3><div class="sub">Head-to-head & building-wide</div>
+    ${[['Zero-contamination week',teams[0]+' vs '+teams[1],'p-warn','Live'],['Recycling rate sprint','All teams','p-ok','Day 4/7'],['Sorting accuracy quiz','Education Hub','p-info','128 done']]
+    .map(x=>`<div class="row"><div><b>${x[0]}</b><div class="mut">${x[1]}</div></div><span class="pill ${x[2]}">${x[3]}</span></div>`).join('')}
+    <div class="chips"><span class="chip">Streak bonuses</span><span class="chip">Lobby-screen badges</span><span class="chip">Rewards catalogue</span></div></div></div>`;
+},
+
+weather(){
+  const R=REG(), r=rng(seedFor()+5);
+  const isF=R.temp==='°F'; const base=isF?57:14;
+  const days=['Mon','Tue','Wed','Thu','Fri'].map((d,i)=>({d,ic:['cloud-rain','cloud-sun','sun','cloud-sun','cloud-rain'][i],t:base+Math.round(r()*8-3)}));
+  return `<div class="page-h"><span class="eyebrow">WeatherNext2 feed</span><h1>Weather Intelligence</h1>
+    <p>Forecasts translated into collection impact for ${R.city} — feeding Routes, Scheduling and Alerts.</p></div>
+  <div class="grid g2"><div class="card"><h3>Current & 5-Day</h3><div class="sub">${R.city}</div>
+    <div style="font-family:'Poppins',sans-serif;font-weight:600;font-size:2.6rem">${base}${R.temp} <span style="font-size:1.1rem;color:var(--ink-muted)">Partly cloudy — showers later</span></div>
+    <div class="cols" style="height:100px">${days.map(x=>`<div class="col"><div class="wic">${ic(x.ic)}</div><span>${x.t}°</span><span>${x.d}</span></div>`).join('')}</div>
+    <div class="row"><span>${ic('wind')} Wind</span><b>18 ${R.dist}/h</b></div>
+    <div class="row"><span>${ic('droplets')} Rain probability</span><b>65%</b></div></div>
+  <div class="card"><h3>Collection Impact Analysis</h3><div class="sub">Generated by the Weather Agent</div>
+    ${[['Rain later today','Sheltered-area bin usage up ~30% as foot traffic congregates','p-warn','Medium'],
+       ['High winds','Litter-scatter risk from 120 lt units on exposed routes — verify lids latched, collect early','p-crit','High'],
+       ['Midweek sunshine','Higher outdoor footfall — pre-schedule extra capacity at hotspots','p-info','Plan'],
+       ['Heavy rain Friday','Camera visibility reduced; radar fill data unaffected','p-info','Info']]
+    .map(x=>`<div class="row"><div><b>${x[0]}</b><div class="mut">${x[1]}</div></div><span class="pill ${x[2]}">${x[3]}</span></div>`).join('')}</div></div>`;
+},
+
+ar(){
+  const V=VERTICALS[S.vertical];
+  const extra = S.vertical==='clinical'
+    ? [[ic('hand')+' PPE Procedure Overlay','Step-by-step PPE guidance rendered at the point of handling'],[ic('clipboard-check')+' Compliance Audit Walk-Through','Guided audit route with hands-free documentation']]
+    : [[ic('camera')+' Damage Documentation','Point-and-capture — auto-detects model, GPS-tags, raises work order'],[ic('chart-column')+' Data Visualisation','Historical fill and collection data overlaid on physical units']];
+  return `<div class="page-h"><span class="eyebrow">Field operations</span><h1>AR Mode</h1>
+    <p>Overlay layers for field crews — the same AR module everywhere, with ${V.name.toLowerCase()}-specific layers.</p></div>
+  <div class="grid g4" style="margin-bottom:1rem">
+    <div class="stat sg"><div class="v">3</div><div class="l">Active Overlays</div></div>
+    <div class="stat"><div class="v">7</div><div class="l">Field Users</div></div>
+    <div class="stat sg"><div class="v">100%</div><div class="l">Work Orders Auto-Tagged</div></div>
+    <div class="stat"><div class="v">Live</div><div class="l">Status</div></div></div>
+  <div class="grid g2">
+    ${[[ic('map-pin')+' Location Overlay','Real-time fill levels, lid status and sensor health visible through the headset'],[ic('navigation')+' Route Navigation','Turn-by-turn optimised guidance with ETA and traffic overlaid on street/corridor view'],...extra,[ic('graduation-cap')+' Training Mode','Interactive servicing, maintenance, recalibration and safety scenarios'],[ic('settings')+' Layer Settings','Fill overlay · route guidance · weather · info displays · auto-report']]
+    .map(x=>`<div class="card"><h3>${x[0]}</h3><p style="font-size:.87rem;color:var(--ink-light)">${x[1]}</p></div>`).join('')}
+  </div>`;
+},
+
+compliance(){
+  const V=VERTICALS[S.vertical], R=REG(), r=rng(seedFor()+6);
+  const set=R.regulators[S.vertical==='clinical'?'clinical':'general'].concat(R.regulators.esg.slice(0,1));
+  return `<div class="page-h"><span class="eyebrow">${R.name} regulatory pack</span><h1>Compliance Engine</h1>
+    <p>Pluggable rulesets per region — swap the region and the obligations, manifest system and audit exports swap with it.</p></div>
+  <div class="grid g4" style="margin-bottom:1rem">
+    <div class="stat sg"><div class="v">${Math.round(93+r()*6)}%</div><div class="l">Overall Score</div></div>
+    <div class="stat sg"><div class="v">0</div><div class="l">Open Violations</div></div>
+    <div class="stat"><div class="v">${set.length}</div><div class="l">Active Standards</div></div>
+    <div class="stat"><div class="v">${['Feb 22','Mar 08','Apr 15'][Math.floor(r()*3)]}</div><div class="l">Next Audit</div></div></div>
+  <div class="grid g2"><div class="card"><h3>Standards &amp; Status</h3><div class="sub">Mapped to ThinkOS data outputs</div>
+    ${set.map((s,i)=>{const st=i===1?['Under review','p-warn']:['Compliant','p-ok'];return `<div class="row"><div><b>${s}</b><div class="mut">Automated evidence coverage ${Math.round(85+r()*14)}%</div></div><span class="pill ${st[1]}">${st[0]}</span></div>`}).join('')}
+    <div style="margin-top:.8rem"><button class="btn ghost" onclick="alert('Exports audit-ready evidence pack mapped to the selected standard — same exporter in every region.')">Export Evidence Pack</button></div></div>
+  <div class="card"><h3>Waste Documentation</h3><div class="sub">${R.manifest}</div>
+    ${[1,2,3,4].map(i=>`<div class="row"><div><b>MAN-${4400+i}</b> · ${R.vendors[i-1]}<div class="mut">Lodged ${i*2} h ago · digitally signed</div></div><span class="pill p-ok">Verified</span></div>`).join('')}
+    <div class="chips">${['Tamper-proof log','Auto-lodgement','Discrepancy alerts'].map(x=>`<span class="chip">${x}</span>`).join('')}</div></div></div>`;
+},
+
+coc(){
+  const V=VERTICALS[S.vertical], R=REG();
+  const kind=S.vertical==='facilities'?'Secure document':S.vertical==='clinical'?'Clinical waste':'Regulated waste';
+  return `<div class="page-h"><span class="eyebrow">${kind} lifecycle</span><h1>Chain of Custody</h1>
+    <p>Generation → transport → certified destruction. Every step logged tamper-proof under ${R.manifest}.</p></div>
+  <div class="grid g4" style="margin-bottom:1rem">
+    <div class="stat sg"><div class="v">100%</div><div class="l">Custody Verified</div></div>
+    <div class="stat"><div class="v">2,847</div><div class="l">Movements (MTD)</div></div>
+    <div class="stat sg"><div class="v">0</div><div class="l">Breaches</div></div>
+    <div class="stat sg"><div class="v">A+</div><div class="l">Audit Grade</div></div></div>
+  <div class="card"><h3>Active Manifests</h3><div class="sub">Vendor movements — ${R.name}</div>
+  <table><thead><tr><th>Manifest</th><th>Stream</th><th>Vendor</th><th>Destination</th><th>Status</th></tr></thead><tbody>
+    ${R.vendors.map((v,i)=>`<tr><td><b>COC-${4401+i}</b></td><td>${STREAMS[V.persona][i%STREAMS[V.persona].length][0]}</td><td>${v}</td><td>${v.split(' ')[0]} facility, ${R.city}</td><td><span class="pill ${i===0?'p-warn':'p-ok'}">${i===0?'In transit':'Destroyed ✓ cert issued'}</span></td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="grid g2" style="margin-top:1rem">
+    <div class="card"><h3>Destruction Certificates</h3><div class="sub">Tamper-proof archive</div>
+      ${[1,2,3].map(i=>`<div class="row"><div><b>CERT-${8830+i}</b><div class="mut">Issued ${i} day${i>1?'s':''} ago · SHA-verified</div></div><button class="btn ghost" style="padding:.3rem .8rem;font-size:.75rem" onclick="alert('Certificate CERT-${8830+i} — hash-chained PDF, valid for audit in this jurisdiction.')">View</button></div>`).join('')}</div>
+    <div class="card"><h3>Pipeline</h3><div class="sub">End-to-end stages</div>
+      ${['Collection point sealed','Transport (GPS tracked)','Facility intake scan','Certified destruction','Certificate issued'].map((s,i)=>`<div class="row"><span>${i+1}. ${s}</span><span class="pill ${i<3?'p-ok':'p-info'}">${i<3?'Live':'Auto'}</span></div>`).join('')}</div>
+  </div>`;
+},
+
+finance(){
+  const V=VERTICALS[S.vertical], R=REG(), r=rng(seedFor()+7);
+  const tabs=['Reconciliation Queue','Ingest — Email & PDF','Integrations'];
+  const mine=INVOICES.filter(i=>i.client_id===S.client);
+  let body='';
+  if(S.tab===0){
+    const demo=R.vendors.map((v,i)=>{const amt=Math.round(r()*4000+800);
+      const st=[['valid','p-ok'],['valid','p-ok'],['questionable','p-warn'],['invalid','p-crit']][i];
+      return {id:'INV-73'+i, vendor:v, number:'LEG-'+(7301+i), amount:amt, currency:R.cur, status:st[0], confidence:96-i*7, issues:[], legacy:true};});
+    const rows=[...mine,...demo];
+    body=`<div class="card"><h3>Reconciliation Queue</h3><div class="sub">${mine.length?mine.length+' ingested this session · ':''}every line validated against RFID lift &amp; sensor data</div>
+    <table><thead><tr><th>Invoice</th><th>Vendor</th><th>Amount</th><th>Confidence</th><th>Status</th><th></th></tr></thead><tbody>
+    ${rows.map(v=>{
+      const pill= v.status==='valid'||v.status==='approved'?'p-ok': v.status==='questionable'?'p-warn': v.status==='needs-ocr'?'p-info':'p-crit';
+      return `<tr><td><b>${v.number||v.id}</b><div style="font-size:.7rem;color:var(--ink-muted)">${v.source?(v.source==='email'?ic('mail')+' email':ic('file-text')+' upload'):'sync'}${v.filename?' · '+v.filename:''}</div></td>
+      <td>${v.vendor||'—'}</td><td>${v.amount!=null?(v.currency||R.cur)+Number(v.amount).toLocaleString():'—'}</td>
+      <td>${v.confidence!=null?v.confidence+'%':'—'}</td>
+      <td><span class="pill ${pill}">${v.status}</span>${v.issues&&v.issues.length?`<div style="font-size:.68rem;color:var(--dusty-rose);max-width:200px">${v.issues[0]}</div>`:''}</td>
+      <td style="white-space:nowrap">${!v.legacy&&(v.status==='questionable'||v.status==='invalid')?
+        `<button class="btn sm" onclick="invSetStatus('${v.id}','approved')" style="padding:.28rem .6rem;font-size:.7rem">Approve</button>
+         <button class="btn dec sm" onclick="invSetStatus('${v.id}','disputed')" style="padding:.28rem .6rem;font-size:.7rem">Dispute</button>`:''}</td></tr>`;}).join('')}
+    </tbody></table>
+    <div class="chips" style="margin-top:.7rem"><span class="chip">Ghost-lift detection</span><span class="chip">Weight variance</span><span class="chip">Duplicate billing</span><span class="chip">Rate-card drift</span></div></div>`;
+  }
+  else if(S.tab===1){
+    body=`<div class="grid g2">
+    <div class="card"><h3>${ic('file-text')} Drop Invoices — PDF · JPEG · TIFF</h3><div class="sub">PDFs parsed via pdf.js; JPEG/TIFF/PNG (and scanned PDFs) read with in-browser OCR (tesseract.js) → AIRS validation</div>
+      <div class="dropzone" id="dz" onclick="tosBrowse()" ondrop="tosDrop(event)"
+        ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')">
+        <div class="big">${ic('inbox')}</div><b>Drag &amp; drop invoice files here</b><br>
+        <span style="font-size:.8rem">PDF, JPEG, TIFF or PNG · or click to browse · multiple files supported</span>
+      </div>
+      <input type="file" id="fpick" accept="application/pdf,.pdf,image/jpeg,.jpg,.jpeg,image/tiff,.tif,.tiff,image/png,.png" multiple style="display:none" onchange="tosPicked(event)">
+      ${INGEST.ocring.length?INGEST.ocring.map(o=>`<div class="row"><span>${ic('scan-search')} OCR reading <b>${o.name}</b>…</span><span class="pill p-info">tesseract.js</span></div>`).join(''):''}
+    </div>
+    <div class="card"><h3>${ic('mail')} Email Ingestion</h3><div class="sub">Forward or CC supplier invoices — attachments auto-ingest</div>
+      <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);margin-bottom:.3rem">Your dedicated inbound address</div>
+      <div class="inbox-addr">${inboxAddress()}</div>
+      <div style="font-size:.75rem;color:var(--ink-muted);margin:.6rem 0 .8rem">Production route: inbound mail webhook (SES / SendGrid / Postmark) → Supabase Edge Function → this pipeline. The demo inbox simulates an arrival:</div>
+      <button class="btn" onclick="simulateEmail()">Simulate Inbound Email</button>
+      ${INGEST.mail.length?`<div style="margin-top:.9rem">${INGEST.mail.map(m=>`<div class="mailrow"><div><b>${m.subject}</b><div style="font-size:.72rem;color:var(--ink-muted)">${m.from} · ${ic('paperclip')} ${m.att}</div></div><span class="mut" style="font-size:.72rem;color:var(--ink-muted)">${m.t}</span></div>`).join('')}</div>`:''}
+    </div>
+    ${INGEST.runs.length?`<div class="card" style="grid-column:1/-1"><h3>AIRS Validation — Live</h3><div class="sub">10-step pipeline · each invoice scored against lift &amp; sensor data</div>
+      <div class="grid g2">
+      ${INGEST.runs.map(run=>`<div style="border:1px solid var(--border);border-radius:14px;padding:.9rem 1rem;background:var(--bg)">
+        <div style="display:flex;justify-content:space-between;gap:.6rem;align-items:flex-start">
+          <div><b>${run.meta.vendor}</b> · ${run.meta.number}<div style="font-size:.72rem;color:var(--ink-muted)">${run.meta.source==='email'?ic('mail'):ic('file-text')} ${run.meta.filename||''} · ${run.meta.amount!=null?run.meta.currency+Number(run.meta.amount).toLocaleString():'amount pending'}</div></div>
+          ${run.done?`<span class="pill ${run.verdict==='valid'?'p-ok':run.verdict==='questionable'?'p-warn':run.verdict==='needs-ocr'?'p-info':'p-crit'}">${run.verdict}${run.conf?' · '+run.conf+'%':''}</span>`:`<span class="pill p-info">step ${run.step+1}/10</span>`}
+        </div>
+        <div class="pipe">${AIRS_STEPS.map((s,i)=>{
+          const flag=run.flags.find(f=>f[0]===i);
+          const cls= i<run.step? (flag?'flag':'done') : i===run.step&&!run.done?'now':'';
+          return `<div class="pstep ${cls}"><span class="pi">${i<run.step?(flag?'!':'✓'):''}</span>${s}${flag&&i<run.step?` — <span style="color:var(--dusty-rose)">${flag[1]}</span>`:''}</div>`;}).join('')}
+        </div></div>`).join('')}
+      </div></div>`:''}
+    </div>`;
+  }
+  else{
+    body=`<div class="grid g2"><div class="card"><h3>Accounting Integrations</h3><div class="sub">Bidirectional, tax-aware per region</div>
+    ${R.accounting.map((a,i)=>`<div class="row"><div><b>${a}</b><div class="mut">Invoice export · payment import · contact sync</div></div><span class="pill ${i===0?'p-ok':'p-info'}">${i===0?'Connected':'Available'}</span></div>`).join('')}
+    <div class="row"><span class="mut">Tax handling and chart-of-accounts mapping load from the ${R.name} pack — no code changes per region.</span></div>
+    ${S.vertical==='clinical'?'<div class="row"><span>Departmental cost allocation</span><span class="pill p-ok">Per ward / stream / vendor</span></div>':''}
+    ${V.persona==='regulator'?'<div class="row"><span>Penalty exposure model</span><span class="pill p-warn">'+fmtMoney(Math.round(r()*40+12))+'K at risk</span></div>':''}</div>
+    <div class="card"><h3>Approved → Ledger Flow</h3><div class="sub">What happens after confirmation</div>
+    ${[['Approved invoices','Posted to '+R.accounting[0]+' with GL codes from step 9'],
+       ['Disputed invoices','Dispute pack auto-drafted with sensor evidence attached'],
+       ['OCR queue','Scanned PDFs routed for OCR then re-enter the pipeline'],
+       ['Audit trail','Every verdict + human override logged to the invoices table']]
+    .map(x=>`<div class="row"><div><b>${x[0]}</b><div class="mut">${x[1]}</div></div></div>`).join('')}</div></div>`;
+  }
+  return `<div class="page-h"><span class="eyebrow">AIRS · automated invoice reconciliation</span><h1>Finance &amp; AIRS</h1>
+    <p>Invoices arrive by email or drag-and-drop, are parsed and pushed through the 10-step AIRS pipeline, then land here for confirmation. Accounting sync: ${R.accounting.join(', ')}.</p></div>
+  <div class="grid g4" style="margin-bottom:1rem">
+    <div class="stat sg"><div class="v">95%</div><div class="l">Validation Accuracy</div></div>
+    <div class="stat sg"><div class="v">${fmtMoney(Math.round(60+r()*30))}K</div><div class="l">Annual Savings</div></div>
+    <div class="stat"><div class="v">${mine.length}</div><div class="l">Ingested This Session</div></div>
+    <div class="stat"><div class="v">${mine.filter(i=>i.status==='questionable'||i.status==='invalid').length}</div><div class="l">Awaiting Confirmation</div></div></div>
+  <div class="tabs">${tabs.map((t,i)=>`<span class="tab ${S.tab===i?'on':''}" onclick="setTab(${i})">${t}</span>`).join('')}</div>
+  ${body}`;
+},
+
+sustainability(){
+  const R=REG(), r=rng(seedFor()+8);
+  return `<div class="page-h"><span class="eyebrow">${R.regulators.esg.join(' · ')}</span><h1>Sustainability &amp; ESG</h1>
+    <p>Disclosure-ready outputs mapped to the frameworks active in ${R.name}.</p></div>
+  <div class="grid g4" style="margin-bottom:1rem">
+    <div class="stat sg"><div class="v">${Math.round(62+r()*12)}%</div><div class="l">Diversion Rate</div></div>
+    <div class="stat sg"><div class="v">${(10+r()*6).toFixed(1)} ${R.co2}</div><div class="l">Avoided (YTD)</div></div>
+    <div class="stat sg"><div class="v">${Math.round(80+r()*10)}%</div><div class="l">Recycling Rate</div></div>
+    <div class="stat sg"><div class="v">A+</div><div class="l">Grade</div></div></div>
+  <div class="grid g2"><div class="card"><h3>Carbon Trend</h3><div class="sub">Monthly emissions from waste operations</div>
+    <div class="cols">${['J','F','M','A','M','J'].map((m,i)=>`<div class="col"><i style="height:${85-i*9}%;background:${i>3?'var(--sage)':'var(--peach)'}"></i><span>${m}</span></div>`).join('')}</div></div>
+  <div class="card"><h3>Framework Readiness</h3><div class="sub">Automated data coverage</div>
+    ${R.regulators.esg.map((f,i)=>{const v=Math.round(96-i*7-r()*4);return `<div class="hbar"><div class="lab">${f}</div><div class="bar"><i style="width:${v}%;background:var(--sage)"></i></div><div class="val">${v}%</div></div>`}).join('')}
+    <div class="row"><span>Scope 3 from treatment data</span><span class="pill p-ok">Automated</span></div>
+    <div style="margin-top:.6rem"><button class="btn ghost" onclick="alert('Generates disclosure-ready exports for the selected framework, formatted for this region.')">Generate Report</button></div></div></div>`;
+},
+
+training(){
+  const V=VERTICALS[S.vertical], r=rng(seedFor()+9);
+  const mods= S.vertical==='clinical'
+    ? ['Waste stream colour-coding','Sharps handling & thresholds','PPE procedures','Spill response','Privacy & data handling']
+    : ['Sorting fundamentals','Contamination prevention','Secure disposal protocol','Sensor & lid care','Reporting & escalation'];
+  return `<div class="page-h"><span class="eyebrow">Education hub</span><h1>Training &amp; Education</h1>
+    <p>Interactive modules with certificates — completion feeds the Compliance Engine.</p></div>
+  <div class="grid g2"><div class="card"><h3>Modules</h3><div class="sub">Role-based curriculum</div>
+    ${mods.map((m,i)=>{const v=Math.round(70+r()*29);return `<div class="row"><div><b>${m}</b><div class="mut">${Math.round(r()*40+10)} min · quiz + certificate</div></div><div style="display:flex;align-items:center;gap:.5rem;max-width:160px;flex:1"><div class="bar"><i style="width:${v}%;background:var(--sage)"></i></div><b style="font-size:.78rem">${v}%</b></div></div>`}).join('')}</div>
+  <div class="card"><h3>Certificates &amp; Status</h3><div class="sub">Workforce compliance</div>
+    <div class="row"><span>Staff certified</span><b>${Math.round(85+r()*12)}%</b></div>
+    <div class="row"><span>Expiring in 30 days</span><span class="pill p-warn">${Math.round(r()*6+2)}</span></div>
+    <div class="row"><span>AR training scenarios</span><span class="pill p-info">${VERTICALS[S.vertical].modules.includes('ar')?'Enabled':'Optional'}</span></div>
+    <div class="row"><span>QR micro-guides at ${V.unitTerm.toLowerCase()}s</span><span class="pill p-ok">Active</span></div></div></div>`;
+},
+
+analytics(){
+  const V=VERTICALS[S.vertical], R=REG(), r=rng(seedFor()+10);
+  const streams=STREAMS[V.persona];
+  return `<div class="page-h"><span class="eyebrow">AI-driven insights</span><h1>Operational Analytics</h1>
+    <p>Volume, efficiency and cost views — exportable per role.</p></div>
+  <div class="grid g2"><div class="card"><h3>Weekly Volume</h3><div class="sub">${R.wt} collected per day</div>
+    <div class="cols">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>{const h=Math.round(r()*70+25);return `<div class="col"><i style="height:${h}%"></i><span>${d}</span></div>`}).join('')}</div></div>
+  <div class="card"><h3>Stream Breakdown</h3><div class="sub">Share of total volume</div>
+    ${streams.map(([n,c])=>{const v=Math.round(r()*35+8);return `<div class="hbar"><div class="lab">${n}</div><div class="bar"><i style="width:${v*2}%;background:${c}"></i></div><div class="val">${v}%</div></div>`}).join('')}</div>
+  <div class="card"><h3>AI Insights</h3><div class="sub">From the Efficiency Agent</div>
+    ${[['Volume vs last quarter','-23%','p-ok'],['Projected annual savings',fmtMoney(51)+'K','p-ok'],['Operational efficiency score','92%','p-ok'],['Contamination trend','-8% MoM','p-info']]
+    .map(x=>`<div class="row"><span>${x[0]}</span><span class="pill ${x[2]}">${x[1]}</span></div>`).join('')}</div>
+  <div class="card"><h3>Behavioural Patterns</h3><div class="sub">Usage analytics</div>
+    <div class="row"><span>Weekday usage</span><b>72%</b></div>
+    <div class="row"><span>Weekend peak</span><b>94%</b></div>
+    <div class="row"><span>Event days</span><b>100%</b></div>
+    <div class="row"><span>Hotspots identified</span><b>6</b></div></div></div>`;
+}
+};
+
+boot();
+</script>
+</body>
+</html>
