@@ -38,7 +38,7 @@ h3 svg.lic{width:17px;height:17px;color:var(--coral-deep);margin-right:.1rem}
 .wic svg.lic{width:20px;height:20px;color:var(--coral-deep)}
 .topbar .spacer{flex:1}
 .sel{display:flex;align-items:center;gap:.45rem;font-size:.8rem;color:var(--ink-light)}
-.sel select{font-family:'Poppins',sans-serif;font-size:.85rem;color:var(--ink);background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:.35rem .6rem;cursor:pointer}
+.sel select{font-family:'Poppins',sans-serif;font-size:.85rem;color:var(--ink);background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:.38rem 2.1rem .38rem .75rem;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2353565A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right .7rem center}
 .live{display:flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:700;color:var(--sage-dark);background:var(--sage-light);padding:.25rem .7rem;border-radius:999px}
 .live::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--sage-dark);animation:pulse 1.6s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
@@ -162,11 +162,58 @@ select option:disabled{color:#c3c7c3}
 .frm label{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted);display:block;margin-bottom:.25rem}
 .frm input,.frm select,.frm textarea{width:100%;font-family:'Poppins',sans-serif;font-size:.86rem;padding:.5rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--ink)}
 .frm .full{grid-column:1/-1}
+.frm select{appearance:none;-webkit-appearance:none;padding-right:2.1rem;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2353565A' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right .7rem center}
 .vx{border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;margin-bottom:.6rem;background:var(--bg)}
 .vx .vh{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:.88rem}
 .vx .mods{display:flex;flex-wrap:wrap;gap:.15rem .9rem;margin-top:.45rem}
 .vx .mods label{display:flex;align-items:center;gap:.3rem;font-size:.76rem;color:var(--ink-light);text-transform:none;letter-spacing:0}
 .vx input[type=checkbox]{accent-color:var(--coral-deep)}
+/* plans & add-ons */
+.trial{background:linear-gradient(135deg,#205C40,#2e7d52);color:#fff;border-radius:18px;padding:1.5rem 1.7rem;display:flex;justify-content:space-between;align-items:center;gap:1.2rem;flex-wrap:wrap;margin-bottom:1.6rem}
+.trial h2{font-size:1.3rem;font-weight:600;display:flex;align-items:center;gap:.5rem}
+.trial h2 svg.lic{width:20px;height:20px;color:#8ee07a}
+.trial p{color:rgba(255,255,255,.85);font-size:.84rem;max-width:640px;margin-top:.25rem}
+.tier{position:relative;display:flex;flex-direction:column}
+.tier .price{font-size:1.65rem;font-weight:700;color:var(--ink);margin-top:.35rem}
+.tier .price small{font-size:.7rem;color:var(--ink-muted);font-weight:500}
+.tier.hot{border:2px solid var(--coral-deep)}
+.hotbadge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--coral-deep);color:#fff;font-size:.6rem;font-weight:700;padding:.16rem .7rem;border-radius:999px;letter-spacing:.06em;white-space:nowrap}
+.tier ul{list-style:none;margin:.7rem 0 1rem;flex:1}
+.tier li{font-size:.77rem;color:var(--ink-light);padding:.2rem 0;display:flex;gap:.45rem;align-items:flex-start}
+.tier li svg.lic{width:13px;height:13px;color:var(--sage-dark);margin-top:2.5px}
+.tier .btn{width:100%}
+.addon-cols{columns:2;column-gap:1.4rem}
+@media(max-width:1000px){.addon-cols{columns:1}}
+.addon-group{break-inside:avoid;margin-bottom:1.7rem}
+.addon-h{display:flex;align-items:center;gap:.6rem;font-size:1.02rem;font-weight:600;margin-bottom:.7rem;color:var(--ink)}
+.addon-h svg.lic{width:20px;height:20px;color:var(--coral-deep)}
+.addon{background:var(--cream);border-radius:14px;padding:.85rem 1.05rem;margin-bottom:.65rem}
+.addon .t{display:flex;justify-content:space-between;gap:.8rem;font-size:.92rem;font-weight:600;color:var(--ink)}
+.addon .t a{color:var(--coral-deep);font-size:.78rem;font-weight:700;white-space:nowrap;cursor:pointer}
+.addon .d{font-size:.77rem;color:var(--ink-muted);margin-top:.15rem}
+.addon .d b{color:var(--ink);margin-right:.5rem}
+.market{border:1px solid var(--border);border-radius:18px;padding:1.9rem;text-align:center;margin-top:.5rem}
+/* EcoSystem section */
+.eco{margin-bottom:1.8rem}
+.eco-grid{display:grid;grid-template-columns:1.05fr 1fr 1fr;gap:1.6rem}
+@media(max-width:1100px){.eco-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.eco-grid{grid-template-columns:1fr}}
+.eco h2{font-size:1.7rem;font-weight:700;color:var(--coral-deep);line-height:1.15}
+.eco .rule{width:52px;height:4px;background:#43B02A;border-radius:999px;margin:.6rem 0 .8rem}
+.eco-img{margin-top:.9rem;border-radius:14px;overflow:hidden}
+.eco-img img{width:100%;height:auto;display:block}
+.eco-img.ph{background:var(--cream);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;min-height:190px;color:var(--ink-muted);font-size:.78rem;gap:.5rem}
+.eco-col-h{font-size:.98rem;font-weight:700;color:var(--coral-deep);margin-bottom:.75rem}
+.eco-col-h span{color:var(--ink-light);font-weight:500}
+.eco-app{display:flex;justify-content:space-between;align-items:center;gap:.7rem;background:var(--cream);border-radius:12px;padding:.7rem .95rem;margin-bottom:.55rem;cursor:pointer;transition:background .15s}
+.eco-app:hover{background:var(--peach-pale)}
+.eco-app b{font-size:.85rem;color:var(--ink);font-weight:600}
+.eco-app small{display:block;font-size:.7rem;color:var(--ink-muted)}
+.eco-app svg.lic{width:20px;height:20px;color:var(--ink-light)}
+.eco-acc{display:flex;align-items:center;gap:.55rem;padding:.5rem 0;font-size:.84rem;color:var(--ink);border-bottom:1px solid var(--border)}
+.eco-acc:last-child{border-bottom:none}
+.eco-acc svg.lic{width:14px;height:14px;color:var(--sage-dark)}
+sup.rmark{font-size:.55em;line-height:0;font-weight:600}
 /* AIRS ingestion */
 .dropzone{border:2px dashed var(--coral);border-radius:16px;padding:2.2rem 1.4rem;text-align:center;color:var(--ink-light);background:var(--peach-pale);cursor:pointer;transition:background .2s,border-color .2s}
 .dropzone.over{background:var(--peach-light);border-color:var(--coral-deep)}
@@ -217,6 +264,20 @@ select option:disabled{color:#c3c7c3}
    Adding a region = adding one object. Nothing else changes. */
 /* ---------- Icon set — Lucide (inlined, no CDN needed) ---------- */
 const LUCIDE={
+'refrigerator':'<path d="M5 6a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6Z" /><path d="M5 10h14" /><path d="M15 7v6" />',
+'school':'<path d="M14 21v-3a2 2 0 0 0-4 0v3" /><path d="M18 4.933V21" /><path d="m4 6 7.106-3.79a2 2 0 0 1 1.788 0L20 6" /><path d="m6 11-3.52 2.147a1 1 0 0 0-.48.854V19a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a1 1 0 0 0-.48-.853L18 11" /><path d="M6 4.933V21" /><circle cx="12" cy="9" r="2" />',
+'landmark':'<path d="M10 18v-7" /><path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z" /><path d="M14 18v-7" /><path d="M18 18v-7" /><path d="M3 22h18" /><path d="M6 18v-7" />',
+'cog':'<path d="M11 10.27 7 3.34" /><path d="m11 13.73-4 6.93" /><path d="M12 22v-2" /><path d="M12 2v2" /><path d="M14 12h8" /><path d="m17 20.66-1-1.73" /><path d="m17 3.34-1 1.73" /><path d="M2 12h2" /><path d="m20.66 17-1.73-1" /><path d="m20.66 7-1.73 1" /><path d="m3.34 17 1.73-1" /><path d="m3.34 7 1.73 1" /><circle cx="12" cy="12" r="2" /><circle cx="12" cy="12" r="8" />',
+'store':'<path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5" /><path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244" /><path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05" />',
+'plus':'<path d="M5 12h14" /><path d="M12 5v14" />',
+'rocket':'<path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" /><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09" /><path d="M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2z" /><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 .05 5 .05" />',
+'check':'<path d="M20 6 9 17l-5-5" />',
+'circle-dollar-sign':'<circle cx="12" cy="12" r="10" /><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" /><path d="M12 18V6" />',
+'external-link':'<path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />',
+'sparkles':'<path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" /><path d="M20 2v4" /><path d="M22 4h-4" /><circle cx="4" cy="20" r="2" />',
+'cpu':'<path d="M12 20v2" /><path d="M12 2v2" /><path d="M17 20v2" /><path d="M17 2v2" /><path d="M2 12h2" /><path d="M2 17h2" /><path d="M2 7h2" /><path d="M20 12h2" /><path d="M20 17h2" /><path d="M20 7h2" /><path d="M7 20v2" /><path d="M7 2v2" /><rect x="4" y="4" width="16" height="16" rx="2" /><rect x="8" y="8" width="8" height="8" rx="1" />',
+'headset':'<path d="M3 11h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5Zm0 0a9 9 0 1 1 18 0m0 0v5a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3Z" /><path d="M21 16v2a4 4 0 0 1-4 4h-5" />',
+'plug':'<path d="M12 22v-5" /><path d="M15 8V2" /><path d="M17 8a1 1 0 0 1 1 1v4a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1z" /><path d="M9 8V2" />',
 'layout-dashboard':'<rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" />',
 'zap':'<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />',
 'camera':'<path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z" /><circle cx="12" cy="13" r="3" />',
@@ -508,16 +569,16 @@ const VERTICALS = {
   facilities: { name:'Facilities Management', icon:'building-2', unitTerm:'Bin', siteTerm:'Floor', mapMode:'floorplan',
     persona:'internal', agents:['efficiency','engagement','compliance'],
     modules:['dashboard','map','scheduling','agents','engagement','analytics','finance','coc','compliance','sustainability','training'] },
-  commercial: { name:'Commercial Collections', icon:'truck', unitTerm:'Bin', siteTerm:'Zone', mapMode:'geo',
+  commercial: { name:'Commercial', icon:'truck', unitTerm:'Bin', siteTerm:'Zone', mapMode:'geo',
     persona:'operator', agents:['route','billing','engagement'],
     modules:['dashboard','brokerage','map','routes','scheduling','agents','engagement','weather','finance','compliance','sustainability','analytics'] },
   public: { name:'Public Space', icon:'trees', unitTerm:'Bin', siteTerm:'Precinct', mapMode:'geo',
     persona:'public', agents:['route','public','weather','ar'],
     modules:['dashboard','map','routes','scheduling','agents','engagement','weather','ar','sustainability','training','analytics'] },
-  clinical: { name:'Clinical & Healthcare', icon:'hospital', unitTerm:'Container', siteTerm:'Ward / Zone', mapMode:'zones',
+  clinical: { name:'Medical', icon:'hospital', unitTerm:'Container', siteTerm:'Ward / Zone', mapMode:'zones',
     persona:'clinical', agents:['compliance','risk','efficiency'],
     modules:['dashboard','map','routes','scheduling','agents','compliance','coc','finance','sustainability','ar','training','analytics'] },
-  regulated: { name:'Regulated Industrial', icon:'hard-hat', unitTerm:'Roll-off', siteTerm:'Site', mapMode:'geo',
+  regulated: { name:'Industrial', icon:'hard-hat', unitTerm:'Roll-off', siteTerm:'Site', mapMode:'geo',
     persona:'regulator', agents:['route','compliance','weather','ar'],
     modules:['dashboard','brokerage','aivision','map','routes','scheduling','agents','engagement','weather','ar','compliance','coc','finance','sustainability','analytics'] }
 };
@@ -604,6 +665,7 @@ function setVertical(v){
 function setRegion(v){ S.region=v; S.sel=null; brokerReset(); render(); }
 function brokerReset(){ if(BROKER.timer){clearInterval(BROKER.timer);BROKER.timer=null;} BROKER.jobs=[]; avReset(); }
 function setView(v){
+  if(v==='plans'){ S.view='plans'; S.tab=Object.keys(VERTICALS).indexOf(S.vertical); S.sel=null; render(); return; }
   if(v==='admin'){ if(isPlatform()){ S.view='admin'; S.tab=0; S.sel=null; render(); }
     else alert('Admin Console is restricted to the platform owner.'); return; }
   if(!BACKEND.authorize(S.vertical,v)){
@@ -640,6 +702,8 @@ function render(){
       return `<div class="nav-item ${S.view===m?'active':''} ${ok?'':'locked'}" onclick="setView('${m}')">
         <span class="ic">${ic(ok?MODULE_META[m].i:'lock')}</span>${MODULE_META[m].l}</div>`;
     }).join('') +
+    `<div style="margin:.8rem .8rem .3rem;font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted)">Plan</div>
+     <div class="nav-item ${S.view==='plans'?'active':''}" onclick="setView('plans')"><span class="ic">${ic('circle-dollar-sign')}</span>Plans &amp; Add-ons</div>` +
     (isPlatform()?`<div style="margin:.8rem .8rem .3rem;font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-muted)">Platform</div>
      <div class="nav-item ${S.view==='admin'?'active':''}" onclick="setView('admin')"><span class="ic">${ic('settings')}</span>Admin Console</div>`:'');
   document.getElementById('main').innerHTML =
@@ -1064,6 +1128,66 @@ function downloadSchema(){
 }
 
 /* ---------- module renderers (shared across all verticals) ---------- */
+/* ---------- SaaS pricing — sector-tiered plans + add-ons ----------
+   Strategy: every sector gets a Free tier (land small operators like
+   cafés at $0), a low-friction entry tier priced to the sector's
+   capacity to pay, a "most popular" growth tier, and custom Enterprise.
+   Every new account starts with a 30-day full-platform trial that
+   downgrades gracefully to the sector Free tier. */
+const PRICING={
+  facilities:{unit:'building',tiers:[
+    {n:'Starter Building',d:'Try smart waste in one building',p:0,cta:'Get started free',f:['1 building · 10 smart bins','Dashboard, floorplan map & alerts','Sensor-triggered scheduling','Community support']},
+    {n:'Professional',d:'One building, fully automated',p:299,hot:1,cta:'Start 30-day trial',f:['1 building · unlimited bins','All modules incl. AI agents','Workplace engagement & training','Finance + AIRS invoice validation','Priority email support']},
+    {n:'Portfolio',d:'For multi-building operators',p:949,cta:'Start 30-day trial',f:['Up to 10 buildings','Cross-portfolio analytics','Chain of custody & compliance packs','SSO & role-based access','Named success manager']},
+    {n:'Enterprise',d:'Global facilities portfolios',p:null,cta:'Talk to sales',f:['Unlimited buildings & regions','BMS / IoT & API integrations','Custom SLAs to 99.9%','Dedicated success team']}]},
+  commercial:{unit:'site',tiers:[
+    {n:'Kerbside Free',d:'Built for cafés & small shopfronts',p:0,cta:'Get started free',f:['1 site · up to 5 bins','Fill-level alerts & dashboard','Basic collection scheduling','Community support']},
+    {n:'Starter',d:'Small operators & multi-bin sites',p:49,cta:'Start 30-day trial',f:['Up to 25 bins · 1 vehicle','Routes & on-demand bookings','Customer engagement portal','Email support']},
+    {n:'Growth',d:'Fleets & growing operators',p:199,hot:1,cta:'Start 30-day trial',f:['Unlimited bins · 5 vehicles','ThinkOS Exchange marketplace','AIRS invoice validation','Weather intelligence & analytics','Priority support']},
+    {n:'Enterprise',d:'National collection networks',p:null,cta:'Talk to sales',f:['Unlimited fleet & regions','Multi-region regulatory packs','API access & data export','Exchange revenue-share pricing']}]},
+  public:{unit:'precinct',tiers:[
+    {n:'Community Pilot',d:'Prove the model in one precinct',p:0,cta:'Start free pilot',f:['1 precinct · 15 public units','90-day pilot impact report','Citizen report intake','Community support']},
+    {n:'Precinct',d:'Per managed precinct',p:449,cta:'Start 30-day trial',f:['Unlimited units per precinct','Citizen engagement channels','Route optimisation','Weather-aware collections']},
+    {n:'Council',d:'City-wide operations',p:1850,hot:1,cta:'Start 30-day trial',f:['All precincts, one platform','AR field operations','Regulator & audit reporting','Procurement-ready annual billing','Dedicated onboarding']},
+    {n:'Government',d:'Multi-council & state programs',p:null,cta:'Talk to sales',f:['Multi-council data sharing','Data sovereignty options','Custom SLAs & security review','Grant & program reporting']}]},
+  clinical:{unit:'facility',tiers:[
+    {n:'Clinic Essentials',d:'Single practice compliance basics',p:0,cta:'Get started free',f:['1 clinic · 10 containers','Colour-coding compliance guides','Manifest log & reminders','Community support']},
+    {n:'Clinic',d:'Medical centres & day clinics',p:149,cta:'Start 30-day trial',f:['Unlimited containers','Sharps auto-booking at 75%','Staff training & certificates','Audit-ready exports']},
+    {n:'Hospital',d:'Per hospital campus',p:749,hot:1,cta:'Start 30-day trial',f:['Full chain of custody','Cytotoxic & anatomical streams','Compliance engine + evidence packs','Departmental cost allocation','Priority support']},
+    {n:'Health Network',d:'Multi-campus health services',p:null,cta:'Talk to sales',f:['Unlimited campuses','Clinical governance reporting','EMR / HL7 integrations','Dedicated clinical success team']}]},
+  regulated:{unit:'site',tiers:[
+    {n:'Site Basic',d:'One site, core tracking',p:0,cta:'Get started free',f:['1 site · 3 roll-offs','Manifest & weight tracking','Fill alerts & dashboard','Community support']},
+    {n:'Site',d:'Per industrial site',p:249,cta:'Start 30-day trial',f:['Unlimited roll-offs per site','Routes & scheduling','Regional compliance pack','Chain of custody']},
+    {n:'Multi-Site Pro',d:'Operators across sites',p:899,hot:1,cta:'Start 30-day trial',f:['Up to 10 sites','AIVision camera AI (2 cameras incl.)','ThinkOS Exchange brokerage','ESG disclosure suite','Priority support']},
+    {n:'Enterprise',d:'National regulated operators',p:null,cta:'Talk to sales',f:['Unlimited sites','Regulator portal access','Custom AI detection models','Custom SLAs & integrations']}]}
+};
+/* prices use ¤ placeholder → replaced with the active region currency */
+const ADDONS=[
+  {t:'AI & automation',i:'sparkles',items:[
+    {n:'AIVision Camera AI',pr:'¤99 per camera/mo',d:'Live overfill, contamination, hazard & PPE detection on any site',cta:'Explore'},
+    {n:'AI Agent Pack',pr:'¤49',d:'Add the Weather, Risk and Engagement agents to any plan',cta:'Add'},
+    {n:'AIRS Invoice Automation',pr:'¤79',d:'10-step invoice validation matched to RFID lifts & sensor data',cta:'Upgrade'}]},
+  {t:'Exchange marketplace',i:'zap',items:[
+    {n:'ThinkOS Exchange',pr:'5% per matched job',d:'On-demand collection marketplace — earn or source capacity instantly',cta:'Explore'},
+    {n:'Surge Pricing Analytics',pr:'¤29',d:'Demand forecasting and dynamic pricing intelligence for operators',cta:'Explore'}]},
+  {t:'Compliance & ESG',i:'shield-check',items:[
+    {n:'Additional Region Pack',pr:'¤59',d:'Add UK, US, EU or SEA regulatory packs to your workspace',cta:'Add'},
+    {n:'ESG Disclosure Suite',pr:'¤89',d:'NABERS, GRI and CSRD-ready sustainability exports',cta:'Explore'},
+    {n:'Chain of Custody+',pr:'¤69',d:'Hash-chained destruction certificates and regulator portal',cta:'Explore'}]},
+  {t:'Hardware & sensors',i:'cpu',items:[
+    {n:'SensCam',pr:'US$749 per unit + US$29/mo SaaS',d:'Rugged solar site camera for construction & regulated sites — feeds AIVision',cta:'Order'},
+    {n:'ThinkLid Sensor',pr:'¤12 per bin/mo',d:'Fill, temperature and lid telemetry — connectivity included',cta:'Order'},
+    {n:'RFID Lift Verification',pr:'¤8 per vehicle/mo',d:'Dispute-proof lift confirmation for billing and SLAs',cta:'Order'},
+    {n:'Site Camera Kit',pr:'¤330 per site/yr',d:'Hardware licence to run AIVision on third-party cameras',cta:'Explore'}]},
+  {t:'Data & analytics',i:'chart-column',items:[
+    {n:'Advanced Analytics',pr:'¤59',d:'Behavioural patterns, hotspot mapping and custom KPI boards',cta:'Explore'},
+    {n:'Data Export API',pr:'¤39',d:'Streaming API and warehouse sync for your BI stack',cta:'Explore'}]},
+  {t:'Support & training',i:'headset',items:[
+    {n:'Priority Support',pr:'¤99',d:'4-hour response target with phone escalation',cta:'Upgrade'},
+    {n:'Guided Onboarding',pr:'¤490 one-off',d:'Data migration, site setup and crew training by the Matter team',cta:'Book'},
+    {n:'WayFi<sup class="rmark">®</sup> AR Field Training',pr:'¤29 per user/mo',d:'Interactive WayFi AR servicing and safety scenarios for field crews',cta:'Add'}]}
+];
+
 const RENDER={
 
 admin(){
@@ -1270,6 +1394,71 @@ aivision(){
       <div class="chips" style="margin-top:.6rem"><span class="chip">Overfill</span><span class="chip">Contamination</span><span class="chip">Hazardous liquids</span><span class="chip">Manifest match</span><span class="chip">PPE compliance</span><span class="chip">Thermal / fire</span></div>
     </div>
   </div>`;
+},
+
+plans(){
+  const R=REG(), keys=Object.keys(VERTICALS);
+  const ti=Math.min(S.tab||0,keys.length-1), vk=keys[ti], V=VERTICALS[vk], P=PRICING[vk];
+  const money=v=> v==null?'Custom': v===0?'Free': R.cur+v.toLocaleString();
+  return `<div class="page-h" style="display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap;margin-bottom:1.2rem">
+    <div><span class="eyebrow">ThinkOS plans · sector pricing</span><h1>Plans &amp; Add-ons</h1>
+    <p>From a single café bin to a national portfolio — every sector has a free tier, and every paid plan starts with full access.</p></div>
+    <div style="font-size:.76rem;color:var(--ink-muted);padding-bottom:.5rem">Prices are ${R.cur} per workspace/month, unless stated otherwise</div></div>
+  <div class="trial">
+    <div><h2>${ic('rocket')} Full platform. Free for 30 days.</h2>
+    <p>Complete access to every workspace, module and AI agent — no credit card required. When the trial ends, keep going on a paid plan or drop to your sector's Free tier without losing your data.</p></div>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap"><button class="btn" style="background:#fff;color:var(--coral-deep)" onclick="alert('Starts the 30-day full-access trial — every workspace and module unlocks instantly. No credit card required.')">Start free trial</button>
+    <button class="btn" style="background:transparent;border:1px solid rgba(255,255,255,.55)" onclick="alert('Books a call with the Matter team.')">Talk to sales</button></div>
+  </div>
+  <div class="card eco">
+    <div class="eco-grid">
+      <div>
+        <h2>ThinkOS<br>EcoSystem</h2><div class="rule"></div>
+        <p style="font-size:.84rem;color:var(--ink-light)">One platform, many front doors — purpose-built apps on the same ThinkOS core, extended by ThinkLid hardware and accessories.</p>
+        <div class="eco-img ph" id="ecoImg">${ic('camera')} EcoSystem visual</div>
+      </div>
+      <div>
+        <div class="eco-col-h">ThinkOS <span>–</span> Purpose Apps</div>
+        ${[['Ripple','smart home','refrigerator',-1],['SmartLoop','schools','school',0],['ThinkOS','local government','landmark',2],['BioLoop','hospitals','hospital',3],['CleanLoop','facilities management','cog',0],['ZeroLoop','hospitality / events','store',1]]
+          .map(a=>`<div class="eco-app" ${a[3]>=0?`onclick="setTab(${a[3]})"`:''} title="${a[3]>=0?'View '+Object.values(VERTICALS)[a[3]].name+' plans':''}"><div><b>${a[0]}</b><small>${a[1]}${a[3]>=0?' · view plans →':''}</small></div>${ic(a[2])}</div>`).join('')}
+      </div>
+      <div>
+        <div class="eco-col-h">ThinkOS <span>–</span> Accessories</div>
+        ${['Think lid options','Container Lid','WayFi<sup class="rmark">®</sup> AR','BioFilter','Doc Security Package','Charcoal Filter']
+          .map(a=>`<div class="eco-acc">${ic('plus')}${a}</div>`).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="tabs">${keys.map((k,i)=>`<span class="tab ${ti===i?'on':''}" onclick="setTab(${i})">${VERTICALS[k].name}</span>`).join('')}</div>
+  <div class="grid g4" style="margin-bottom:2.2rem;align-items:stretch">
+    ${P.tiers.map(t=>`<div class="card tier ${t.hot?'hot':''}">
+      ${t.hot?'<span class="hotbadge">MOST POPULAR</span>':''}
+      <h3>${t.n}</h3><div class="sub">${t.d}</div>
+      <div class="price">${money(t.p)}<small>${t.p?' /'+P.unit+'/mo':t.p===0?' forever':''}</small></div>
+      <ul>${t.f.map(f=>`<li>${ic('check')}${f}</li>`).join('')}</ul>
+      <button class="btn ${t.hot?'':'ghost'}" onclick="alert('${t.cta} — ${t.n} · ${V.name}.')">${t.cta}</button>
+    </div>`).join('')}
+  </div>
+  ${vk==='regulated'?`<div class="card" style="display:flex;align-items:center;gap:1.3rem;flex-wrap:wrap;margin:-1.2rem 0 2.2rem;border:1px solid var(--coral)">
+    <span class="ws-ic" style="width:48px;height:48px;border-radius:13px">${ic('camera')}</span>
+    <div style="flex:1;min-width:260px"><h3 style="margin-bottom:.15rem">SensCam — construction site camera</h3>
+      <div class="sub" style="margin-bottom:0">Rugged solar-powered camera for construction, demolition &amp; regulated sites — streams straight into AIVision for overfill, contamination and PPE detection. Works on any plan, including Free.</div></div>
+    <div style="text-align:right">
+      <div style="font-size:1.5rem;font-weight:700;color:var(--ink)">US$749 <span style="font-size:.7rem;color:var(--ink-muted);font-weight:500">per unit, one-off</span></div>
+      <div style="font-size:.8rem;color:var(--sage-dark);font-weight:600">+ US$29/mo SaaS per camera</div>
+    </div>
+    <button class="btn" onclick="alert('SensCam order — US$749 per unit + US$29/mo SaaS per camera. Ships with AIVision onboarding.')">Order SensCam</button>
+  </div>`:''}
+  <h2 style="font-size:1.45rem;font-weight:600">Get more with add-ons</h2>
+  <p style="color:var(--ink-muted);font-size:.84rem;margin:.15rem 0 1.2rem">Extend any plan — add-ons apply per workspace and can be removed anytime.</p>
+  <div class="addon-cols">
+    ${ADDONS.map(g=>`<div class="addon-group"><div class="addon-h">${ic(g.i)} ${g.t}</div>
+      ${g.items.map(a=>`<div class="addon"><div class="t"><span>${a.n}</span><a onclick="alert('${a.n} — added to your plan preview.')">${a.cta}</a></div>
+      <div class="d"><b>${a.pr.replace('¤',R.cur)}</b>${a.d}</div></div>`).join('')}</div>`).join('')}
+  </div>
+  <div class="market"><h2 style="font-size:1.25rem;font-weight:600">Integrations &amp; partner apps</h2>
+  <p style="color:var(--ink-muted);font-size:.84rem;margin:.4rem auto .9rem;max-width:560px">Connect ${R.accounting.join(', ')}, BMS platforms and ${R.localityTerm.toLowerCase()} systems from the integration marketplace.</p>
+  <button class="btn ghost" onclick="alert('Opens the ThinkOS integration marketplace.')">${ic('external-link')} ThinkOS Integration Marketplace</button></div>`;
 },
 
 dashboard(){
@@ -1510,8 +1699,8 @@ ar(){
   const extra = S.vertical==='clinical'
     ? [[ic('hand')+' PPE Procedure Overlay','Step-by-step PPE guidance rendered at the point of handling'],[ic('clipboard-check')+' Compliance Audit Walk-Through','Guided audit route with hands-free documentation']]
     : [[ic('camera')+' Damage Documentation','Point-and-capture — auto-detects model, GPS-tags, raises work order'],[ic('chart-column')+' Data Visualisation','Historical fill and collection data overlaid on physical units']];
-  return `<div class="page-h"><span class="eyebrow">Field operations</span><h1>AR Mode</h1>
-    <p>Overlay layers for field crews — the same AR module everywhere, with ${V.name.toLowerCase()}-specific layers.</p></div>
+  return `<div class="page-h"><span class="eyebrow">Field operations · WayFi<sup class="rmark">®</sup></span><h1>WayFi<sup class="rmark">®</sup> AR Mode</h1>
+    <p>WayFi<sup class="rmark">®</sup> overlay layers for field crews — the same AR module everywhere, with ${V.name.toLowerCase()}-specific layers.</p></div>
   <div class="grid g4" style="margin-bottom:1rem">
     <div class="stat sg"><div class="v">3</div><div class="l">Active Overlays</div></div>
     <div class="stat"><div class="v">7</div><div class="l">Field Users</div></div>
