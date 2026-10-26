@@ -1,9 +1,10 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ThinkOS — Overview by sector · Matter</title>
+<title>ThinkOS — Service Lines · Matter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -97,6 +98,11 @@ body.demo .app{grid-template-columns:minmax(0,1fr)}body.demo .side{display:none}
 .demokpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.demokpis div{background:var(--bg2,rgba(0,0,0,.03));border-radius:8px;padding:8px}
 .demokpis b{display:block;font-size:20px;font-weight:600}.demokpis span{font-size:11px;color:var(--ink2)}
 .demolist{margin:0;padding-left:18px;font-size:13px;line-height:1.7}
+.lno{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;color:#fff;font-size:11px;font-weight:700;flex:none}.lno.lnob{width:34px;height:34px;font-size:16px}
+.lhead{display:flex;gap:12px;align-items:center}
+.desks{display:grid;gap:8px}.desk{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--btn)}
+.desk .dtx{display:flex;flex-direction:column;gap:2px;min-width:0}.desk .dtx b{font-size:13.5px}.desk .dtx span{font-size:11.5px;color:var(--ink2)}.desk .dtx em{font-style:normal;color:var(--hi);font-weight:600}
+.desk .dbt{display:flex;gap:6px;flex-wrap:wrap}.desk .dbt button{font:inherit;font-size:12px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--btn);color:var(--ink);cursor:pointer}.desk .dbt button.pri{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
 .rpscroll{max-height:min(560px,65vh);overflow:auto;border:1px solid var(--line2);border-radius:10px}
 .rpscroll thead th{position:sticky;top:0;background:var(--card);z-index:1}
 .ttl{display:flex;align-items:center;gap:12px;margin-top:4px}
@@ -1070,7 +1076,8 @@ const MOD = {
   scheduling:['Scheduling','calendar','T2.8'], agents:['AI Agents','bot','T2.17'], engagement:['Engagement','trophy','T2.14'], smb:['Customer portal','building','T2.21'], providers:['Providers','link','T2.23'], collections:['Collections','route','T2.24'], customers:['Customers','list','T2.25'], allsites:['All sites','gauge','—'], demo:['Demo home','gauge','—'], portfolio:['Portfolio','gauge','—'], smartbin:['Smart bin report','reports','T2.22'],
   weather:['Weather','cloud','T2.16'], ar:['AR Mode','glasses','T2.20'], compliance:['Compliance','shield','T2.9'],
   coc:['Chain of Custody','link','T2.10'], finance:['Finance & AIRS','wallet','T2.11'],
-  sustainability:['Sustainability','leaf','T2.13'], training:['Training','grad','T2.15'], analytics:['Analytics','analytics','T2.12']
+  sustainability:['Sustainability','leaf','T2.13'], training:['Training','grad','T2.15'], analytics:['Analytics','analytics','T2.12'],
+  tracking:['Waste tracking','shield','New']
 };
 
 /* ---------- stream colours (semantic: residual / recovered / organic / hazardous / priority) ---------- */
@@ -1138,6 +1145,44 @@ const SECTORS = {
       {k:'tonnage',l:'Tonnage',title:'Tonnage (t)',unit:'t',agg:'sum',type:'bar',gen:'tonnage'},
       {k:'lifts',l:'Lifts',title:'Lifts Verified',unit:'lifts',agg:'sum',type:'bar',gen:'lifts',max:4},
       {k:'rain',l:'Rain',title:'Rain (mm)',unit:'mm',agg:'sum',type:'line',gen:'rain',wet:.18}]}
+  },
+  liquids:{
+    name:'Liquids & technical', unit:'Tank', units:'Tanks', proj:'geo', siteAll:'All sites',
+    mapSub:'Perth · workshops, wash bays & roadhouses', prefix:'LQ', n:66, offline:.05, collectAt:80, collHrs:[7,14],
+    volU:'L', rate:[.06,.32], f0:[6,88], pCollect:.18, spread:16,
+    streams:[['Grease trap',C.organic,[1000,1500,2000]],['Used oil',C.priority,[1000,2000,4500]],['Oily water',C.recovered,[2000,3000,5000]],
+      ['Coolant',C.recovered,[600,1000]],['Parts washer solvent',C.hazardous,[200,400]],['Oil filters & rags',C.residual,[205]],['Packaged chemicals',C.hazardous,[1000]]],
+    kind:{'Grease trap':'Grease trap','Used oil':'Used-oil tank','Oily water':'Separator','Coolant':'Coolant tank','Parts washer solvent':'Parts washer','Oil filters & rags':'Filter drum','Packaged chemicals':'Chemical store'},
+    sites:{Balcatta:'Balcatta Truck Workshop','Osborne Park':'Osborne Park Fleet Depot',Stirling:'Stirling Wash Bay',Innaloo:'Innaloo Roadhouse',
+      Karrinyup:'Karrinyup Service Centre','Tuart Hill':'Tuart Hill Workshop',Scarborough:'Scarborough Roadhouse',Churchlands:'Churchlands Depot Canteen'},
+    siteStreams:{'Balcatta Truck Workshop':['Used oil','Oily water','Coolant','Parts washer solvent','Oil filters & rags'],
+      'Osborne Park Fleet Depot':['Used oil','Oily water','Coolant','Packaged chemicals'],'Stirling Wash Bay':['Oily water'],
+      'Innaloo Roadhouse':['Grease trap','Oily water','Used oil'],'Karrinyup Service Centre':['Grease trap','Oily water'],
+      'Tuart Hill Workshop':['Used oil','Oil filters & rags','Parts washer solvent','Coolant'],'Scarborough Roadhouse':['Grease trap','Oily water'],
+      'Churchlands Depot Canteen':['Grease trap']},
+    modules:['scheduling','tracking','field','compliance'],
+    card2:{ where:'All sites', tabs:[
+      {k:'litres',l:'Litres',title:'Litres Pumped (L)',unit:'L',agg:'sum',type:'bar',gen:'litres'},
+      {k:'pumps',l:'Pump-outs',title:'Pump-outs',unit:'jobs',agg:'sum',type:'bar',gen:'pumps'},
+      {k:'rain',l:'Rain',title:'Rain (mm)',unit:'mm',agg:'sum',type:'line',gen:'rain',wet:.18}]}
+  },
+  indserv:{
+    name:'Industrial services', unit:'Vessel', units:'Vessels', proj:'zones', siteAll:'All plant areas',
+    mapSub:'Westport plant · area plan', prefix:'IS', n:58, offline:.06, collectAt:75, collHrs:[6,17],
+    volU:'m³', rate:[.2,1.4], f0:[8,90], pCollect:.22,
+    streams:[['Tank bottoms & sludge',C.residual,[30,60]],['Hydrocarbon slops',C.priority,[20,40]],['Oily water',C.recovered,[50,120]],
+      ['Process effluent',C.recovered,[80,150]],['Spent caustic / acid',C.hazardous,[10,20]],['Catalyst & fines',C.hazardous,[5,10]]],
+    kind:{'Tank bottoms & sludge':'Sludge tank','Hydrocarbon slops':'Slops tank','Oily water':'Sump','Process effluent':'Effluent pit','Spent caustic / acid':'Chemical tank','Catalyst & fines':'Fines hopper'},
+    zones:['Tank Farm','Process Unit 1','Process Unit 2','API Separator','Effluent Treatment','Sludge Lagoon','Drum Store','Cooling Towers','Settling Ponds'],
+    siteStreams:{'Tank Farm':['Tank bottoms & sludge','Hydrocarbon slops'],'Process Unit 1':['Hydrocarbon slops','Spent caustic / acid','Catalyst & fines'],
+      'Process Unit 2':['Hydrocarbon slops','Spent caustic / acid','Catalyst & fines'],'API Separator':['Oily water','Tank bottoms & sludge'],
+      'Effluent Treatment':['Process effluent','Spent caustic / acid'],'Sludge Lagoon':['Tank bottoms & sludge'],'Drum Store':['Spent caustic / acid','Catalyst & fines'],
+      'Cooling Towers':['Process effluent'],'Settling Ponds':['Process effluent','Tank bottoms & sludge']},
+    modules:['scheduling','tracking','field','compliance'],
+    card2:{ where:'Whole plant', tabs:[
+      {k:'m3',l:'Recovered',title:'Volume Recovered (m³)',unit:'m³',agg:'sum',type:'bar',gen:'m3'},
+      {k:'loads',l:'Vac loads',title:'Vacuum-truck Loads',unit:'loads',agg:'sum',type:'bar',gen:'loads'},
+      {k:'crew',l:'Crew on site',title:'Crew on Site',unit:'people',agg:'last',type:'line',gen:'crew'}]}
   }
 };
 
@@ -1154,6 +1199,13 @@ const ZONES = {
   'Ward 2A':[20,270,110,100],'Ward 3B':[140,270,110,100],'Ward 4C':[260,270,120,100],
   'Dirty Utility':[20,380,170,80],'Loading Dock':[200,380,180,80]
 };
+const PLANT_ZONES = {
+  'Tank Farm':[20,20,170,130],'Process Unit 1':[200,20,85,130],'Process Unit 2':[295,20,85,130],
+  'API Separator':[20,160,110,100],'Effluent Treatment':[140,160,120,100],'Sludge Lagoon':[270,160,110,100],
+  'Drum Store':[20,270,110,100],'Cooling Towers':[140,270,120,100],'Settling Ponds':[270,270,110,190],
+  'Loading Bay':[20,380,240,80]
+};
+SECTORS.indserv.zoneGeo = PLANT_ZONES;
 
 /* ---------- deterministic sample data ---------- */
 function mulberry(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -1173,14 +1225,14 @@ function place(key, S, r, i){
       name: `L${level} ${room[0]}` };
   }
   if(S.proj==='zones'){
-    const z = S.zones[Math.floor(r()*S.zones.length)], g = ZONES[z];
+    const z = S.zones[Math.floor(r()*S.zones.length)], g = (S.zoneGeo || ZONES)[z];
     return { site:z, x:g[0]+14+r()*(g[2]-28), y:g[1]+24+r()*(g[3]-34), name:z };
   }
   let a;
-  if(key==='regulated'){ const ks=Object.keys(S.sites); a=ks[Math.floor(r()*ks.length)]; }
+  if(S.sites){ const ks=Object.keys(S.sites); a=ks[Math.floor(r()*ks.length)]; }
   else a = areas[Math.floor(r()*areas.length)];
-  const c = PERTH[a], spread = key==='regulated' ? 12 : 34;
-  const site = key==='public' ? S.precincts[a] : key==='regulated' ? S.sites[a] : a;
+  const c = PERTH[a], spread = S.spread || (key==='regulated' ? 12 : 34);
+  const site = key==='public' ? S.precincts[a] : S.sites ? S.sites[a] : a;
   return { site, x: Math.max(52, Math.min(388, c[0]+(r()-.5)*spread*2)), y: Math.max(14, Math.min(470, c[1]+(r()-.5)*spread*2)), name: site };
 }
 
@@ -1327,7 +1379,8 @@ function genAssets(key){
   const out = [];
   for(let i=0;i<S.n;i++){
     const pl = place(key, S, r, i);
-    const st = S.streams[Math.floor(r()*S.streams.length)];
+    const pool = S.siteStreams && S.siteStreams[pl.site] ? S.streams.filter(x => S.siteStreams[pl.site].includes(x[0])) : S.streams;
+    const st = pool[Math.floor(r()*pool.length)];
     const cap = [st[2][Math.floor(r()*st[2].length)], S.volU];
     seq[pl.name] = (seq[pl.name]||0) + 1;
     const nn = pad2(seq[pl.name]);
@@ -1336,14 +1389,15 @@ function genAssets(key){
     else if(key==='clinical') name = `${pl.name} — ${st[0].split(' ')[0]} ${nn}`;
     else if(key==='regulated') name = `${pl.name} · RO ${nn}`;
     else if(key==='commercial') name = `${pl.name} Zone ${1+Math.floor(r()*6)} · Bin ${nn}`;
+    else if(S.kind){ const kk = pl.name + '|' + st[0]; seq[kk] = (seq[kk]||0) + 1; name = `${pl.name} · ${S.kind[st[0]]} ${pad2(seq[kk])}`; }
     else name = `${pl.name} ${pad2(Math.floor(r()*90)+10)}`;
     const offline = r() < S.offline;
     const offAt = offline ? 6 + Math.floor(r()*16) : 99;
     const gapAt = !offline && r() < .12 ? 3 + Math.floor(r()*17) : -1;
-    const rate = .8 + r()*4.6;
+    const rate = S.rate ? S.rate[0] + r()*(S.rate[1]-S.rate[0]) : .8 + r()*4.6;
     const hC = S.collHrs[0] + Math.floor(r()*(S.collHrs[1]-S.collHrs[0]+1));
-    const collects = r() < .55;
-    let f = 3 + r()*52;
+    const collects = r() < (S.pCollect ?? .55);
+    let f = S.f0 ? S.f0[0] + r()*(S.f0[1]-S.f0[0]) : 3 + r()*52;
     const series = [];
     for(let k=0;k<24;k++){
       const h = hourAt(k), busy = h>=7 && h<=19;
@@ -1384,6 +1438,11 @@ function genMetric(key, t){
       case 'wind': return Math.max(2, Math.round(14 + 11*Math.sin((h-7)/24*2*Math.PI) + (r()-.5)*5));
       case 'uv': return h>=6&&h<=18 ? +Math.max(0, 9.4*Math.sin((h-6)/12*Math.PI)).toFixed(1) : 0;
       case 'rain': return (t.wet && h>=wetStart && h<wetStart+4) ? +(r()*2.4).toFixed(1) : 0;
+      case 'litres': return (h>=7&&h<=14) && r()<.55 ? Math.round((900 + r()*3600)/50)*50 : 0;
+      case 'pumps': return (h>=7&&h<=14) && r()<.55 ? 1 + Math.floor(r()*2) : 0;
+      case 'm3': return (h>=6&&h<=17) ? +(2 + r()*11).toFixed(1) : (r()<.15 ? +(r()*4).toFixed(1) : 0);
+      case 'loads': return (h>=6&&h<=17) ? Math.round(r()*3) : (r()<.1 ? 1 : 0);
+      case 'crew': return (h>=6&&h<=17) ? 18 + Math.round(r()*9) : (h>=18&&h<=21 ? 6 + Math.round(r()*3) : 2);
     }
     return 0;
   });
@@ -1502,7 +1561,7 @@ function renderTop(){
         <div class="ptitle">
           ${demo ? '' : `<div class="crumbs"><span>${esc(ctxName)}</span>${ic('chev','i csep')}<span class="cur">${esc(label)}</span></div>`}
           <div class="ttl"><h1>${esc(demo ? greet() : label)}</h1>${demo ? '' : `<span class="sample">${st.view==='finance'?'Demo run':'Sample data'}</span>`}${prd?`<span class="sample prdtag">PRD ${prd[1].label||prd[0]}</span>`:''}</div>
-          ${demo ? `<p class="psub">Here's ThinkOS across the five places waste is managed. Every number below is sample data.</p>` : ''}
+          ${demo ? `<p class="psub">Four service lines, as each customer and provider sees them. All figures are sample data.</p>` : ''}
         </div>
       </div>
       <div class="gtools">
@@ -2079,9 +2138,9 @@ document.addEventListener('keydown', e => {
    to providers; subcontracts pass part of a service agreement on, with the owner's consent.
    Each site type points at an existing dataset (sample data).
    ===================================================================== */
-const STYPES = { buildings:{ n:'Buildings', ic:'building' }, public:{ n:'Public spaces', ic:'pin' }, bulk:{ n:'Bulk sites', ic:'bin' } };
-const PROFILES = { healthcare:'Healthcare profile', construction:'Construction project', small_business:'Small business' };
-const ROLE_N = { owner:'Site owner', manager:'Facility manager', provider:'Collection provider' };
+const STYPES = { buildings:{ n:'Buildings', ic:'building' }, public:{ n:'Public spaces', ic:'pin' }, bulk:{ n:'Bulk sites', ic:'bin' }, tanks:{ n:'Tanks & traps', ic:'cpu' }, plant:{ n:'Industrial plant', ic:'gear' } };
+const PROFILES = { healthcare:'Healthcare profile', construction:'Construction project', small_business:'Small business', controlled:'Controlled waste', shutdown:'Shutdown & turnaround' };
+const ROLE_N = { owner:'Site owner', manager:'Facility manager', provider:'Service provider' };
 const ORGS = [
   { id:'psc', n:'Port Stephens Council', kind:'Council', roles:['owner','provider'], sites:[{ t:'public', ds:'public', council:'ps', label:'Streets, parks and foreshore' }, { t:'buildings', ds:'facilities', label:'Administration building (sample building data)' }], crews:{ ds:'public', council:'ps', n:'Council crews' } },
   { id:'monash', n:'City of Monash', kind:'Council', roles:['owner'], sites:[{ t:'public', ds:'public', council:'monash', label:'Public place bins' }] },
@@ -2090,7 +2149,11 @@ const ORGS = [
   { id:'build', n:'Perth Build Co', kind:'Builder', roles:['owner'], sites:[{ t:'bulk', ds:'regulated', profile:'construction', label:'Active construction sites' }] },
   { id:'pilbara', n:'Pilbara Iron Ore Co', kind:'Mining company (sample)', roles:['owner'], sites:[{ t:'bulk', ds:'regulated', label:'Mine, rail and port operations (sample bulk-site data)' }, { t:'buildings', ds:'facilities', label:'Village accommodation (sample building data)' }] },
   { id:'sodexo', n:'Sodexo Australia', kind:'Facility manager', roles:['manager','provider'], crews:{ ds:'regulated', n:'Sodexo site services' } },
-  { id:'swan', n:'Swan Waste Services', kind:'Collection provider', roles:['provider'], crews:{ ds:'commercial', n:'Swan Waste Services', smb:true } }
+  { id:'swan', n:'Swan Waste Services', kind:'Collection provider', roles:['provider'], crews:{ ds:'commercial', n:'Swan Waste Services', smb:true } },
+  { id:'northline', n:'Northline Fleet & Roadhouses', kind:'Fleet and roadhouse operator (sample)', roles:['owner'], sites:[{ t:'tanks', ds:'liquids', profile:'controlled', label:'Workshops, wash bays and roadhouse kitchens' }] },
+  { id:'tideline', n:'Tideline Liquid Services', kind:'Liquid waste provider (sample)', roles:['provider'], crews:{ ds:'liquids', n:'Tideline tanker crews' } },
+  { id:'westport', n:'Westport Processing Co', kind:'Process plant (sample)', roles:['owner'], sites:[{ t:'plant', ds:'indserv', profile:'shutdown', label:'Process plant, tank farm and ponds' }] },
+  { id:'apex', n:'Apex Industrial Services', kind:'Industrial services contractor (sample)', roles:['provider'], crews:{ ds:'indserv', n:'Apex vac and hydro crews' } }
 ];
 const SHARES = { fill:'Fill levels', lifts:'Lifts', location:'Locations', contamination:'Contamination reports', camera:'Camera images' };
 const RIGHTS = { operate:'Run day-to-day', providers:'Arrange providers', reports:'Reports' };
@@ -2109,7 +2172,10 @@ const AGREEMENTS = [
   { id:'AG-08', owner:'bayside', provider:null, provName:'CleanCare Clinical', t:'buildings', ds:'clinical', streams:['Clinical / Infectious','Cytotoxic / Pharma','Sharps'], sched:'Daily', rate:'$2.10 per kg', shares:['fill','lifts'], status:'active' },
   { id:'AG-09', owner:'build', provider:'swan', provName:'Swan Waste Services', t:'bulk', ds:'regulated', streams:['MSW','C&D Debris','Recyclables'], sched:'On demand', rate:'$420 per hook-lift', shares:['fill','lifts','location','contamination'], status:'proposed' },
   { id:'AG-10', owner:'pilbara', provider:'sodexo', provName:'Sodexo site services', t:'buildings', ds:'facilities', streams:['General','Recycling','Organics'], sched:'Daily (self-delivered)', rate:'Within FM contract', shares:['fill','lifts','location','contamination','camera'], status:'active' },
-  { id:'AG-11', owner:'pilbara', provider:'sodexo', provName:'Sodexo site services', t:'bulk', ds:'regulated', streams:['MSW','C&D Debris','Recyclables','Hazardous','E-Waste'], sched:'On demand', rate:'Within FM contract', shares:['fill','lifts','location','contamination'], status:'active' }
+  { id:'AG-11', owner:'pilbara', provider:'sodexo', provName:'Sodexo site services', t:'bulk', ds:'regulated', streams:['MSW','C&D Debris','Recyclables','Hazardous','E-Waste'], sched:'On demand', rate:'Within FM contract', shares:['fill','lifts','location','contamination'], status:'active' },
+  { id:'AG-12', owner:'northline', provider:'tideline', provName:'Tideline Liquid Services', t:'tanks', ds:'liquids', streams:['Grease trap','Used oil','Oily water','Coolant'], sched:'On demand (level-based) + permit interval', rate:'$0.24 per litre', shares:['fill','lifts','location'], status:'active' },
+  { id:'AG-13', owner:'northline', provider:null, provName:'ChemPack Technical', t:'tanks', ds:'liquids', streams:['Parts washer solvent','Oil filters & rags','Packaged chemicals'], sched:'Monthly + on request', rate:'Per drum / per kg', shares:['fill','lifts'], status:'active' },
+  { id:'AG-14', owner:'westport', provider:'apex', provName:'Apex Industrial Services', t:'plant', ds:'indserv', streams:'all', sched:'Shutdown scope + on call', rate:'Schedule of rates', shares:['fill','lifts','location','camera'], status:'active' }
 ];
 const SUBS = [
   { id:'SC-01', parent:'AG-11', sub:'swan', subName:'Swan Waste Services', streams:['MSW','C&D Debris'], status:'awaiting_consent', rate:'$395 per hook-lift' }
@@ -2166,7 +2232,7 @@ function setOrg(id){ if(!orgById(id)) return; st.org = id; setWs(wsList()[0]); }
 // keep the organisation in step when a deep link picks a dataset directly
 function syncOrg(){
   const match = o => (o.sites || []).find(x => x.ds === st.sector && (x.ds !== 'public' || x.council === st.council));
-  const pref = { facilities:'towera', clinical:'bayside', regulated:'build', commercial:'swan' }[st.sector];
+  const pref = { facilities:'towera', clinical:'bayside', regulated:'build', commercial:'swan', liquids:'northline', indserv:'westport' }[st.sector];
   const o = (pref && orgById(pref)) || ORGS.find(match) || ORGS[0];
   st.org = o.id; st.client = null;
   if(st.sector === 'commercial'){ st.ws = 'collections'; st.stype = null; }
@@ -2185,7 +2251,7 @@ function envOf(a){
 /* ---------- navigation pieces used by the header and sidebar ---------- */
 function wsModules(){
   const S = SEC();
-  if(st.ws === 'collections') return ['collections','customers','routes','scheduling', ...(ORG().crews && ORG().crews.smb ? ['smb', 'brokerage', 'finance'] : [])];
+  if(st.ws === 'collections') return ORG().crews && ['liquids','indserv'].includes(ORG().crews.ds) ? ['collections','customers','scheduling','tracking','field'] : ['collections','customers','routes','scheduling', ...(ORG().crews && ORG().crews.smb ? ['smb', 'brokerage', 'finance'] : [])];
   if(st.ws === 'managed' && !st.client) return ['customers'].filter(() => ORG().roles.includes('provider')).length ? [] : [];
   if(st.stype === 'all') return ['providers'];
   return [...S.modules.filter(m => !['routes','smb'].includes(m)), 'providers'];
@@ -2199,7 +2265,7 @@ function sideDash2(){
   let h = '';
   if(inSiteWs() && siteList().length > 1) h += navBtn('allsites', 'All sites', 'gauge');
   if(st.ws === 'collections') h += navBtn('collections', 'Collections', 'route');
-  if(!(inSiteWs() && st.stype === 'all')) h += DASH_NAV.map(n => navBtn(n[0], st.ws === 'collections' && n[0] === 'overview' ? 'Bins' : n[1], n[2])).join('');
+  if(!(inSiteWs() && st.stype === 'all')) h += DASH_NAV.map(n => navBtn(n[0], st.ws === 'collections' && n[0] === 'overview' ? SEC().units : n[1], n[2])).join('');
   return h;
 }
 const sideTitle = () => st.ws === 'collections' ? 'Collections' : st.ws === 'managed' && !st.client ? 'Managed sites' : `${STYPES[st.stype]?.n || 'Site'} modules`;
@@ -2375,11 +2441,11 @@ function renderCollections(){
     <section class="card cpad c12" aria-label="Collections"><div class="ch"><h2>Collections · ${esc(o.crews.n)}</h2><span class="where">${ags.length} agreement${ags.length === 1 ? '' : 's'}${ags.some(g => g.viaSub) ? ' incl. subcontracts' : ''}${o.crews.smb ? ' plus small business customers' : ''}</span></div>
       <div class="bks" style="margin-top:12px">
         <div class="bk" style="--bc:var(--accent)"><div class="n">Runs today</div><div class="v">${Object.keys(runs).length}</div><div class="r">by customer and area</div></div>
-        <div class="bk" style="--bc:var(--med)"><div class="n">Bins due today</div><div class="v">${due.length}</div><div class="r">from predicted pickup</div></div>
+        <div class="bk" style="--bc:var(--med)"><div class="n">${esc(SEC().units)} due today</div><div class="v">${due.length}</div><div class="r">from predicted pickup</div></div>
         <div class="bk" style="--bc:var(--hi)"><div class="n">Overdue</div><div class="v">${over.length}</div><div class="r">collect first</div></div>
         <div class="bk" style="--bc:var(--ok)"><div class="n">Skipped, not needed</div><div class="v">${skip}</div><div class="r">not full enough yet</div></div></div></section>
     <section class="card c7" aria-label="Today's stops"><div class="cpad" style="padding-bottom:8px"><div class="ch"><h2>Today's stops</h2><span class="where">most urgent first · route order comes from the routing provider</span></div></div>
-      <div class="twrap"><table style="min-width:0"><thead><tr><th>#</th><th>Bin</th><th>Customer</th><th>Pickup</th></tr></thead><tbody>
+      <div class="twrap"><table style="min-width:0"><thead><tr><th>#</th><th>${esc(SEC().unit)}</th><th>Customer</th><th>Pickup</th></tr></thead><tbody>
       ${due.slice(0, 14).map((x, i) => `<tr><td>${i + 1}</td><td style="white-space:normal">${esc(x.a.name)}<div class="mut2" style="font-size:11px">${esc(x.a.stream)} · ${envOf(x.a) === 'outside' ? 'outside' : 'inside'}</div></td><td style="white-space:normal">${esc(x.cust)}</td><td>${lbl(x.F)}</td></tr>`).join('') || '<tr><td colspan="4" class="mut2">Nothing due today</td></tr>'}</tbody></table></div>
       ${due.length > 14 ? `<div class="cpad" style="padding-top:6px"><span class="mut2">and ${due.length - 14} more</span></div>` : ''}</section>
     <section class="card cpad c5" aria-label="Runs"><div class="ch"><h2>Runs</h2><span class="where">bins due by customer</span></div>
@@ -2499,8 +2565,8 @@ function planBase(ppu=1){
       if(core) for(let i=0;i<3;i++) s += `<rect x="${x+14+i*30}" y="${y+40}" width="22" height="30" rx="2" style="fill:none;stroke:var(--map-wall)" stroke-width="1"/>`;
     });
   } else {
-    Object.entries(ZONES).forEach(([n,[x,y,w,h]])=>{
-      const risk = /Theatre|ICU|Pharmacy|Pathology/.test(n);
+    Object.entries(S.zoneGeo || ZONES).forEach(([n,[x,y,w,h]])=>{
+      const risk = /Theatre|ICU|Pharmacy|Pathology|Process Unit|Drum Store/.test(n);
       s += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" style="fill:var(--map-room);stroke:var(--map-wall)" stroke-width="1.2"/>
             ${risk?`<rect x="${x}" y="${y}" width="4" height="${h}" rx="2" style="fill:${C.priority};opacity:.7"/>`:''}
             <text class="rl" x="${x+10}" y="${y+15}" style="font-size:${fs}px">${esc(n)}</text>`;
@@ -4187,7 +4253,7 @@ Object.assign(PRD, {
   SC5:{ sector:'regulated', view:'scheduling', doc:SCH_DOC, title:'Roll-off swap bookings and truck runs', items:[
     ['SC5-1','Swap due date with lead time',1],['SC5-2','Booking and confirmation',1],['SC5-3','Truck runs via tip sites',1],['SC5-4','Gate hours',1],['SC5-5','Hold on contamination',1],['SC5-6','No swaps under night mode',0]]}
 });
-const SCH = { tab:{ commercial:'list', public:'forecast', facilities:'rounds', clinical:'rounds' }, provider:{ facilities:'VROOM', commercial:'Google Route Optimization', public:'Google Route Optimization', clinical:'VROOM', regulated:'HERE Tour Planning' },
+const SCH = { tab:{ commercial:'list', public:'forecast', facilities:'rounds', clinical:'rounds' }, provider:{ facilities:'VROOM', commercial:'Google Route Optimization', public:'Google Route Optimization', clinical:'VROOM', regulated:'HERE Tour Planning', liquids:'Google Route Optimization', indserv:'HERE Tour Planning' },
   trucks:3, capL:24000, level:5, pickup:21, bays:12, roundStart:14, lead:1, booked:{}, zw:null };
 const SC_PROVIDERS = ['Google Route Optimization','HERE Tour Planning','VROOM'];
 
@@ -4454,10 +4520,14 @@ function schJobs(){
   if(s==='facilities') fmRounds().floors.forEach(f => f.ord.forEach(j => jobs.push({ id:j.id, level:f.l, location:{x:+j.x.toFixed(1), y:+j.y.toFixed(1)}, deadline:hm(SCH.pickup*60), service_min:2 })));
   if(s==='clinical') mdRounds().stops.forEach(z => z.cs.forEach(c => jobs.push({ id:c.id, zone:z.name, window:[hm(z.w[0]*60), hm(z.w[1]*60)], service_min:3, frequency_locked: c.stream==='Clinical / Infectious' })));
   if(s==='regulated') inSwaps().filter(x=>x.st8==='booked' && !x.held).forEach(x => jobs.push({ id:x.a.id, location:{x:+x.a.x.toFixed(1), y:+x.a.y.toFixed(1)}, stream:x.a.stream, reload_at:TIPS[x.a.stream].n, window:['06:00','16:00'], vehicle:'hook-lift truck' }));
+  if(s==='liquids') lqPlan().filter(p => p.st8==='today' || p.st8==='booked').forEach(p => jobs.push({ id:p.a.id, location:{x:+p.a.x.toFixed(1), y:+p.a.y.toFixed(1)}, product:p.a.stream, litres:p.L, vehicle:p.run.veh, unload_at:LQ_RECV[p.run.recv].n, service_min:20, reason:p.why }));
+  if(s==='indserv') isPlan().tasks.forEach(t => jobs.push({ id:t.a.id, area:t.a.site, task:t.task, volume_m3:t.m3, loads:t.loads, day_start:t.start + 1, days:t.dur, truck:t.truck, permits:t.permits, destination:IS_DEST[t.a.stream] }));
   return JSON.stringify({ format:'thinkos.jobs/v0', sector:s, provider:prov, generated:new Date().toISOString(), note:'map coordinates are sample; production sends lat/lng', jobs }, null, 2);
 }
 function renderScheduling(){
   const s = st.sector;
+  if(s==='liquids') return renderLqRuns();
+  if(s==='indserv') return IS.tab==='callouts' ? renderIsCallouts() : renderIsShutdown();
   if(s==='commercial') return SCH.tab.commercial==='routes' ? renderCmRoutes() : renderRunList();
   if(s==='public') return SCH.tab.public==='routes' ? renderPsTopUp() : renderOverflow();
   if(s==='facilities') return SCH.tab.facilities==='plans' ? renderPlans() : renderFmRounds();
@@ -4773,12 +4843,14 @@ MOD.field = ['Issues & Proof of Service','mic','New'];
 ['facilities','commercial','public','clinical','regulated'].forEach(k => { const m = SECTORS[k].modules; if(!m.includes('field')) m.splice(Math.max(0, m.indexOf('scheduling')+1), 0, 'field'); });
 const IP_ITEMS = [['IP-1','Voice commands on the glasses',1],['IP-2','Issue report with urgency',1],['IP-3','Proof of service per lift',1],['IP-4','Before and after images',1],
   ['IP-5','Plate scan identifies the bin',1],['IP-6','Lid confirms the lift',1],['IP-7','Issues raise alerts and notifications',1],['IP-8','Offline queue on the glasses',0]];
-Object.assign(PRD, Object.fromEntries(['facilities','commercial','public','clinical','regulated'].map(k => ['IP'+k, { sector:k, view:'field', label:'IP', doc:null, title:'Issues & Proof of Service · voice via AR glasses', items:IP_ITEMS }])));
-const FIELD_ROLE = { facilities:'Cleaner', commercial:'Driver', public:'Crew', clinical:'Porter', regulated:'Operator' };
+Object.assign(PRD, Object.fromEntries(['facilities','commercial','public','clinical','regulated','liquids','indserv'].map(k => ['IP'+k, { sector:k, view:'field', label:'IP', doc:null, title:'Issues & Proof of Service · voice via AR glasses', items:IP_ITEMS }])));
+const FIELD_ROLE = { facilities:'Cleaner', commercial:'Driver', public:'Crew', clinical:'Porter', regulated:'Operator', liquids:'Tanker driver', indserv:'Vac operator' };
 const ISSUE_TYPES = { facilities:['Contamination','Overflowing','Damaged bin','Lid fault','Blocked access','Spill'], commercial:['Contamination','Overflowing','Missed collection','Blocked access','Damaged bin','Spill'],
   public:['Overflowing','Illegal dumping','Vandalism','Damaged bin','Spill','Fire or smoke'], clinical:['Overfilled sharps','Spill','Wrong segregation','Lid fault','Blocked access','Damaged container'],
-  regulated:['Contamination','Hazardous item','Overfilled','Damaged roll-off','Blocked access','Fire or smoke'] };
-const TYPE_URG = t => /Spill|Fire|Hazardous|Overfilled sharps/.test(t) ? 'Critical' : /Contamination|Overflow|Blocked|Missed|dumping|Overfilled|Wrong/.test(t) ? 'High' : /Damaged|Lid|Vandal/.test(t) ? 'Medium' : 'Low';
+  regulated:['Contamination','Hazardous item','Overfilled','Damaged roll-off','Blocked access','Fire or smoke'],
+  liquids:['Overfilled tank','Spill','Odour complaint','Blocked access','Damaged valve or lid','Wrong product in tank'],
+  indserv:['High-high level','Spill','Permit not issued','Blocked access','Confined-space hold','Gas detector alarm'] };
+const TYPE_URG = t => /Spill|Fire|Hazardous|Overfilled sharps|High-high|Gas detector/.test(t) ? 'Critical' : /Contamination|Overflow|Blocked|Missed|dumping|Overfilled|Wrong|Permit|Confined/.test(t) ? 'High' : /Damaged|Lid|Vandal|Odour/.test(t) ? 'Medium' : 'Low';
 const FLD = {};
 function fld(){ const s = st.sector; if(FLD[s]) return FLD[s];
   const A = data(s).assets.filter(a=>!a.offline), r = mulberry(hashStr(s+':field')), T = ISSUE_TYPES[s], pick = () => A[Math.floor(r()*A.length)];
@@ -4966,7 +5038,8 @@ document.addEventListener('change', e => {
 PLAT_NAV.unshift(['notifications','Notifications','bell']);
 const NTF = {};
 const NTF_ROLES = { facilities:['Facilities manager','Cleaning supervisor','Waste contractor dispatch'], commercial:['Operations manager','Dispatcher','Customer account manager'],
-  public:['Waste services coordinator','Crew leader','Council customer service'], clinical:['Environmental services manager','Porter supervisor','Infection prevention'], regulated:['Site manager','Compliance manager','Carrier dispatch'] };
+  public:['Waste services coordinator','Crew leader','Council customer service'], clinical:['Environmental services manager','Porter supervisor','Infection prevention'], regulated:['Site manager','Compliance manager','Carrier dispatch'],
+  liquids:['Fleet maintenance manager','Site manager','Liquid waste dispatch'], indserv:['Maintenance superintendent','Permit coordinator','Contractor dispatch'] };
 function ntf(){ const s = st.sector;
   return NTF[s] || (NTF[s] = {
     rules:{ Critical:{ ch:['sms','email','app'], when:'instant' }, High:{ ch:['email','app'], when:'instant' }, Medium:{ ch:['app'], when:'instant' }, Low:{ ch:['app'], when:'daily digest' } },
@@ -5060,7 +5133,15 @@ const OOS_CFG = {
   regulated:{ owner:'Site manager', contractor:'Carrier', types:[
     { k:'sort', t:'Contaminated roll-off sort', unit:'load', rate:220 }, { k:'asbestos', t:'Suspected asbestos found', unit:'callout', rate:0, haz:true, never:true },
     { k:'standby', t:'Gate wait or standby', unit:'15 min', rate:30 }, { k:'swap', t:'Extra swap', unit:'swap', rate:190 },
-    { k:'tyres', t:'Tyres removed', unit:'tyre', rate:12 }, { k:'overweight', t:'Overweight surcharge', unit:'tonne', rate:45 } ] }
+    { k:'tyres', t:'Tyres removed', unit:'tyre', rate:12 }, { k:'overweight', t:'Overweight surcharge', unit:'tonne', rate:45 } ] },
+  liquids:{ owner:'Fleet maintenance manager', contractor:'Liquid waste carrier', types:[
+    { k:'extra', t:'Extra pump-out outside the plan', unit:'pump-out', rate:260 }, { k:'jet', t:'Jet-clean grease trap baffles', unit:'trap', rate:180 },
+    { k:'standby', t:'Standby — tank not accessible', unit:'15 min', rate:35 }, { k:'drum', t:'Unlabelled drum found in workshop', unit:'drum', rate:0, haz:true, never:true },
+    { k:'spill', t:'Spill clean-up with absorbent', unit:'callout', rate:320, haz:true }, { k:'hose', t:'Hose run over 30 m', unit:'run', rate:45 } ] },
+  indserv:{ owner:'Maintenance superintendent', contractor:'Industrial services contractor', types:[
+    { k:'vac', t:'Additional vac-truck load', unit:'load', rate:680 }, { k:'hydro', t:'Extra hydro-blast scope found', unit:'shift', rate:2400 },
+    { k:'standby', t:'Standby waiting on a permit', unit:'hour', rate:310 }, { k:'norm', t:'Suspected NORM scale in vessel', unit:'callout', rate:0, haz:true, never:true },
+    { k:'confined', t:'Extra confined-space entry team', unit:'shift', rate:1850, haz:true } ] }
 };
 const OS_ITEMS = [['OS-1','Report in real time — glasses or app',1],['OS-2','Owner decides: collect or leave',1],['OS-3','Pre-agreed rules decide automatically',1],['OS-4','Default if no answer in time',1],
   ['OS-5','Done with after photo and actual quantity',1],['OS-6','Approved work added to the invoice',1],['OS-7','Monthly auto-approval cap',1],['OS-8','AIRS checks variation lines (R18)',1]];
@@ -5841,7 +5922,7 @@ Object.assign(PRD, Object.fromEntries(Object.entries(AG_SECTOR).map(([s, k]) => 
    the evidence ThinkOS holds, never the law. Jev is SIMULATED (see AI Agents).
    ===================================================================== */
 const CP_DOC = 'https://claude.ai/code/artifact/3997f440-68c9-437b-8984-301d50f2d4b5';
-const CP_KEY = { facilities:'CP1', commercial:'CP2', public:'CP3', clinical:'CP4', regulated:'CP5' };
+const CP_KEY = { facilities:'CP1', commercial:'CP2', public:'CP3', clinical:'CP4', regulated:'CP5', liquids:'CP6', indserv:'CP7' };
 const CP_JUR = ['NSW','VIC','WA','QLD'];
 const CP_SRC = {
   nswfogo:{ l:'NSW EPA — FOGO mandates and rollout', u:'https://www.epa.nsw.gov.au/Your-environment/Recycling-and-reuse/business-government-recycling/Food-organics-and-garden-organics/fogo-mandates-and-rollout' },
@@ -5854,7 +5935,10 @@ const CP_SRC = {
   s1:{ l:'NABERS Waste rules — see Sustainability S1', u:null },
   s2:{ l:'AASB S2 — see Sustainability', u:null },
   as3816:{ l:'AS/NZS 3816:2018 (licensed standard — clause refs only)', u:null },
-  need:{ l:'Source needed', u:null }
+  need:{ l:'Source needed', u:null },
+  trade:{ l:'Trade waste permit (client supplies)', u:null },
+  as2865:{ l:'AS 2865 Confined spaces (licensed standard — clause refs only)', u:null },
+  dwerlic:{ l:'DWER prescribed premises licence conditions (client supplies)', u:null }
 };
 const CP_CHECKED = '2026-09-27';
 const cpDays = (a, b) => Math.round((b - a) / 864e5);
@@ -5865,7 +5949,7 @@ const cpPill = s => `<span class="pill ${CP_ST[s][0]}"><span class="dot"></span>
 
 /* ---------- state ---------- */
 const CMP = {};
-const CP_DEF_JUR = { facilities:'NSW', commercial:'NSW', public:'WA', clinical:'WA', regulated:'WA' };
+const CP_DEF_JUR = { facilities:'NSW', commercial:'NSW', public:'WA', clinical:'WA', regulated:'WA', liquids:'WA', indserv:'WA' };
 function cpS(){ const s = st.sector; return CMP[s] || (CMP[s] = { tab:'register', jur:CP_DEF_JUR[s], sel:null, stale:{}, relevant:true, lpw:2, lodged:false, methods:{}, pack:{}, signed:null, meter:{ calls:0, tokens:0 }, watch:null, match:null, cat:null, msg:'' }); }
 function cpJev(text, qs){ const r = simJev(text, qs); const M = cpS().meter; M.calls++; M.tokens += r.usage.input_tokens; return r; }
 
@@ -5877,7 +5961,9 @@ function cpContractors(){
     commercial:[['Matter Collections (operator)','Heavy vehicle operator','Accreditation (sample)',soon(160)],['Metro Organics','Food organics processing','Facility licence',soon(300)]],
     public:[['Coastal Waste Services','Public-place collection','Contract',soon(410)],['WestSafe Asbestos','Asbestos transport',`${j} controlled/regulated waste carrier`,soon(12)]],
     clinical:[['MedWaste Logistics','Clinical and cytotoxic transport',`${j} controlled/regulated waste carrier`,soon(95)],['Thermal Treatment Plant','Clinical waste treatment','Facility licence',soon(-4)]],
-    regulated:[['Roll-Off Haulage','Roll-off transport','Heavy vehicle operator',soon(200)],['HazTrans','Hazardous and e-waste transport',`${j} controlled/regulated waste carrier`,soon(26)],['C&D Recovery Facility','C&D recovery','Facility licence',soon(330)]]
+    regulated:[['Roll-Off Haulage','Roll-off transport','Heavy vehicle operator',soon(200)],['HazTrans','Hazardous and e-waste transport',`${j} controlled/regulated waste carrier`,soon(26)],['C&D Recovery Facility','C&D recovery','Facility licence',soon(330)]],
+    liquids:[['Tideline Liquid Services','Liquid waste transport',`${j} controlled/regulated waste carrier`,soon(19)],['ChemPack Technical','Packaged chemical collection',`${j} controlled/regulated waste carrier`,soon(140)],['Metro Liquid Treatment','Liquid waste treatment','Facility licence',soon(260)],['Coastal Oil Recovery','Used oil re-refining','Facility licence',soon(-6)]],
+    indserv:[['Apex Industrial Services','Vacuum loading and transport',`${j} controlled/regulated waste carrier`,soon(75)],['Apex Industrial Services','Confined-space entry crew','Training and permit records',soon(12)],['Metro Liquid Treatment','Sludge and effluent treatment','Facility licence',soon(260)],['Coastal Hydrocarbon Recovery','Slops and oily sludge recovery','Facility licence',soon(180)]]
   }[st.sector];
   return base.map(([n,role,lic,exp]) => { const d = cpDays(NOW, cpDate(exp)); return { n, role, lic, exp:cpDate(exp), days:d, st: d < 0 ? 'gap' : d <= 30 ? 'risk' : 'complete' }; });
 }
@@ -5973,6 +6059,27 @@ function cpEvidence(o){
       const L = inLoads().slice(0,40), over = L.filter(l => (l.t + 8.1) > 22.5);
       return { st: over.length ? 'risk' : 'complete', sum:`${over.length} dockets where gross (net + 8.1 t sample tare) exceeds a 22.5 t sample limit — check follow-up.`, cols:['Docket','Net t','Gross t (code)'], rows: over.slice(0,8).map(l=>[l.docket, l.t.toFixed(2), (l.t+8.1).toFixed(2)]) };
     }
+    case 'lqtrack': {
+      const L = wtLoads(), miss = L.filter(l => !l.form), nor = L.filter(l => l.rcpt === 'missing');
+      return { st: miss.length || nor.length ? 'gap' : 'complete', sum:`${L.length} loads in ${wtDays()} days; ${miss.length} without a tracking form, ${nor.length} without a receiver receipt.`, cols:['Load','Product','Measured','Tracking form','Receipt'], rows: L.filter(l => !l.form || l.rcpt !== 'matched').slice(0,10).map(l => [`${l.a.name} · ${fmtT(l.at)}`, l.a.stream, wtQty(l.meas), l.form || 'MISSING', l.rcpt.toUpperCase()]) };
+    }
+    case 'permit': {
+      const G = lqPlan().filter(p => p.a.stream === 'Grease trap'), late = G.filter(p => p.since > LQ.permitDays), soon = G.filter(p => p.since <= LQ.permitDays && p.toPermit <= 7);
+      return { st: late.length ? 'gap' : soon.length ? 'risk' : 'complete', sum:`${G.length} grease traps on a ${LQ.permitDays}-day permit interval (sample): ${late.length} past it, ${soon.length} due within 7 days.`, cols:['Grease trap','Last pump-out','Permit due'], rows: G.sort((a,b)=>a.toPermit-b.toPermit).slice(0,10).map(p => [p.a.name, `${Math.round(p.since)} days ago`, p.toPermit < 0 ? `${Math.round(-p.toPermit)} days overdue` : `in ${Math.round(p.toPermit)} days`]) };
+    }
+    case 'lqvar': {
+      const L = wtLoads().filter(l => l.decl != null), over = L.filter(l => l.flag);
+      const extra = over.reduce((s,l) => s + (l.decl - l.meas), 0);
+      return { st: over.length ? 'risk' : 'complete', sum:`${over.length} of ${L.length} loads declared more than ${WT_TOL}% above the sensor-measured volume — ${wtQty(extra)} extra, about ${money(extra * wtRate(), 0)}.`, cols:['Load','Measured','Declared','Gap'], rows: over.slice(0,10).map(l => [`${l.a.name} · ${fmtT(l.at)}`, wtQty(l.meas), wtQty(l.decl), `+${Math.round((l.decl/l.meas-1)*100)}%`]) };
+    }
+    case 'permits': {
+      const P = isPlan().tasks.filter(t => t.cs), open = P.filter((t,i) => i % 5 === 3);
+      return { st: open.length ? 'risk' : 'complete', sum:`${P.length} confined-space entries in the ${IS.unit} shutdown scope; ${open.length} without a permit drafted yet.`, cols:['Vessel','Task','Permit'], rows: P.slice(0,10).map((t,i) => [t.a.name, t.task, i % 5 === 3 ? 'NOT DRAFTED' : `CSE-${2400 + hashStr(t.a.id) % 600}`]) };
+    }
+    case 'ponds': {
+      const P = data(st.sector).assets.filter(a => /Settling Ponds|Sludge Lagoon|API Separator/.test(a.site) && !a.offline), hi = P.filter(a => a.fill >= 85), med = P.filter(a => a.fill >= 75 && a.fill < 85);
+      return { st: hi.length ? 'gap' : med.length ? 'risk' : 'complete', sum:`${P.length} ponds, lagoons and separators level-monitored: ${hi.length} inside the freeboard margin (≥ 85%), ${med.length} approaching it.`, cols:['Asset','Level','Freeboard'], rows: P.sort((a,b)=>b.fill-a.fill).slice(0,10).map(a => [a.name, a.fill+'%', a.fill >= 85 ? 'BREACH RISK' : a.fill >= 75 ? 'watch' : 'ok']) };
+    }
     case 'div': {
       const L = inLoads(), tot = L.reduce((s,l)=>s+l.t,0), dv = L.filter(l=>!l.rej).reduce((s,l)=>s+l.t*l.dest[1]/100,0), tgt = (typeof SUS!=='undefined' && SUS.in) ? SUS.in.target : 80, r = dv/tot*100;
       return { st: r >= tgt ? 'complete' : 'gap', sum:`Diversion ${Math.round(r)}% against the project's ${tgt}% condition (S5 load register, 28 days).` };
@@ -6027,7 +6134,20 @@ const CP_OBL = {
     { id:'CP5-C', duty:'Mass limits and the Primary Duty for loaded roll-offs', src:'hvnl', jur:['NSW','VIC','QLD'], ev:'mass', owner:'Site manager' },
     { id:'CP5-D', duty:'Project diversion target and reporting (consent or contract condition)', src:'contract', jur:['*'], ev:'div', owner:'Project environmental lead' },
     { id:'CP5-E', duty:'Suspected asbestos handled by a licensed removalist', src:'need', jur:['*'], ev:'none', owner:'Site manager' },
-    { id:'CP5-F', duty:'Carrier and facility licences current', src:'wacw', jur:['WA','VIC','NSW'], ev:'licence', owner:'Compliance officer' } ]
+    { id:'CP5-F', duty:'Carrier and facility licences current', src:'wacw', jur:['WA','VIC','NSW'], ev:'licence', owner:'Compliance officer' } ],
+  liquids:[
+    { id:'CP6-A', duty:'Grease trap waste, waste oil and oily water moved by a licensed carrier with a tracking form for each load', src:'wacw', jur:['WA'], ev:'lqtrack', owner:'Fleet maintenance manager' },
+    { id:'CP6-B', duty:'Liquid waste loads recorded in Waste Tracker before they leave site', src:'vicwt', jur:['VIC'], ev:'lqtrack', owner:'Fleet maintenance manager' },
+    { id:'CP6-C', duty:'Grease traps pumped out at least as often as the trade waste permit requires', src:'trade', jur:['*'], ev:'permit', owner:'Roadhouse manager' },
+    { id:'CP6-D', duty:'Measured litres reconciled against invoiced litres each month', src:'contract', jur:['*'], ev:'lqvar', owner:'Accounts payable' },
+    { id:'CP6-E', duty:'Carrier and receiving facility licences current', src:'wacw', jur:['WA','VIC','NSW'], ev:'licence', owner:'Compliance officer' },
+    { id:'CP6-F', duty:'Used oil and chemicals stored in bunded areas with spill kits', src:'need', jur:['*'], ev:'none', owner:'Workshop supervisor' } ],
+  indserv:[
+    { id:'CP7-A', duty:'Sludge, slops and spent caustic moved by a licensed carrier with a tracking form for each load', src:'wacw', jur:['WA'], ev:'lqtrack', owner:'Plant environmental lead' },
+    { id:'CP7-B', duty:'A confined-space entry permit raised and closed for every vessel entry', src:'as2865', jur:['*'], ev:'permits', owner:'Permit coordinator' },
+    { id:'CP7-C', duty:'Pond and separator freeboard kept inside licence conditions', src:'dwerlic', jur:['WA'], ev:'ponds', owner:'Plant environmental lead' },
+    { id:'CP7-D', duty:'Measured volumes reconciled against the contractor\'s declared volumes', src:'contract', jur:['*'], ev:'lqvar', owner:'Contracts engineer' },
+    { id:'CP7-E', duty:'Carrier and receiving facility licences current', src:'wacw', jur:['WA','VIC','NSW'], ev:'licence', owner:'Compliance officer' } ]
 };
 function cpRegister(){
   const S = cpS();
@@ -6062,7 +6182,7 @@ function cpReturnRows(){
 function renderCompliance(){
   const S = cpS(), key = CP_KEY[st.sector], R = cpRegister();
   const cnt = k => R.filter(r => r.st===k).length;
-  const tabs = [['register','Obligations'],['tool', { facilities:'Food waste & secure destruction', commercial:'Customer evidence & runs', public:'WA annual return', clinical:'Tracking check', regulated:'Regulated loads' }[st.sector]],['calendar','Calendar'],['contractors','Contractors'],['pack','Audit pack'],['watch','Jev assist']];
+  const tabs = [['register','Obligations'],['tool', { facilities:'Food waste & secure destruction', commercial:'Customer evidence & runs', public:'WA annual return', clinical:'Tracking check', regulated:'Regulated loads', liquids:'Measured vs declared', indserv:'Measured vs declared' }[st.sector]],['calendar','Calendar'],['contractors','Contractors'],['pack','Audit pack'],['watch','Jev assist']];
   const sel = R.find(r => r.id===S.sel);
   let body = '';
   if(S.tab==='register') body = `
@@ -6115,6 +6235,7 @@ function renderCompliance(){
 
 function cpToolHTML(){
   const S = cpS(), A = data(st.sector).assets;
+  if(st.sector==='liquids' || st.sector==='indserv') return wtVarianceHTML();
   if(st.sector==='facilities'){
     const T = cpFogoTest(A, S.lpw), sec = cpSecure();
     return `<section class="card cpad c6" aria-label="Food waste test"><div class="ch"><h2>NSW food-waste capacity test</h2><span class="where">CP1-3 · computed in code</span></div>
@@ -6166,7 +6287,9 @@ const CP_DOCS = {
   commercial:['Customer lift log September','Run sheets and rosters week 38','Carrier licence certificate','Service agreement — Balcatta customers'],
   public:['Waste Data Online draft return FY26','Records retention policy','Asbestos carrier licence','Public-place collection contract'],
   clinical:['Controlled waste tracking forms September','Treatment facility receipts Q3','Ward segregation audit reports','Carrier licence — clinical transport'],
-  regulated:['Weighbridge dockets September','Waste Tracker / CWTS exports','Project diversion statement','Haulage licence and vehicle list']
+  regulated:['Weighbridge dockets September','Waste Tracker / CWTS exports','Project diversion statement','Haulage licence and vehicle list'],
+  liquids:['Controlled waste tracking forms September','Receiver receipts September','Grease trap pump-out log and permit','Carrier licence — Tideline Liquid Services'],
+  indserv:['Unit 2 shutdown waste plan','Confined-space permits register','Pond freeboard log September','Carrier licence — Apex Industrial Services']
 };
 function cpPackHTML(R){
   const S = cpS(), use = R.filter(r=>r.applies), chosen = use.filter(r => S.pack[r.id] !== false);
@@ -6184,7 +6307,9 @@ const CP_UPDATES = {
   commercial:['NHVR issues revised guidance on scheduling and driver incentives for waste collection runs.','NSW EPA: business food organics mandate thresholds unchanged for 2028.'],
   public:['DWER: the annual return due date for liable local governments moves to 15 October from the 2026–27 financial year.','WA Waste Authority publishes its annual waste and recycling data report.'],
   clinical:['DWER: packaged controlled waste tracking threshold for clinical waste reduced to 100 kilograms or litres.','Hospital newsletter: new café opening on level 2.'],
-  regulated:['EPA Victoria adds a new waste code for PFAS-contaminated soil; reportable priority waste transport rules apply.','DWER: tyres remain controlled waste; no change to tracking.']
+  regulated:['EPA Victoria adds a new waste code for PFAS-contaminated soil; reportable priority waste transport rules apply.','DWER: tyres remain controlled waste; no change to tracking.'],
+  liquids:['DWER: liquid waste carriers reminded that every controlled waste load needs a tracking form before it leaves the premises (sample notice).','Water utility newsletter: trade waste permit renewals can now be lodged online (sample notice).'],
+  indserv:['Safe Work Australia consults on a revised confined spaces code of practice (sample notice).','Industry newsletter: new canteen supplier for the Kwinana strip (sample notice).']
 };
 function cpWatchHTML(R){
   const S = cpS(), W = S.watch;
@@ -6250,7 +6375,7 @@ document.addEventListener('change', e => {
 /* PRD registry: one CP PRD per sector */
 Object.assign(PRD, Object.fromEntries(Object.entries(CP_KEY).map(([s, k]) => [k, { sector:s, view:'compliance', label:k, doc:CP_DOC, title:'Compliance · evidence register', items:[
   ['CP-S1','Obligations register',1],['CP-S2','Applicability in code',1],['CP-S3','Evidence rules',1],['CP-S4','Evidence status',1],['CP-S5','Calendar',1],['CP-S6','Audit pack',1],['CP-S7','Source review + Jev watch',1],['CP-S9','Contractor register',1],['CP-S11','Not legal advice',1],
-  ...({ facilities:[['CP1-1','Secure destruction',1],['CP1-3','Food-waste test',1],['CP1-7','Tenant view',0]], commercial:[['CP2-1','Customer food waste',1],['CP2-3','Runs vs shift',1],['CP2-2','Customer portal',0]], public:[['CP3-1','Sidebar entry',1],['CP3-2','WA return builder',1],['CP3-3','Method labels',1],['CP3-7','FOGO rollout tracker',0]], clinical:[['CP4-1','Tracking numbers',1],['CP4-3','Audit freshness',1],['CP4-4','AS/NZS 3816 checklist',0]], regulated:[['CP5-1','Regulated flag',1],['CP5-3','Diversion statement',1],['CP5-6','VIC reg 83 system',0]] }[s]),
+  ...({ facilities:[['CP1-1','Secure destruction',1],['CP1-3','Food-waste test',1],['CP1-7','Tenant view',0]], commercial:[['CP2-1','Customer food waste',1],['CP2-3','Runs vs shift',1],['CP2-2','Customer portal',0]], public:[['CP3-1','Sidebar entry',1],['CP3-2','WA return builder',1],['CP3-3','Method labels',1],['CP3-7','FOGO rollout tracker',0]], clinical:[['CP4-1','Tracking numbers',1],['CP4-3','Audit freshness',1],['CP4-4','AS/NZS 3816 checklist',0]], regulated:[['CP5-1','Regulated flag',1],['CP5-3','Diversion statement',1],['CP5-6','VIC reg 83 system',0]], liquids:[['CP6-1','Tracking form per load',1],['CP6-2','Permit interval check',1],['CP6-3','Measured vs invoiced litres',1]], indserv:[['CP7-1','Confined-space permits',1],['CP7-2','Pond freeboard',1],['CP7-3','Measured vs declared volume',1]] }[s]),
   ['CP-S8','Document store',0],['CP-S10','Live Jev (demo engine)',0] ] }])));
 
 /* =====================================================================
@@ -7876,8 +8001,8 @@ function pbS(){
   const s = st.sector; if(PB[s]) return PB[s];
   const A = data(s).assets, sites = new Set(A.map(a=>a.site)).size;
   const cont = A.filter(a => /Secure|Sharps|Cytotoxic/.test(a.stream)).length;
-  const def = { facilities:['pro',['airs','sus','cp','en','tr','ar']], commercial:['pro',['airs','sus','cp','en','routes','smbwl','ar']], public:['pro',['sus','cp','en','tr','ar']], clinical:['ent',['airs','sus','cp','tr','ag','coc','fw']], regulated:['ent',['airs','sus','cp','en','ag','coc','fw','ar']] }[s];
-  return PB[s] = { tier:def[0], mods:new Set(def[1]), q:{ lid:A.length, site:sites, vehicle: s==='commercial' ? 6 : s==='regulated' ? 2 : 0, 'customer site': s==='commercial' ? 8 : 0, 'AR user': ({ facilities:12, commercial:20, public:10, clinical:0, regulated:10 })[s], container:cont, entity: fwS().p.type==='Company' ? 1 : 0 }, prepay:true };
+  const def = { liquids:['pro',['cp','coc']], indserv:['ent',['cp','coc','ar']], facilities:['pro',['airs','sus','cp','en','tr','ar']], commercial:['pro',['airs','sus','cp','en','routes','smbwl','ar']], public:['pro',['sus','cp','en','tr','ar']], clinical:['ent',['airs','sus','cp','tr','ag','coc','fw']], regulated:['ent',['airs','sus','cp','en','ag','coc','fw','ar']] }[s];
+  return PB[s] = { tier:def[0], mods:new Set(def[1]), q:{ lid:A.length, site:sites, vehicle: s==='commercial' ? 6 : s==='regulated' ? 2 : 0, 'customer site': s==='commercial' ? 8 : 0, 'AR user': ({ facilities:12, commercial:20, public:10, clinical:0, regulated:10, liquids:6, indserv:14 })[s], container:cont, entity: fwS().p.type==='Company' ? 1 : 0 }, prepay:true };
 }
 function pbCost(){
   const P = pbS(), q = P.q, lines = [];
@@ -8497,30 +8622,32 @@ document.addEventListener('keydown', e => {
    DEMO HOMEPAGE — the original five categories as the way in. Each opens the matching
    organisation and view in the client-centric model; nothing here re-implements a view.
    ===================================================================== */
+/* ---------- four service lines (how a national operator splits its customers) ---------- */
+const LINES = [
+  { k:'solids', no:1, n:'Solids', sub:'General waste, recycling and construction waste', col:'var(--cat-fm)',
+    blurb:'Bins, skips and roll-offs, lifted when they are full and proven by the lid. Covers commercial customers, buildings, public places and construction sites.',
+    look:['Run lists from predicted pickups, not fixed days','Contamination photos and lift proof per bin','Roll-off swaps with banned-waste checks','Bills checked against what was actually lifted'] },
+  { k:'liquids', no:2, n:'Liquids & technical', sub:'Liquids, technical services, oil collections and workshop waste', col:'var(--proc)',
+    blurb:'Grease traps, used-oil tanks, separators and drum stores, level-monitored so the tanker comes when the tank needs it, and every load is tracked.',
+    look:['Pump-outs by level, with the trade waste permit as a floor','One tanker per product, routed to the right receiver','A tracking form and receipt matched to every load','Measured litres against invoiced litres'] },
+  { k:'health', no:3, n:'Healthcare', sub:'Healthcare-related services', col:'var(--hi)',
+    blurb:'Hospital wards and zones with clinical, sharps and cytotoxic streams, kept segregated and in custody from bedside to treatment.',
+    look:['Ward and zone plan with lid-open alerts','Clinical segregation and its cost per ward','Chain of custody for sharps and cytotoxic','One room, several providers, one record'] },
+  { k:'industrial', no:4, n:'Industrial services', sub:'Industrial cleaning, vacuum loading and shutdowns', col:'var(--cat-ind)',
+    blurb:'Sumps, separators, ponds and process vessels at plants, monitored so shutdown scope and call-outs are sized from live levels.',
+    look:['Shutdown scope and vac loads from vessel levels','High-high call-outs before a sump overflows','Permits and standby time on the record','Declared volumes checked against the sensors'] }
+];
 const DEMO_CATS = [
-  { k:'facilities', n:'Facilities Management', org:'towera', t:'buildings', ds:'facilities', col:'var(--cat-fm)',
-    blurb:'Office towers and managed buildings — bins by floor, from the basement loading dock to level 5.',
-    look:['Floor plans B1–L5 with in-lid and overhead cameras','Before/after contamination reports to facility managers','Locked secure-paper consoles and chain of custody','Lid open and lying-down alerts'],
-    model:'Buildings · Tower A Property Services', also:[['sodexo','Sodexo — facility manager portfolio']] },
-  { k:'commercial', n:'Commercial', org:'swan', ds:'commercial', col:'var(--med)',
-    blurb:'A collection operator running routes for its business customers.',
-    look:['Today\'s runs from predicted pickups','Customer portal for small businesses','Bulky pickups through the Exchange','Agreements and subcontracts with clients'],
-    model:'Collections · Swan Waste Services' },
-  { k:'public', n:'Public Space', org:'psc', t:'public', ds:'public', council:'ps', col:'var(--ok)',
-    blurb:'Council street, park and foreshore bins.',
-    look:['Drop pins with days to pickup','Smart bin report — daily email with Excel','Dumped goods to the Exchange and Pickup app','Wind and weather on the map'],
-    model:'Public spaces · Port Stephens Council', also:[['monash','City of Monash — real council report data']] },
-  { k:'medical', n:'Medical', org:'bayside', t:'buildings', ds:'clinical', col:'var(--hi)',
-    blurb:'Hospital wards and zones with clinical, sharps and cytotoxic streams.',
-    look:['Ward and zone plan','Clinical segregation and its cost','Chain of custody for clinical waste','One room, three providers'],
-    model:'Buildings + healthcare profile · Bayside Hospital' },
-  { k:'industrial', n:'Industrial', org:'build', t:'bulk', ds:'regulated', col:'var(--cat-ind)',
-    blurb:'Construction and industrial sites with skips, roll-offs and compactors.',
-    look:['Roll-off fill and ThinkRO oversight','Dockets and diversion by project','Hazardous loads and approvals','On-demand hook-lifts'],
-    model:'Bulk sites · Perth Build Co', also:[['pilbara','Pilbara Iron Ore Co — managed by Sodexo']] }
+  { k:'commercial', line:'solids', n:'Commercial collections', org:'swan', ds:'commercial', model:'Collection provider · Swan Waste Services', also:[] },
+  { k:'facilities', line:'solids', n:'Buildings & facilities', org:'towera', t:'buildings', ds:'facilities', model:'Site owner · Tower A Property Services', also:[['sodexo','Sodexo — facility manager']] },
+  { k:'public', line:'solids', n:'Public places', org:'psc', t:'public', ds:'public', council:'ps', model:'Council · Port Stephens', also:[['monash','City of Monash — real report data']] },
+  { k:'construction', line:'solids', n:'Construction & bulk', org:'build', t:'bulk', ds:'regulated', model:'Builder · Perth Build Co', also:[['pilbara','Pilbara Iron Ore Co']] },
+  { k:'liquids', line:'liquids', n:'Workshops & roadhouses', org:'northline', t:'tanks', ds:'liquids', model:'Site owner · Northline Fleet & Roadhouses', also:[['tideline','Tideline — liquid waste provider']] },
+  { k:'medical', line:'health', n:'Hospital campus', org:'bayside', t:'buildings', ds:'clinical', model:'Health service · Bayside Hospital', also:[] },
+  { k:'indserv', line:'industrial', n:'Process plant', org:'westport', t:'plant', ds:'indserv', model:'Site owner · Westport Processing Co', also:[['apex','Apex — industrial services contractor']] }
 ];
 function openCat(k){
-  const c = DEMO_CATS.find(x => x.k === k); if(!c) return;
+  const c = DEMO_CATS.find(x => x.k === k) || DEMO_CATS.find(x => x.line === k); if(!c) return;
   setOrg(c.org);
   if(c.t && st.ws === 'sites' && siteList().length > 1) setStype(c.t);
 }
@@ -8531,43 +8658,47 @@ function demoKpi(c){
   });
 }
 function renderDemo(){
-  const CIC = { facilities:'building', commercial:'route', public:'pin', medical:'shield', industrial:'zap' };
-  const K = DEMO_CATS.map(c => ({ c, k: demoKpi(c) }));
-  const T = K.reduce((a, { k }) => ({ n:a.n + k.n, red:a.red + k.red, overdue:a.overdue + k.overdue, alerts:a.alerts + k.alerts }), { n:0, red:0, overdue:0, alerts:0 });
-  const rank = [...K].sort((a, b) => (b.k.red + b.k.overdue) - (a.k.red + a.k.overdue));
+  const K = Object.fromEntries(DEMO_CATS.map(c => [c.k, demoKpi(c)]));
+  const sum = (L, f) => DEMO_CATS.filter(c => !L || c.line === L).reduce((s, c) => s + K[c.k][f], 0);
+  const CIC = { commercial:'route', facilities:'building', public:'pin', construction:'zap', liquids:'cloud', medical:'shield', indserv:'cpu' };
+  const rank = [...DEMO_CATS].sort((a, b) => (K[b.k].red + K[b.k].overdue) - (K[a.k].red + K[a.k].overdue)).slice(0, 6);
+  const lineOf = c => LINES.find(l => l.k === c.line) || LINES[0];
   document.getElementById('body').innerHTML = `<div class="dhome">
-    <section class="card dsum" aria-label="Across all five categories">
-      <div class="dsum-i"><span class="dsum-l">Monitored assets</span><b class="cu">${fmt(T.n)}</b><span class="dsum-s">bins, containers and roll-offs</span></div>
-      <div class="dsum-i"><span class="dsum-l"><i class="dot b-hi"></i>Red now</span><b class="cu c-hi">${T.red}</b><span class="dsum-s">over threshold, collect soon</span></div>
-      <div class="dsum-i"><span class="dsum-l"><i class="dot b-med"></i>Overdue</span><b class="cu">${T.overdue}</b><span class="dsum-s">past their predicted pickup</span></div>
-      <div class="dsum-i"><span class="dsum-l"><i class="dot" style="background:var(--brand-lt)"></i>Open alerts</span><b class="cu">${T.alerts}</b><span class="dsum-s">across all five categories</span></div>
+    <section class="card dsum" aria-label="Across all service lines">
+      <div class="dsum-i"><span class="dsum-l">Sensors</span><b class="cu">${fmt(sum(null,'n'))}</b><span class="dsum-s">bins, tanks, containers and vessels</span></div>
+      <div class="dsum-i"><span class="dsum-l"><i class="dot b-hi"></i>Red now</span><b class="cu c-hi">${sum(null,'red')}</b><span class="dsum-s">over threshold, service soon</span></div>
+      <div class="dsum-i"><span class="dsum-l"><i class="dot b-med"></i>Overdue</span><b class="cu">${sum(null,'overdue')}</b><span class="dsum-s">past their predicted service</span></div>
+      <div class="dsum-i"><span class="dsum-l"><i class="dot" style="background:var(--brand-lt)"></i>Open alerts</span><b class="cu">${sum(null,'alerts')}</b><span class="dsum-s">across ${LINES.length} service lines</span></div>
     </section>
+    <div class="dlines" role="tablist" aria-label="Jump to a service line">${LINES.map(l => `<button class="dline-chip" data-line="${l.k}" style="--cc:${l.col}"><span class="lno" style="background:${l.col}">${l.no}</span>${esc(l.n)}</button>`).join('')}</div>
     <div class="dcols">
       <div class="dmain">
-        <div class="dsec-h"><h2>Categories</h2><span>Open one to see ThinkOS as that client would</span></div>
+        <div class="dsec-h"><h2>Service lines</h2><span>Open a desk to see ThinkOS as that customer or provider would</span></div>
         <div class="dgrid">
-        ${K.map(({ c, k }) => `<section class="card dcard" aria-label="${esc(c.n)}" style="--cc:${c.col}">
-          <header class="dch"><span class="dic">${ic(CIC[c.k] || 'bin')}</span><div class="dct"><h3>${esc(c.n)}</h3><p>${esc(c.model)}</p></div>
-            <button class="dgo" data-cat="${c.k}" aria-label="Open ${esc(c.n)}">${ic('chev')}</button></header>
-          <p class="dbl">${esc(c.blurb)}</p>
-          <div class="dk"><div><b class="cu">${fmt(k.n)}</b><span>${esc(k.unit.toLowerCase())}</span></div><div><b class="cu c-hi">${k.red}</b><span>red now</span></div><div><b class="cu">${k.overdue}</b><span>overdue</span></div><div><b class="cu">${k.alerts}</b><span>alerts</span></div></div>
-          <details class="dlook"><summary>What to look at <span>${c.look.length}</span></summary><ul>${c.look.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>
-          <footer class="dcf"><button class="btn pri" data-cat="${c.k}">Open ${esc(c.n)}</button>${(c.also || []).map(([o, l]) => `<button class="btn plain" data-catorg="${o}">${esc(l)}</button>`).join('')}</footer>
-        </section>`).join('')}
+        ${LINES.map(l => { const D = DEMO_CATS.filter(c => c.line === l.k);
+          return `<section class="card dcard" id="line-${l.k}" aria-label="${esc(l.n)}" style="--cc:${l.col}">
+          <header class="dch"><span class="dic dno">${l.no}</span><div class="dct"><h3>${esc(l.n)}</h3><p>${esc(l.sub)}</p></div></header>
+          <p class="dbl">${esc(l.blurb)}</p>
+          <div class="dk"><div><b class="cu">${fmt(sum(l.k,'n'))}</b><span>sensors</span></div><div><b class="cu c-hi">${sum(l.k,'red')}</b><span>red now</span></div><div><b class="cu">${sum(l.k,'overdue')}</b><span>overdue</span></div><div><b class="cu">${sum(l.k,'alerts')}</b><span>alerts</span></div></div>
+          <details class="dlook"><summary>What to look at <span>${l.look.length}</span></summary><ul>${l.look.map(x => `<li>${esc(x)}</li>`).join('')}</ul></details>
+          <div class="ddesks"><div class="ddesks-h">${D.length > 1 ? 'Desks' : 'Desk'}</div>
+          ${D.map(c => `<div class="ddesk"><button class="ddesk-main" data-cat="${c.k}"><span class="dic sm">${ic(CIC[c.k] || 'bin')}</span><span class="dtt"><b>${esc(c.n)}</b><small>${esc(c.model)} · ${fmt(K[c.k].n)} ${esc(K[c.k].unit.toLowerCase())}${K[c.k].red ? ` · <em>${K[c.k].red} red</em>` : ''}</small></span><span class="dopen">Open${ic('chev','i')}</span></button>
+            ${c.also.length ? `<div class="ddesk-also">${c.also.map(([o, lb]) => `<button class="btn plain sm" data-catorg="${o}">${esc(lb)}</button>`).join('')}</div>` : ''}</div>`).join('')}
+          </div>
+        </section>`; }).join('')}
         </div>
       </div>
       <aside class="dside">
         <section class="card dpanel" aria-label="Needs attention">
           <div class="dp-h"><h3>Needs attention</h3><span>red + overdue</span></div>
-          <ul class="dtodo">${rank.map(({ c, k }) => `<li><button data-cat="${c.k}" style="--cc:${c.col}"><span class="dic sm">${ic(CIC[c.k] || 'bin')}</span><span class="dtt"><b>${esc(c.n)}</b><small>${k.red} red · ${k.overdue} overdue · ${k.alerts} alerts</small></span><span class="dcount">${k.red + k.overdue}</span></button></li>`).join('')}</ul>
+          <ul class="dtodo">${rank.map(c => `<li><button data-cat="${c.k}" style="--cc:${lineOf(c).col}"><span class="dic sm">${ic(CIC[c.k] || 'bin')}</span><span class="dtt"><b>${esc(c.n)}</b><small>${esc(lineOf(c).n)} · ${K[c.k].red} red · ${K[c.k].overdue} overdue</small></span><span class="dcount">${K[c.k].red + K[c.k].overdue}</span></button></li>`).join('')}</ul>
         </section>
         <section class="card dpanel" aria-label="The working model">
-          <div class="dp-h"><h3>The working model</h3><span>client-centric</span></div>
-          <p class="dbl">ThinkOS is organised around the client: where its bins are (site types), who runs them (managers) and who empties them (providers).</p>
+          <div class="dp-h"><h3>The working model</h3><span>same in every line</span></div>
+          <p class="dbl">ThinkOS is organised around the client: where its assets are (site types), who runs them (managers) and who services them (providers). A grease trap, a sharps container and a process sump are the same kind of record: a level, a lift and a proof.</p>
           <ul class="dmodel">
-            <li><button data-catorg="psc"><span class="dic sm" style="--cc:var(--brand)">${ic('building')}</span><span class="dtt"><small>Site owner</small><b>Port Stephens Council</b></span>${ic('chev','i dch-r')}</button></li>
-            <li><button data-catorg="sodexo"><span class="dic sm" style="--cc:var(--med)">${ic('shield')}</span><span class="dtt"><small>Facility manager</small><b>Sodexo portfolio</b></span>${ic('chev','i dch-r')}</button></li>
-            <li><button data-catorg="swan"><span class="dic sm" style="--cc:var(--cat-ind)">${ic('route')}</span><span class="dtt"><small>Collection provider</small><b>Swan collections</b></span>${ic('chev','i dch-r')}</button></li>
+            ${[['northline','Site owner','Northline — tanks and traps','building','var(--brand)'],['psc','Site owner','Port Stephens — all sites','pin','var(--brand)'],['sodexo','Facility manager','Sodexo — portfolio','shield','var(--med)'],['swan','Service provider','Swan — solids','route','var(--cat-ind)'],['tideline','Service provider','Tideline — liquids','cloud','var(--proc)'],['apex','Service provider','Apex — industrial','cpu','var(--cat-ind)']]
+              .map(([o, r, n, i, c]) => `<li><button data-catorg="${o}"><span class="dic sm" style="--cc:${c}">${ic(i)}</span><span class="dtt"><small>${r}</small><b>${n}</b></span>${ic('chev','i dch-r')}</button></li>`).join('')}
           </ul>
         </section>
       </aside>
@@ -8576,6 +8707,10 @@ function renderDemo(){
 }
 
 document.addEventListener('click', e => {
+  const b = e.target.closest('[data-line]'); if(!b) return;
+  document.getElementById('line-' + b.dataset.line)?.scrollIntoView({ behavior:'smooth', block:'start' });
+});
+document.addEventListener('click', e => {
   const c = e.target.closest('[data-cat],[data-catorg],[data-demohome]'); if(!c) return;
   e.preventDefault();
   if(c.dataset.demohome !== undefined){ st.view = 'demo'; st.sel = null; render(); return; }
@@ -8583,6 +8718,300 @@ document.addEventListener('click', e => {
   render(); window.scrollTo(0, 0);
 });
 document.addEventListener('change', e => { if(e.target.id === 'catSel' && e.target.value){ openCat(e.target.value); render(); } });
+
+/* =====================================================================
+   SERVICE LINES · Liquids & technical (pump-out runs) and Industrial
+   services (shutdown scope, call-outs), plus shared Waste tracking.
+   Every figure is SAMPLE DATA computed from the generated level series.
+   ===================================================================== */
+const WT_ITEMS = [['WT-1','Volume per load from the level drop',1],['WT-2','Tracking form per load',1],['WT-3','Receiver receipt matched',1],['WT-4','Measured vs declared volume',1],['WT-5','Carrier licence on the register',1],['WT-6','Lodge to the state tracking system',0]];
+Object.assign(PRD, {
+  SC6:{ sector:'liquids', view:'scheduling', doc:null, title:'Pump-outs by level, not by calendar', items:[['SC6-1','Days to pump-out level per tank',1],['SC6-2','Permit interval floor for grease traps',1],['SC6-3','Runs by product and receiver',1],['SC6-4','Tanker capacity and tip trips',1],['SC6-5','Against a fixed schedule',1],['SC6-6','Proof of pump-out in the driver app',0]]},
+  SC7:{ sector:'indserv', view:'scheduling', doc:null, title:'Shutdown scope from live vessel levels', items:[['SC7-1','Scope volumes from vessel levels',1],['SC7-2','Vac loads, truck-days and crew',1],['SC7-3','Permits per task',1],['SC7-4','High-high call-outs',1],['SC7-5','Standby time evidence',1],['SC7-6','Live crew positions',0]]},
+  WTl:{ sector:'liquids', view:'tracking', label:'WT', doc:null, title:'Waste tracking · measured, not declared', items:WT_ITEMS },
+  WTi:{ sector:'indserv', view:'tracking', label:'WT', doc:null, title:'Waste tracking · measured, not declared', items:WT_ITEMS }
+});
+
+/* ---------------- Liquids & technical · pump-out runs (SC6) ---------------- */
+const LQ = { thr:80, permitDays:56, booked:{}, all:false,
+  fixed:{ 'Grease trap':28, 'Used oil':14, 'Oily water':14, 'Coolant':28, 'Parts washer solvent':28, 'Oil filters & rags':28, 'Packaged chemicals':28 } };
+const LQ_RECV = { lwt:{ x:388, y:420, n:'Liquid waste treatment' }, oil:{ x:384, y:36, n:'Oil re-refinery' }, chem:{ x:66, y:452, n:'Chemical treatment facility' } };
+const LQ_RUNS = [
+  { k:'grease', n:'Grease run', streams:['Grease trap'], veh:'Vacuum tanker', cap:12000, recv:'lwt', col:'var(--ok)' },
+  { k:'oil', n:'Used-oil run', streams:['Used oil'], veh:'Oil tanker', cap:15000, recv:'oil', col:'var(--med)' },
+  { k:'water', n:'Oily water and coolant run', streams:['Oily water','Coolant'], veh:'Vacuum tanker', cap:12000, recv:'lwt', col:'var(--accent)' },
+  { k:'tech', n:'Technical services run', streams:['Parts washer solvent','Oil filters & rags','Packaged chemicals'], veh:'Tray truck with drum cage', cap:4000, recv:'chem', col:'var(--avd)' } ];
+const LQ_DEPOT = { x:232, y:330 };
+const lqRunOf = s => LQ_RUNS.find(r => r.streams.includes(s));
+const lqRate = a => Math.max(.3, histRate(a) * 24);                       // % per day
+function lqPlan(){
+  return withDS('liquids', null, () => data('liquids').assets.map(a => {
+    const rd = lqRate(a), since = Math.max(.5, (a.fill - 5) / rd);
+    const toLevel = Math.max(0, (LQ.thr - a.fill) / rd);
+    const toPermit = a.stream === 'Grease trap' ? LQ.permitDays - since : Infinity;
+    const due = Math.min(toLevel, toPermit), why = toPermit < toLevel ? 'permit' : 'level';
+    const L = Math.round(a.cap * a.fill / 100 / 10) * 10, run = lqRunOf(a.stream);
+    const st8 = a.offline ? 'offline' : LQ.booked[a.id] ? 'booked' : due <= 1 ? 'today' : due <= 3 ? 'soon' : 'later';
+    return { a, rd, since, toLevel, toPermit, due, why, L, run, st8 };
+  }).sort((x, y) => (x.a.offline - y.a.offline) || x.due - y.due));
+}
+function lqRoute(run, stops){
+  if(!stops.length) return null;
+  const R = LQ_RECV[run.recv], ord = tour(LQ_DEPOT, stops.map(p => ({ x:p.a.x, y:p.a.y, p })), R);
+  const path = [LQ_DEPOT]; let load = 0, trips = 0;
+  ord.forEach(o => { if(load + o.p.L > run.cap && load > 0){ path.push(R); trips++; load = 0; } path.push(o); load += o.p.L; });
+  path.push(R); trips++; path.push(LQ_DEPOT);
+  return { run, ord, path, trips, L: stops.reduce((s, p) => s + p.L, 0), km: pathLen(path) * 0.034 * 1.3 };
+}
+function lqFixedCompare(P){
+  const on = P.filter(p => !p.a.offline);
+  const fixedN = on.reduce((s, p) => s + 30 / LQ.fixed[p.a.stream], 0);
+  const levelN = on.reduce((s, p) => { const iv = Math.max(1, (LQ.thr - 5) / p.rd); return s + 30 / (p.a.stream === 'Grease trap' ? Math.min(iv, LQ.permitDays) : iv); }, 0);
+  const fillFixed = on.reduce((s, p) => s + Math.min(100, 5 + p.rd * LQ.fixed[p.a.stream]), 0) / Math.max(1, on.length);
+  const overflow = on.filter(p => 5 + p.rd * LQ.fixed[p.a.stream] >= 100).length;
+  return { fixedN, levelN, fillFixed, overflow };
+}
+function renderLqRuns(){
+  const P = lqPlan(), go = P.filter(p => p.st8 === 'today' || p.st8 === 'booked');
+  const R = LQ_RUNS.map(r => lqRoute(r, go.filter(p => p.run === r))).filter(Boolean);
+  const cmp = lqFixedCompare(P);
+  const cnt = k => P.filter(p => p.st8 === k);
+  const recvs = [...new Set(LQ_RUNS.map(r => r.recv))].map(k => LQ_RECV[k]);
+  const layers = R.map(x => line(x.path, x.run.col)).join('')
+    + P.filter(p => !p.a.offline).map(p => `<circle cx="${p.a.x.toFixed(1)}" cy="${p.a.y.toFixed(1)}" r="4.5" style="fill:${p.st8 === 'today' ? 'var(--hi)' : p.st8 === 'booked' ? 'var(--proc)' : p.st8 === 'soon' ? 'var(--med)' : 'var(--off)'};stroke:var(--card)" stroke-width="1.5"/>`).join('')
+    + R.map(x => x.ord.map((o, i) => pin(o, i + 1, x.run.col)).join('')).join('')
+    + recvs.map(t => site(t, t.n, 'var(--hi)')).join('') + site(LQ_DEPOT, 'Depot');
+  const pill = p => p.st8 === 'offline' ? '<span class="pill off"><span class="dot"></span>OFFLINE</span>' : p.st8 === 'booked' ? '<span class="pill ok"><span class="dot"></span>BOOKED</span>' : p.st8 === 'today' ? '<span class="pill hi"><span class="dot"></span>TODAY</span>' : p.st8 === 'soon' ? '<span class="pill med"><span class="dot"></span>THIS WEEK</span>' : '<span class="pill off"><span class="dot"></span>NOT YET</span>';
+  document.getElementById('body').innerHTML = `${prdStrip('SC6')}
+  <div class="fgrid">
+    <section class="card cpad c5" aria-label="Pump-out plan">
+      <div class="ch"><h2>Pump-out plan</h2><span class="where">${provPick()}</span></div>
+      <div class="bks" style="margin-top:14px">
+        <div class="bk" style="--bc:var(--hi)"><div class="n">Today</div><div class="v">${cnt('today').length + cnt('booked').length}</div><div class="r">${fmt(go.reduce((s, p) => s + p.L, 0))} L on ${R.length} run${R.length === 1 ? '' : 's'}</div></div>
+        <div class="bk" style="--bc:var(--med)"><div class="n">This week</div><div class="v">${cnt('soon').length}</div><div class="r">reach ${LQ.thr}% or the permit date in 1–3 days</div></div>
+        <div class="bk" style="--bc:var(--ok)"><div class="n">Not needed yet</div><div class="v">${cnt('later').length}</div><div class="r">skipped — a fixed schedule would send a truck</div></div>
+      </div>
+      <div class="kv" style="margin-top:14px"><span>Pump out at (% of tank)</span><span><input class="inp" type="number" min="50" max="95" step="5" data-lq="thr" value="${LQ.thr}"></span>
+        <span>Grease trap permit interval (days)</span><span><input class="inp" type="number" min="14" max="120" step="7" data-lq="permitDays" value="${LQ.permitDays}"></span>
+        <span>Offline tanks (check by dip)</span><span>${cnt('offline').length}</span></div>
+      <div class="fbtns"><button class="pri" data-lqact="bookweek" ${cnt('soon').length ? '' : 'disabled'}>Add this week's tanks to today</button><button data-schact="jobs">Copy job file for the adapter</button></div>
+      <h3 style="font-size:13px;margin:18px 0 0">Against a fixed schedule</h3>
+      <div class="kv"><span>Pump-outs a month, fixed visits</span><span>${fmt(cmp.fixedN)}</span>
+        <span>Pump-outs a month, by level</span><span><b>${fmt(cmp.levelN)}</b> <span class="mut2">(${cmp.levelN < cmp.fixedN ? '−' : '+'}${fmt(Math.abs(1 - cmp.levelN / cmp.fixedN) * 100)}%)</span></span>
+        <span>Average fill when a fixed visit arrives</span><span>${fmt(cmp.fillFixed)}%</span>
+        <span>Tanks that would overflow between fixed visits</span><span style="color:${cmp.overflow ? 'var(--hi)' : 'inherit'}">${cmp.overflow}</span></div>
+      ${standIn()}
+    </section>
+    <section class="card cpad c7" aria-label="Today's runs map">
+      <div class="ch"><h2>Today's runs</h2><span class="where">one tanker per product · depot → tanks → receiver</span></div>
+      <div class="fbtns" style="margin:8px 0 10px;flex-wrap:wrap">${LQ_RUNS.map(r => `<span class="sample" style="border-style:solid;color:${r.col}">${esc(r.n)}</span>`).join('')}</div>
+      ${schMap(geoBase(1.1), layers, 440)}
+    </section>
+    <section class="card c12" aria-label="Runs">
+      <div class="twrap"><table style="min-width:820px"><thead><tr><th>Run</th><th>Vehicle</th><th class="num">Stops</th><th class="num">Litres</th><th class="num">Tanker</th><th class="num">Trips to receiver</th><th class="num">Km</th><th>Receiver</th></tr></thead>
+      <tbody>${R.map(x => `<tr><td><b style="color:${x.run.col}">●</b> <b>${esc(x.run.n)}</b></td><td>${esc(x.run.veh)}</td><td class="num">${x.ord.length}</td><td class="num">${fmt(x.L)}</td><td class="num">${fmt(x.run.cap)} L</td><td class="num">${x.trips}</td><td class="num">${x.km.toFixed(1)}</td><td>${esc(LQ_RECV[x.run.recv].n)}</td></tr>`).join('') || '<tr><td colspan="8" class="mut2">Nothing due today</td></tr>'}</tbody></table></div>
+    </section>
+    <section class="card c12" aria-label="Tank register">
+      <div class="twrap"><table style="min-width:1020px"><thead><tr><th>Tank</th><th>Product</th><th class="num">Fill</th><th class="num">In tank</th><th class="num">Rises</th><th>Next pump-out</th><th>Run</th><th>Status</th><th></th></tr></thead>
+      <tbody>${(LQ.all ? P : P.slice(0, 18)).map(p => `<tr><td><b>${esc(p.a.name)}</b></td><td>${esc(p.a.stream)} · ${fmt(p.a.cap)} L</td><td class="num">${p.a.offline ? '—' : p.a.fill + '%'}</td><td class="num">${p.a.offline ? '—' : fmt(p.L) + ' L'}</td><td class="num">${p.a.offline ? '—' : fmt(p.rd, 1) + '%/day'}</td>
+        <td>${p.a.offline ? '<span class="mut2">no reading</span>' : p.due < .5 ? 'now' : `in ${fmt(p.due, p.due < 10 ? 1 : 0)} days`} ${p.a.offline ? '' : p.why === 'permit' ? '<span class="mut2">· permit interval</span>' : `<span class="mut2">· reaches ${LQ.thr}%</span>`}</td>
+        <td>${esc(p.run.n)}</td><td>${pill(p)}</td>
+        <td>${p.st8 === 'soon' || p.st8 === 'later' ? `<button class="linkbtn" data-lqbook="${p.a.id}">Add to today</button>` : p.st8 === 'booked' ? `<button class="linkbtn" data-lqunbook="${p.a.id}">Remove</button>` : ''}</td></tr>`).join('')}</tbody></table></div>
+      <div class="cpad" style="padding-top:8px"><button class="linkbtn" data-lqact="all">${LQ.all ? 'Show the 18 most urgent' : `Show all ${P.length} tanks`}</button><div class="note">Grease traps are pumped at whichever comes first: the level, or the interval in the trade waste permit (sample: ${LQ.permitDays} days). Every pump-out becomes a tracking-form load in Waste tracking. Booking is simulated; nothing is sent to a carrier.</div></div>
+    </section>
+  </div>`;
+}
+
+/* ---------------- Industrial services · shutdown scope and call-outs (SC7) ---------------- */
+const IS = { tab:'shutdown', unit:'Unit 2', start:9, days:16, vac:10, trucks:3, allowance:45, booked:{} };
+const IS_TASK = {
+  'Tank bottoms & sludge':['Vac-load, then tank clean', true, ['Isolation','Confined space','Gas test']],
+  'Hydrocarbon slops':['Vac-load to slops tanker', false, ['Isolation','Hot-work exclusion']],
+  'Oily water':['Vac-load', false, ['Isolation']],
+  'Process effluent':['Vac-load, jet pit walls', false, ['Isolation']],
+  'Spent caustic / acid':['Neutralise, then vac-load', false, ['Isolation','Chemical handling']],
+  'Catalyst & fines':['Catalyst vac-out under nitrogen', true, ['Isolation','Confined space','Inert entry']] };
+const IS_DEST = { 'Tank bottoms & sludge':'Sludge treatment', 'Hydrocarbon slops':'Hydrocarbon recovery', 'Oily water':'Liquid waste treatment', 'Process effluent':'Liquid waste treatment', 'Spent caustic / acid':'Chemical treatment', 'Catalyst & fines':'Catalyst reclaimer' };
+const isRate = a => Math.max(.2, histRate(a));                            // % per hour
+function isPlan(){
+  return withDS('indserv', null, () => {
+    const A = data('indserv').assets.filter(a => !a.offline);
+    const tf = A.filter(a => a.site === 'Tank Farm').sort((a, b) => b.fill - a.fill).slice(0, 4);
+    const scope = A.filter(a => a.site === 'Process Unit 2' || a.site === 'API Separator').concat(tf);
+    const tasks = scope.map(a => { const [task, cs, permits] = IS_TASK[a.stream], m3 = +(a.cap * a.fill / 100).toFixed(1), loads = Math.max(1, Math.ceil(m3 / IS.vac));
+      return { a, task, cs, permits, m3, loads, dur: Math.ceil(loads / 4) + (cs ? 2 : 0), crew: cs ? 6 : 3 }; })
+      .sort((x, y) => (y.cs - x.cs) || (y.dur - x.dur));
+    const free = Array(Math.max(1, IS.trucks)).fill(0);
+    tasks.forEach(t => { const k = free.indexOf(Math.min(...free)); t.truck = k + 1; t.start = free[k]; free[k] += t.dur; });
+    const m3 = tasks.reduce((s, t) => s + t.m3, 0), loads = tasks.reduce((s, t) => s + t.loads, 0);
+    const allow = tasks.length * IS.allowance, allowLoads = tasks.length * Math.ceil(IS.allowance / IS.vac);
+    return { tasks, m3, loads, allow, allowLoads, end: Math.max(...free), truckDays: free.reduce((s, x) => s + x, 0), crewShifts: tasks.reduce((s, t) => s + t.dur * t.crew, 0), cse: tasks.filter(t => t.cs).length };
+  });
+}
+function isCallouts(){
+  return withDS('indserv', null, () => data('indserv').assets.filter(a => !a.offline).map(a => {
+    const r = isRate(a), toHH = (90 - a.fill) / r, toAct = (SECTORS.indserv.collectAt - a.fill) / r, h = hashStr(a.id + ':permit');
+    return { a, r, toHH, toAct, permit: h % 4 === 0 ? 'Awaiting isolation' : 'Permit ready', booked: !!IS.booked[a.id] };
+  }).filter(x => x.toHH <= 48).sort((x, y) => x.toHH - y.toHH));
+}
+const IS_STANDBY = [['Sump · API Separator','Mon','06:40','08:15','Isolation not signed off'],['Effluent pit · Effluent Treatment','Tue','07:05','07:50','Gas test pending'],['Slops tank · Tank Farm','Wed','06:30','09:10','Permit issuer in induction'],['Chemical tank · Process Unit 1','Thu','13:20','13:45','Area access'],['Sump · API Separator','Fri','06:35','07:20','Isolation not signed off']];
+function renderIsShutdown(){
+  const P = isPlan(), T = P.tasks, D = IS.days, over = P.end > D;
+  const byDest = {}; T.forEach(t => { const k = IS_DEST[t.a.stream]; byDest[k] = (byDest[k] || 0) + t.m3; });
+  const layers = data('indserv').assets.map(a => { const inS = T.some(t => t.a.id === a.id); return `<circle cx="${a.x.toFixed(1)}" cy="${a.y.toFixed(1)}" r="${inS ? 6 : 3.5}" style="fill:${inS ? a.color : 'var(--off)'};stroke:${inS ? 'var(--ink)' : 'var(--card)'};opacity:${inS ? 1 : .55}" stroke-width="${inS ? 1.6 : 1}"/>`; }).join('');
+  document.getElementById('body').innerHTML = `${prdStrip('SC7')}${isTabs()}
+  <div class="fgrid">
+    <section class="card cpad c7" aria-label="Shutdown scope">
+      <div class="ch"><h2>${esc(IS.unit)} shutdown · scope from live levels</h2><span class="where">isolation in ${IS.start} days · ${D}-day window</span></div>
+      <div class="bks" style="margin-top:14px">
+        <div class="bk" style="--bc:var(--accent)"><div class="n">To remove</div><div class="v">${fmt(P.m3)} m³</div><div class="r">${T.length} vessels, measured now</div></div>
+        <div class="bk" style="--bc:var(--proc)"><div class="n">Vac loads</div><div class="v">${P.loads}</div><div class="r">${IS.vac} m³ per load · ${IS.trucks} trucks</div></div>
+        <div class="bk" style="--bc:${over ? 'var(--hi)' : 'var(--ok)'}"><div class="n">Finish</div><div class="v">Day ${P.end}</div><div class="r">${over ? `${P.end - D} day${P.end - D === 1 ? '' : 's'} past the window` : `${D - P.end} day${D - P.end === 1 ? '' : 's'} float`}</div></div>
+        <div class="bk" style="--bc:var(--med)"><div class="n">Confined-space entries</div><div class="v">${P.cse}</div><div class="r">${fmt(P.crewShifts)} crew shifts</div></div>
+      </div>
+      <div class="note" style="margin-top:12px;font-size:12.5px;color:var(--ink2)">The work pack allows <b>${IS.allowance} m³ a vessel</b> (${fmt(P.allow)} m³, ${P.allowLoads} loads). Live levels put it at <b>${fmt(P.m3)} m³</b> — ${P.loads <= P.allowLoads ? `${P.allowLoads - P.loads} fewer loads to book` : `${P.loads - P.allowLoads} more loads than planned`}. Levels are re-read the day before isolation.</div>
+      <div class="kv" style="margin-top:14px"><span>Days to isolation</span><span><input class="inp" type="number" min="1" max="60" data-is="start" value="${IS.start}"></span>
+        <span>Shutdown window (days)</span><span><input class="inp" type="number" min="5" max="40" data-is="days" value="${IS.days}"></span>
+        <span>Vac trucks on site</span><span><input class="inp" type="number" min="1" max="5" data-is="trucks" value="${IS.trucks}"></span>
+        <span>Work-pack allowance (m³ per vessel)</span><span><input class="inp" type="number" min="5" max="200" step="5" data-is="allowance" value="${IS.allowance}"></span></div>
+      <div class="fbtns"><button data-schact="jobs">Copy job file for the adapter</button></div>
+    </section>
+    <section class="card cpad c5" aria-label="Plant plan">
+      <div class="ch"><h2>In scope</h2><span class="where">ringed = in this shutdown</span></div>
+      ${schMap(planBase(1.1), layers, 380)}
+      <div class="kv" style="margin-top:10px">${Object.entries(byDest).sort((a, b) => b[1] - a[1]).map(([k, v]) => `<span>${esc(k)}</span><span>${fmt(v)} m³</span>`).join('')}</div>
+    </section>
+    <section class="card c12" aria-label="Shutdown schedule">
+      <div class="twrap"><table style="min-width:1080px"><thead><tr><th>Vessel</th><th>Task</th><th class="num">Volume</th><th class="num">Loads</th><th>Permits</th><th class="num">Truck</th><th style="width:34%">Days 1–${D}</th></tr></thead>
+      <tbody>${T.map(t => `<tr><td><b>${esc(t.a.name)}</b><div class="mut2" style="font-size:11px">${esc(t.a.stream)} · ${t.a.fill}% of ${t.a.cap} m³</div></td><td style="white-space:normal;min-width:150px">${esc(t.task)}</td><td class="num">${fmt(t.m3, 1)} m³</td><td class="num">${t.loads}</td>
+        <td style="white-space:normal;min-width:170px">${t.permits.map(p => `<span class="pill ${/Confined|Inert/.test(p) ? 'med' : 'off'}" style="margin:1px 3px 1px 0;white-space:nowrap">${esc(p.toUpperCase())}</span>`).join('')}</td><td class="num">${t.truck}</td>
+        <td><div style="position:relative;height:16px;border-radius:4px;background:var(--line2)"><div style="position:absolute;top:0;bottom:0;left:${Math.min(100, t.start / Math.max(D, P.end) * 100)}%;width:${t.dur / Math.max(D, P.end) * 100}%;border-radius:4px;background:${t.start + t.dur > D ? 'var(--hi)' : t.cs ? 'var(--med)' : 'var(--accent)'}" title="Day ${t.start + 1}–${t.start + t.dur}"></div>${P.end > D ? `<div style="position:absolute;top:-3px;bottom:-3px;left:${D / P.end * 100}%;border-left:2px dashed var(--hi)"></div>` : ''}</div><div class="mut2" style="font-size:10.5px;margin-top:2px">Day ${t.start + 1}–${t.start + t.dur}</div></td></tr>`).join('')}</tbody></table></div>
+      <div class="cpad" style="padding-top:8px"><div class="note">Volumes are capacity × current level from each vessel's sensor (sample data). Vessel cleans that need entry add two days for gas testing, entry and inspection. Amber bars need a confined-space permit; red bars run past the window.</div></div>
+    </section>
+  </div>`;
+}
+function renderIsCallouts(){
+  const C = isCallouts(), sb = IS_STANDBY.map(r => { const [h1, m1] = r[2].split(':').map(Number), [h2, m2] = r[3].split(':').map(Number); return [...r, ((h2 * 60 + m2) - (h1 * 60 + m1)) / 60]; });
+  const sbH = sb.reduce((s, r) => s + r[5], 0);
+  document.getElementById('body').innerHTML = `${prdStrip('SC7')}${isTabs()}
+  <div class="fgrid">
+    <section class="card cpad c12" aria-label="Call-outs">
+      <div class="ch"><h2>High-high call-outs</h2><span class="where">vessels that reach 90% inside 48 hours</span></div>
+      <div class="bks" style="margin-top:12px">
+        <div class="bk" style="--bc:var(--hi)"><div class="n">At or over 90%</div><div class="v">${C.filter(x => x.toHH <= 0).length}</div><div class="r">send a vac truck now</div></div>
+        <div class="bk" style="--bc:var(--med)"><div class="n">Inside 12 h</div><div class="v">${C.filter(x => x.toHH > 0 && x.toHH <= 12).length}</div><div class="r">book this shift</div></div>
+        <div class="bk" style="--bc:var(--accent)"><div class="n">Inside 48 h</div><div class="v">${C.filter(x => x.toHH > 12).length}</div><div class="r">plan into tomorrow</div></div>
+        <div class="bk" style="--bc:var(--avd)"><div class="n">Permit not ready</div><div class="v">${C.filter(x => x.permit !== 'Permit ready').length}</div><div class="r">raise isolation first, or the truck waits</div></div>
+      </div>
+    </section>
+    <section class="card c12" aria-label="Call-out list">
+      <div class="twrap"><table style="min-width:720px"><thead><tr><th>Vessel</th><th class="num">Level</th><th class="num">Rising</th><th>Reaches 90%</th><th>Permit</th><th></th></tr></thead>
+      <tbody>${C.map(x => `<tr><td><b>${esc(x.a.name)}</b><div class="mut2" style="font-size:11px">${esc(x.a.stream)} · ${x.a.cap} m³</div></td><td class="num">${x.a.fill}%</td><td class="num">${fmt(x.r, 1)}%/h</td>
+        <td>${x.toHH <= 0 ? '<span class="pill hi"><span class="dot"></span>NOW</span>' : `in ${fmt(x.toHH, x.toHH < 10 ? 1 : 0)} h`}</td>
+        <td>${x.permit === 'Permit ready' ? '<span class="pill ok"><span class="dot"></span>READY</span>' : '<span class="pill med"><span class="dot"></span>AWAITING ISOLATION</span>'}</td>
+        <td>${x.booked ? `<button class="linkbtn" data-isunbook="${x.a.id}">Booked · cancel</button>` : `<button class="linkbtn" data-isbook="${x.a.id}">Book vac truck</button>`}</td></tr>`).join('') || '<tr><td colspan="6" class="mut2">No vessel reaches 90% in the next 48 hours</td></tr>'}</tbody></table></div>
+    </section>
+    <section class="card cpad c12" aria-label="Standby evidence">
+      <div class="ch"><h2>Standby this week</h2><span class="where">truck at the gate vs permit issued</span></div>
+      <div class="bks" style="margin-top:12px"><div class="bk" style="--bc:var(--med)"><div class="n">Standby hours</div><div class="v">${fmt(sbH, 1)} h</div><div class="r">${money(sbH * 310, 0)} at $310/h (sample rate)</div></div></div>
+      <div class="twrap" style="margin-top:10px"><table style="min-width:0"><thead><tr><th>Job</th><th>Day</th><th>At gate</th><th>Permit</th><th class="num">Wait</th></tr></thead>
+      <tbody>${sb.map(r => `<tr><td style="white-space:normal">${esc(r[0])}<div class="mut2" style="font-size:11px">${esc(r[4])}</div></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td class="num">${fmt(r[5] * 60)} min</td></tr>`).join('')}</tbody></table></div>
+      <div class="note">Gate time comes from the truck's geofence, permit time from the permit system (both sample). Standby that the plant caused is billable; the record settles the argument.</div>
+    </section>
+  </div>`;
+}
+const isTabs = () => `<div class="fbar"><div class="fseg" role="tablist" aria-label="Industrial services scheduling">${[['shutdown','Shutdown scope · SC7'],['callouts','Call-outs and standby · SC7-4']].map(([k, l]) => `<button role="tab" data-istab="${k}" aria-pressed="${IS.tab === k}">${l}</button>`).join('')}</div></div>`;
+
+/* ---------------- Waste tracking (WT) · both lines ---------------- */
+const WT_TOL = 10;
+const WT = {};
+const wtDays = () => st.sector === 'indserv' ? 14 : 28;
+const wtQty = v => st.sector === 'indserv' ? `${fmt(v, 1)} m³` : `${fmt(Math.round(v / 10) * 10)} L`;
+const wtRate = () => st.sector === 'indserv' ? 185 : 0.24;                 // $ per m³ / per litre (sample)
+const wtCarrier = a => st.sector === 'indserv' ? 'Apex Industrial Services' : /Grease|Used oil|Oily|Coolant/.test(a.stream) ? 'Tideline Liquid Services' : 'ChemPack Technical';
+const wtRecv = a => st.sector === 'indserv' ? IS_DEST[a.stream] : LQ_RECV[lqRunOf(a.stream).recv].n;
+function wtS(){ return WT[st.sector] || (WT[st.sector] = { f:'all' }); }
+function wtLoads(){
+  const s = st.sector, W = wtS(); if(W.loads) return W.loads;
+  const out = [], D = wtDays(), ind = s === 'indserv', top = ind ? 75 : 80;
+  data(s).assets.forEach(a => {
+    const r = mulberry(hashStr(a.id + ':wt')), rd = Math.max(ind ? 4 : .3, histRate(a) * 24), packaged = /Oil filters|Packaged|Parts washer/.test(a.stream);
+    const gap = Math.max(ind ? 1.5 : 3, (top - 5) / rd);
+    let t = Math.max(.3, (a.fill - 5) / rd), n = 0;
+    while(t < D && n++ < 12){
+      const at = new Date(NOW.getTime() - t * 864e5); at.setHours(7 + Math.floor(r() * 8), Math.floor(r() * 60), 0, 0);
+      const before = Math.min(98, top + (r() - .5) * 14), after = 2 + r() * 5;
+      const meas = a.cap * (before - after) / 100, over = r() < .09;
+      const decl = packaged ? null : meas * (over ? 1.12 + r() * .2 : 1 + (r() - .5) * .06);
+      const form = r() < .04 ? null : `CWT-${100000 + hashStr(a.id + ':' + n) % 899999}`;
+      const rc = r(), rcpt = t < 2 ? 'pending' : rc < .035 ? 'missing' : 'matched';
+      out.push({ id:`${a.id}-${n}`, a, at, before, after, meas, decl, flag: decl != null && decl > meas * (1 + WT_TOL / 100), form, rcpt, carrier: wtCarrier(a), recv: wtRecv(a) });
+      t += gap * (.85 + r() * .3);
+    }
+  });
+  return W.loads = out.sort((x, y) => y.at - x.at);
+}
+function wtVarianceHTML(){
+  const L = wtLoads().filter(l => l.decl != null), F = L.filter(l => l.flag), extra = F.reduce((s, l) => s + l.decl - l.meas, 0);
+  return `<section class="card cpad c12" aria-label="Measured vs declared"><div class="ch"><h2>Measured vs declared</h2><span class="where">${L.length} loads · ${wtDays()} days · tolerance ${WT_TOL}%</span></div>
+    <div class="bks" style="margin-top:12px"><div class="bk" style="--bc:var(--med)"><div class="n">Declared above measured</div><div class="v">${F.length}</div><div class="r">${wtQty(extra)} · about ${money(extra * wtRate(), 0)}</div></div>
+      <div class="bk" style="--bc:var(--ok)"><div class="n">Inside tolerance</div><div class="v">${L.length - F.length}</div><div class="r">no query needed</div></div></div>
+    <div class="twrap" style="margin-top:12px"><table style="min-width:760px"><thead><tr><th>Load</th><th>Product</th><th class="num">Measured</th><th class="num">Declared</th><th class="num">Gap</th><th>Carrier</th></tr></thead>
+    <tbody>${F.slice(0, 12).map(l => `<tr><td>${esc(l.a.name)}<div class="mut2" style="font-size:11px">${fmtT(l.at)}</div></td><td>${esc(l.a.stream)}</td><td class="num">${wtQty(l.meas)}</td><td class="num">${wtQty(l.decl)}</td><td class="num" style="color:var(--hi)">+${Math.round((l.decl / l.meas - 1) * 100)}%</td><td>${esc(l.carrier)}</td></tr>`).join('') || '<tr><td colspan="6" class="mut2">Every load inside tolerance</td></tr>'}</tbody></table></div>
+    <div class="note">Measured = capacity × the level drop the sensor recorded at the pump-out. Declared = the quantity on the receipt or invoice (sample). The gap list is the query pack for the contractor.</div></section>`;
+}
+function renderTracking(){
+  const W = wtS(), L = wtLoads(), ind = st.sector === 'indserv';
+  const noForm = L.filter(l => !l.form), miss = L.filter(l => l.rcpt === 'missing'), pend = L.filter(l => l.rcpt === 'pending'), F = L.filter(l => l.flag);
+  const ex = l => !l.form || l.rcpt === 'missing' || l.flag;
+  const rows = (W.f === 'ex' ? L.filter(ex) : L).slice(0, 40);
+  const vol = L.reduce((s, l) => s + l.meas, 0), extra = F.reduce((s, l) => s + l.decl - l.meas, 0);
+  const byR = {}; L.forEach(l => { const k = l.recv; byR[k] = byR[k] || [0, 0]; byR[k][0]++; byR[k][1] += l.meas; });
+  document.getElementById('body').innerHTML = `${prdStrip(ind ? 'WTi' : 'WTl')}
+  <div class="fgrid">
+    <section class="card cpad c12" aria-label="Tracking summary">
+      <div class="ch"><h2>Controlled waste loads · last ${wtDays()} days</h2><span class="where">${ind ? 'vac jobs from vessels and pits' : 'pump-outs and drum collections'} · sample data</span></div>
+      <div class="bks" style="margin-top:12px">
+        <div class="bk" style="--bc:var(--accent)"><div class="n">Loads</div><div class="v">${fmt(L.length)}</div><div class="r">${wtQty(vol)} measured by sensor</div></div>
+        <div class="bk" style="--bc:${noForm.length ? 'var(--hi)' : 'var(--ok)'}"><div class="n">Tracking forms</div><div class="v">${fmt((1 - noForm.length / Math.max(1, L.length)) * 100)}%</div><div class="r">${noForm.length} load${noForm.length === 1 ? '' : 's'} with no form number</div></div>
+        <div class="bk" style="--bc:${miss.length ? 'var(--hi)' : 'var(--ok)'}"><div class="n">Receipts matched</div><div class="v">${fmt(L.filter(l => l.rcpt === 'matched').length)}</div><div class="r">${pend.length} pending · ${miss.length} missing</div></div>
+        <div class="bk" style="--bc:var(--med)"><div class="n">Declared above measured</div><div class="v">${F.length}</div><div class="r">${wtQty(extra)} · about ${money(extra * wtRate(), 0)}</div></div>
+      </div>
+    </section>
+    <section class="card c12" aria-label="Load register">
+      <div class="cpad" style="padding-bottom:6px"><div class="ch"><h2>Load register</h2><span class="where"><div class="fseg" role="group" aria-label="Filter loads" style="display:inline-flex"><button data-wtf="all" aria-pressed="${W.f === 'all'}">All</button><button data-wtf="ex" aria-pressed="${W.f === 'ex'}">Exceptions (${L.filter(ex).length})</button></div></span></div></div>
+      <div class="twrap"><table style="min-width:900px"><thead><tr><th>When</th><th>${ind ? 'Vessel' : 'Tank'}</th><th class="num">Measured</th><th class="num">Declared</th><th>Tracking form</th><th>Receiver</th><th>Receipt</th></tr></thead>
+      <tbody>${rows.map(l => `<tr><td>${fmtT(l.at)}</td><td style="white-space:normal"><b>${esc(l.a.name)}</b><div class="mut2" style="font-size:11px">${esc(l.a.stream)} · ${fmt(l.before)}% → ${fmt(l.after)}%</div></td>
+        <td class="num">${wtQty(l.meas)}</td><td class="num">${l.decl == null ? '<span class="mut2">per drum</span>' : `${wtQty(l.decl)}${l.flag ? ` <span style="color:var(--hi);font-weight:600">+${Math.round((l.decl / l.meas - 1) * 100)}%</span>` : ''}`}</td>
+        <td>${l.form ? `<span style="font-variant-numeric:tabular-nums">${l.form}</span>` : '<span class="pill hi"><span class="dot"></span>MISSING</span>'}</td><td style="white-space:normal">${esc(l.recv)}<div class="mut2" style="font-size:11px">${esc(l.carrier)}</div></td>
+        <td>${l.rcpt === 'matched' ? '<span class="pill ok"><span class="dot"></span>MATCHED</span>' : l.rcpt === 'pending' ? '<span class="pill off"><span class="dot"></span>PENDING</span>' : '<span class="pill hi"><span class="dot"></span>MISSING</span>'}</td></tr>`).join('') || '<tr><td colspan="7" class="mut2">No exceptions</td></tr>'}</tbody></table></div>
+      <div class="cpad" style="padding-top:6px"><span class="mut2">Showing ${rows.length} of ${W.f === 'ex' ? L.filter(ex).length : L.length}</span></div>
+    </section>
+    <section class="card cpad c12" aria-label="By receiver">
+      <div class="ch"><h2>By receiver</h2><span class="where">${wtDays()} days · <button class="linkbtn" data-wtcsv>Copy register as CSV</button></span></div>
+      <div class="bks" style="margin-top:12px">${Object.entries(byR).sort((a, b) => b[1][1] - a[1][1]).map(([k, v]) => `<div class="bk" style="--bc:var(--proc)"><div class="n">${esc(k)}</div><div class="v">${wtQty(v[1])}</div><div class="r">${v[0]} loads</div></div>`).join('')}</div>
+      <div class="excl">Each load is created by the level drop the sensor saw — not typed in by the driver. The form number and receipt are matched to it, so a load with no form, no receipt or a bigger declared volume shows up the day it happens. Carrier licences are checked in Compliance.</div>
+    </section>
+  </div>`;
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-lqbook],[data-lqunbook],[data-lqact],[data-istab],[data-isbook],[data-isunbook],[data-wtf],[data-wtcsv]'); if(!t) return;
+  if(t.dataset.lqbook){ LQ.booked[t.dataset.lqbook] = true; return renderScheduling(); }
+  if(t.dataset.lqunbook){ delete LQ.booked[t.dataset.lqunbook]; return renderScheduling(); }
+  if(t.dataset.lqact === 'all'){ LQ.all = !LQ.all; return renderScheduling(); }
+  if(t.dataset.lqact === 'bookweek'){ lqPlan().filter(p => p.st8 === 'soon').forEach(p => LQ.booked[p.a.id] = true); return renderScheduling(); }
+  if(t.dataset.istab){ IS.tab = t.dataset.istab; return renderScheduling(); }
+  if(t.dataset.isbook){ IS.booked[t.dataset.isbook] = true; return renderScheduling(); }
+  if(t.dataset.isunbook){ delete IS.booked[t.dataset.isunbook]; return renderScheduling(); }
+  if(t.dataset.wtf){ wtS().f = t.dataset.wtf; return renderTracking(); }
+  if(t.dataset.wtcsv !== undefined){ const L = wtLoads(); return copyText(['when,asset,product,measured,declared,tracking_form,carrier,receiver,receipt'].concat(L.map(l => [l.at.toISOString(), `"${l.a.name}"`, `"${l.a.stream}"`, l.meas.toFixed(1), l.decl == null ? '' : l.decl.toFixed(1), l.form || '', `"${l.carrier}"`, `"${l.recv}"`, l.rcpt].join(','))).join('\n'), t, 'Copy register as CSV'); }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if(t.dataset.lq){ const v = +t.value; if(!isNaN(v)) LQ[t.dataset.lq] = v; return renderScheduling(); }
+  if(t.dataset.is){ const v = +t.value; if(!isNaN(v) && v > 0) IS[t.dataset.is] = t.dataset.is === 'trucks' ? Math.max(1, Math.min(5, v)) : v; return renderScheduling(); }
+});
+
 /* ---------- placeholder views ---------- */
 function renderPlaceholder(){
   const S = SEC(), m = MOD[st.view];
@@ -8613,6 +9042,7 @@ function render(){
   else if(st.view==='overview') renderOverview();
   else if(st.view==='finance') renderFinance();
   else if(st.view==='scheduling') renderScheduling();
+  else if(st.view==='tracking') renderTracking();
   else if(host && host[0]==='4'){ if(anS().tab==='seg'){ renderSegregation(); document.getElementById('body').insertAdjacentHTML('afterbegin', `<div class="fbar" style="margin:0 0 14px"><div class="fseg" role="group" aria-label="Analytics view"><button data-antab="dash" aria-pressed="false">← Analytics (AN4)</button><button data-antab="seg" aria-pressed="true">Segregation (PRD 4)</button></div></div>`); } else renderAnalytics(); }
   else if(host && host[0]==='5') renderThinkRO();
   else if(host && host[0].startsWith('S')){ if(fwS().on) renderFrameworks(); else renderSustainability(); document.getElementById('body').insertAdjacentHTML('afterbegin', fwToggle()); }
@@ -8785,3 +9215,5 @@ render();
 </script>
 </body>
 </html>
+
+</body></html>
